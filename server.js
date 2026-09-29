@@ -4,6 +4,7 @@ const QRCode = require('qrcode');
 const imap = require('imap-simple');
 const { simpleParser } = require('mailparser');
 const path = require('path');
+const http = require('http'); // Auto-ping के लिए
 
 const app = express();
 app.use(express.json());
@@ -29,7 +30,7 @@ const Payment = mongoose.model('Payment', paymentSchema);
 const BUSINESS_UPI = 'paytm.s2ujlw0@pty';
 const API_SECRET_KEY = 'sibaditya_secure_api_key_2026';
 
-// IMAP Config (Updated with your brand new App Password)
+// IMAP Config (Updated with your App Password & secure settings)
 const imapConfig = {
     imap: {
         user: 'sibadityapal7@gmail.com',
@@ -37,7 +38,7 @@ const imapConfig = {
         host: 'imap.gmail.com',
         port: 993,
         tls: true,
-        authTimeout: 25000,
+        authTimeout: 30000,
         tlsOptions: { 
             rejectUnauthorized: false,
             servername: 'imap.gmail.com'
@@ -107,19 +108,23 @@ app.get('/api/admin/transactions', async (req, res) => {
     }
 });
 
-// 4. System Health & Connection Status API (New)
+// 4. System Health & Connection Status API
 app.get('/api/admin/health', async (req, res) => {
     let dbStatus = mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected';
     let imapStatus = 'Connected & Working';
     let imapError = null;
 
+    let connection;
     try {
-        const connection = await imap.connect(imapConfig);
+        connection = await imap.connect(imapConfig);
         await connection.openBox('INBOX');
-        connection.end();
+        if (connection) connection.end();
     } catch (err) {
         imapStatus = 'Failed / Authentication Error';
         imapError = err.message;
+        if (connection) {
+            try { connection.end(); } catch(e) {}
+        }
     }
 
     res.json({
@@ -131,42 +136,69 @@ app.get('/api/admin/health', async (req, res) => {
     });
 });
 
-// --- IMAP GMAIL VERIFICATION FUNCTION (Improved to check recent messages if UNSEEN fails) ---
+// --- IMAP GMAIL VERIFICATION FUNCTION ---
 async function checkPaytmEmail(targetAmount, orderId) {
+    let connection;
     try {
-        const connection = await imap.connect(imapConfig);
+        connection = await imap.connect(imapConfig);
         await connection.openBox('INBOX');
 
-        // Search both UNSEEN and recent ALL messages containing Paytm to avoid miss
-        const searchCriteria = [['SUBJECT', 'Paytm']];
-        const fetchOptions = { bodies: [''], markSeen: false }; // false रखा ताकि ईमेल सीधा रीड न हो जाए, पर चाहें तो true कर सकते हैं
+        const searchCriteria = [['ALL']];
+        const fetchOptions = { bodies: [''], markSeen: false }; 
         const messages = await connection.search(searchCriteria, fetchOptions);
 
-        // ताज़ा 15 ईमेल चेक करें
-        const recentMessages = messages.slice(-15);
+        const recentMessages = messages.slice(-20);
 
         for (const item of recentMessages) {
             const allParts = imap.findParts(item.parts, 'BODY');
             for (const part of allParts) {
                 const mail = await simpleParser(item.parts[part.bodyID]);
-                const bodyText = mail.text || mail.html || '';
+                const bodyText = (mail.text || mail.html || '').toLowerCase();
+                const subjectText = (mail.subject || '').toLowerCase();
 
-                // मैचिंग चेक करें
-                if (bodyText.includes(targetAmount.toString()) && bodyText.includes(orderId)) {
-                    connection.end();
+                const cleanAmount = targetAmount.toString().trim();
+                const cleanOrderId = orderId.toString().toLowerCase().trim();
+
+                if ((bodyText.includes(cleanAmount) || subjectText.includes(cleanAmount)) && 
+                    bodyText.includes(cleanOrderId)) {
+                    
+                    if (connection) {
+                        try { connection.end(); } catch(e) {}
+                    }
                     return true;
                 }
             }
         }
-        connection.end();
+
+        if (connection) {
+            try { connection.end(); } catch(e) {}
+        }
         return false;
     } catch (err) {
-        console.error('IMAP Error:', err);
+        console.error('IMAP Error:', err.message);
+        if (connection) {
+            try { connection.end(); } catch(e) {}
+        }
         return false;
     }
 }
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
+    startAntiSleepPing(PORT); // एंटी-स्लिप सिस्टम एक्टिवेट करें
 });
+
+// --- ANTI-SLEEP / AUTO-PING SYSTEM ---
+function startAntiSleepPing(port) {
+    const INTERVAL_TIME = 4 * 60 * 1000; // हर 4 मिनट में पिंग करेगा (रेंडर 15 मिनट में सोता है)
+    
+    setInterval(() => {
+        const url = `http://127.0.0.1:${port}/api/admin/health`;
+        http.get(url, (res) => {
+            console.log(`[Anti-Sleep] Self-ping status: ${res.statusCode} at ${new Date().toLocaleTimeString()}`);
+        }).on('error', (err) => {
+            console.error('[Anti-Sleep] Ping error:', err.message);
+        });
+    }, INTERVAL_TIME);
+}
