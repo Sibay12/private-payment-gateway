@@ -30,11 +30,11 @@ const Payment = mongoose.model('Payment', paymentSchema);
 const BUSINESS_UPI = 'paytm.s2ujlw0@pty';
 const API_SECRET_KEY = 'sibaditya_secure_api_key_2026';
 
-// IMAP Config (Updated with your App Password & secure TLS settings)
+// IMAP Config (Using your App Password without spaces)
 const imapConfig = {
     imap: {
         user: 'sibadityapal7@gmail.com',
-        password: 'qkrxjnnmwzynsjvo', // आपका नया ऐप पासवर्ड (बिना स्पेस के)
+        password: 'qkrxjnnmwzynsjvo',
         host: 'imap.gmail.com',
         port: 993,
         tls: true,
@@ -77,7 +77,7 @@ app.post('/api/create-payment', async (req, res) => {
     }
 });
 
-// 2. Check Payment Status API (IMAP Email Scanner)
+// 2. Check Payment Status API (Direct Order ID Search via IMAP)
 app.get('/api/check-status/:orderId', async (req, res) => {
     const { orderId } = req.params;
     try {
@@ -85,11 +85,9 @@ app.get('/api/check-status/:orderId', async (req, res) => {
         if (!payment) return res.status(404).json({ success: false, message: 'Order not found' });
 
         if (payment.status === 'PENDING') {
-            const isPaid = await checkPaytmEmail(payment.amount, payment.orderId);
-            if (isPaid) {
-                payment.status = 'SUCCESS';
-                await payment.save();
-            }
+            await verifyAndUpdatePendingPayments();
+            const updatedPayment = await Payment.findOne({ orderId });
+            return res.json({ success: true, status: updatedPayment.status, amount: updatedPayment.amount, orderId: updatedPayment.orderId });
         }
 
         res.json({ success: true, status: payment.status, amount: payment.amount, orderId: payment.orderId });
@@ -101,6 +99,7 @@ app.get('/api/check-status/:orderId', async (req, res) => {
 // 3. Admin Transactions API
 app.get('/api/admin/transactions', async (req, res) => {
     try {
+        await verifyAndUpdatePendingPayments();
         const payments = await Payment.find().sort({ createdAt: -1 }).limit(50);
         res.json({ success: true, payments });
     } catch (error) {
@@ -136,39 +135,45 @@ app.get('/api/admin/health', async (req, res) => {
     });
 });
 
-// --- OPTIMIZED IMAP GMAIL VERIFICATION FUNCTION (Memory Safe) ---
-async function checkPaytmEmail(targetAmount, orderId) {
+// --- CORE FUNCTION: Direct Order ID Search via IMAP ---
+async function verifyAndUpdatePendingPayments() {
     let connection;
     try {
+        const pendingPayments = await Payment.find({ status: 'PENDING' });
+        if (pendingPayments.length === 0) return; // अगर कोई पेंडिंग आर्डर नहीं है तो IMAP कनेक्ट नहीं करेगा
+
         connection = await imap.connect(imapConfig);
         await connection.openBox('INBOX');
 
-        // केवल Paytm विषय वाले ईमेल खोजें ताकि मेमोरी ओवरलोड न हो
-        const searchCriteria = [['SUBJECT', 'Paytm']];
-        const fetchOptions = { bodies: ['TEXT'], markSeen: false }; 
-        const messages = await connection.search(searchCriteria, fetchOptions);
+        for (let payment of pendingPayments) {
+            // सीधे जीमेल सर्वर पर ऑर्डर आईडी से सर्च करेगा
+            const searchCriteria = [['TEXT', payment.orderId]];
+            const fetchOptions = { bodies: ['TEXT'], markSeen: true };
 
-        // केवल आखिरी के 5 सबसे नए ईमेल चेक करें (मेमोरी बचाने के लिए)
-        const recentMessages = messages.slice(-5);
+            let messages = [];
+            try {
+                messages = await connection.search(searchCriteria, fetchOptions);
+            } catch (err) {
+                continue;
+            }
 
-        for (const item of recentMessages) {
-            const allParts = imap.findParts(item.parts, 'TEXT');
-            for (const part of allParts) {
-                const mail = await simpleParser(item.parts[part.bodyID]);
-                const bodyText = (mail.text || mail.html || '').toLowerCase();
-                const subjectText = (mail.subject || '').toLowerCase();
+            if (messages && messages.length > 0) {
+                for (const item of messages) {
+                    const allParts = imap.findParts(item.parts, 'TEXT');
+                    for (const part of allParts) {
+                        const mail = await simpleParser(item.parts[part.bodyID]);
+                        const bodyText = (mail.text || mail.html || '').toLowerCase();
+                        const fromAddress = (mail.from ? mail.from.text : '').toLowerCase();
 
-                const cleanAmount = targetAmount.toString().trim();
-                const cleanOrderId = orderId.toString().toLowerCase().trim();
+                        const cleanAmount = payment.amount.toString().trim();
 
-                // पीडीएफ के अनुसार अमाउंट और आर्डर आईडी की पुष्टि
-                if ((bodyText.includes(cleanAmount) || subjectText.includes(cleanAmount)) && 
-                    bodyText.includes(cleanOrderId)) {
-                    
-                    if (connection) {
-                        try { connection.end(); } catch(e) {}
+                        // जांचें कि मेल पेटीएम से आया है और उसमें सही अमाउंट मौजूद है
+                        if (fromAddress.includes('paytm.com') && bodyText.includes(cleanAmount)) {
+                            payment.status = 'SUCCESS';
+                            await payment.save();
+                            console.log(`[Payment Verified] Order ID: ${payment.orderId} marked as SUCCESS.`);
+                        }
                     }
-                    return true;
                 }
             }
         }
@@ -176,13 +181,11 @@ async function checkPaytmEmail(targetAmount, orderId) {
         if (connection) {
             try { connection.end(); } catch(e) {}
         }
-        return false;
     } catch (err) {
         console.error('IMAP Error:', err.message);
         if (connection) {
             try { connection.end(); } catch(e) {}
         }
-        return false;
     }
 }
 
@@ -194,14 +197,14 @@ const server = app.listen(PORT, () => {
 
 // --- ANTI-SLEEP / AUTO-PING SYSTEM ---
 function startAntiSleepPing(port) {
-    const INTERVAL_TIME = 4 * 60 * 1000; // हर 4 मिनट में खुद को पिंग करेगा
+    const INTERVAL_TIME = 4 * 60 * 1000; // हर 4 मिनट में खुद को पिंग करेगा ताकि रेंडर स्लीप न हो
     
     setInterval(() => {
         const url = `http://127.0.0.1:${port}/api/admin/health`;
         http.get(url, (res) => {
-            console.log(`[Anti-Sleep] Self-ping status: ${res.statusCode} at ${new Date().toLocaleTimeString()}`);
+            // पिंग एक्टिविटी
         }).on('error', (err) => {
-            console.error('[Anti-Sleep] Ping error:', err.message);
+            // इग्नोर एरर
         });
     }, INTERVAL_TIME);
 }
