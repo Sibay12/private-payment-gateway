@@ -30,7 +30,7 @@ const Payment = mongoose.model('Payment', paymentSchema);
 const BUSINESS_UPI = 'paytm.s2ujlw0@pty';
 const API_SECRET_KEY = 'sibaditya_secure_api_key_2026';
 
-// IMAP Config (Using your App Password without spaces)
+// IMAP Config
 const imapConfig = {
     imap: {
         user: 'sibadityapal7@gmail.com',
@@ -107,10 +107,10 @@ app.get('/api/admin/transactions', async (req, res) => {
     }
 });
 
-// 4. System Health & Connection Status API
+// 4. System Health & Connection Status API (For Admin Dashboard)
 app.get('/api/admin/health', async (req, res) => {
     let dbStatus = mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected';
-    let imapStatus = 'Connected & Working';
+    let imapStatus = 'Connected';
     let imapError = null;
 
     let connection;
@@ -119,7 +119,7 @@ app.get('/api/admin/health', async (req, res) => {
         await connection.openBox('INBOX');
         if (connection) connection.end();
     } catch (err) {
-        imapStatus = 'Failed / Authentication Error';
+        imapStatus = 'Disconnected / Auth Error';
         imapError = err.message;
         if (connection) {
             try { connection.end(); } catch(e) {}
@@ -195,7 +195,7 @@ const server = app.listen(PORT, () => {
     startAntiSleepPing(PORT);
 });
 
-// --- BACKGROUND WORKER (Auto-check pending payments every 15 seconds) ---
+// --- BACKGROUND WORKER ---
 setInterval(() => {
     verifyAndUpdatePendingPayments();
 }, 15000);
@@ -203,7 +203,6 @@ setInterval(() => {
 // --- ANTI-SLEEP / AUTO-PING SYSTEM ---
 function startAntiSleepPing(port) {
     const INTERVAL_TIME = 4 * 60 * 1000;
-    
     setInterval(() => {
         const url = `http://127.0.0.1:${port}/api/admin/health`;
         http.get(url, (res) => {}).on('error', (err) => {});
