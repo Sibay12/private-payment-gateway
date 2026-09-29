@@ -67,7 +67,7 @@ app.post('/api/create-payment', async (req, res) => {
             { upsert: true, new: true }
         );
 
-        const upiString = `upi://pay?pa=${BUSINESS_UPI}&pn=TelegramBotGateway&am=${amount}&tr=${orderId}&cu=INR`;
+        const upiString = `upi://pay?pa=${BUSINESS_UPI}&pn=TeknaTechnologies&am=${amount}&tr=${orderId}&cu=INR`;
         const qrCodeUrl = await QRCode.toDataURL(upiString);
         const checkoutUrl = `${req.protocol}://${req.get('host')}/index.html?orderId=${orderId}&amount=${amount}`;
 
@@ -77,7 +77,7 @@ app.post('/api/create-payment', async (req, res) => {
     }
 });
 
-// 2. Check Payment Status API (Direct Order ID Search via IMAP)
+// 2. Check Payment Status API
 app.get('/api/check-status/:orderId', async (req, res) => {
     const { orderId } = req.params;
     try {
@@ -135,7 +135,7 @@ app.get('/api/admin/health', async (req, res) => {
     });
 });
 
-// --- CORE FUNCTION: Direct Order ID Search & Fixed Parser ---
+// --- CORE FUNCTION: Direct Order ID Search & Parser ---
 async function verifyAndUpdatePendingPayments() {
     let connection;
     try {
@@ -147,7 +147,6 @@ async function verifyAndUpdatePendingPayments() {
 
         for (let payment of pendingPayments) {
             const searchCriteria = [['TEXT', payment.orderId]];
-            // bodies: [''] का उपयोग किया गया है ताकि पूरा ईमेल सोर्स मिल सके बिना किसी findParts एरर के
             const fetchOptions = { bodies: [''], markSeen: true };
 
             let messages = [];
@@ -161,9 +160,7 @@ async function verifyAndUpdatePendingPayments() {
                 for (const item of messages) {
                     let rawData = '';
                     for (const part of item.parts) {
-                        if (part.body) {
-                            rawData += part.body;
-                        }
+                        if (part.body) rawData += part.body;
                     }
 
                     const mail = await simpleParser(rawData);
@@ -197,6 +194,11 @@ const server = app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
     startAntiSleepPing(PORT);
 });
+
+// --- BACKGROUND WORKER (Auto-check pending payments every 15 seconds) ---
+setInterval(() => {
+    verifyAndUpdatePendingPayments();
+}, 15000);
 
 // --- ANTI-SLEEP / AUTO-PING SYSTEM ---
 function startAntiSleepPing(port) {
