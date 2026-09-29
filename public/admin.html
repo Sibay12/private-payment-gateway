@@ -2,38 +2,139 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - UPI Gateway</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #f4f7f6; margin: 0; padding: 20px; }
-        .container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
-        th { background: #007bff; color: white; }
-        .success { color: green; font-weight: bold; }
-        .pending { color: orange; font-weight: bold; }
+        :root {
+            --primary: #4f46e5;
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 30px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+        .header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        h2 { margin: 0; color: var(--text-main); }
+        .timer-clock { font-size: 14px; font-weight: 600; color: var(--text-muted); background: #f8fafc; padding: 6px 12px; border-radius: 6px; border: 1px solid #e2e8f0; }
+        
+        .health-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 20px;
+            align-items: center;
+        }
+        .health-info p { margin: 6px 0; font-size: 14px; }
+        .status-box { font-weight: 600; padding: 3px 10px; border-radius: 20px; font-size: 12px; display: inline-block; }
+        .connected { background: #dcfce7; color: #166534; }
+        .disconnected { background: #fee2e2; color: #991b1b; }
+        
+        .btn-refresh {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        .btn-refresh:hover { background: #4338ca; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 14px; border-bottom: 1px solid #e2e8f0; text-align: left; font-size: 14px; }
+        th { background: #f8fafc; color: var(--text-muted); font-weight: 600; }
+        .success { color: #16a34a; font-weight: 600; }
+        .pending { color: #d97706; font-weight: 600; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Admin Dashboard - Transactions</h2>
-        <p><strong>UPI ID:</strong> paytm.s2ujlw0@pty</p>
-        <p><strong>API Key:</strong> <code>sibaditya_secure_api_key_2026</code></p>
+        <div class="header-flex">
+            <h2>Admin Dashboard</h2>
+            <div class="timer-clock" id="liveClock">--:--:--</div>
+        </div>
+        
+        <!-- System Health Section -->
+        <div class="health-card">
+            <div class="health-info">
+                <strong>System Connection Status:</strong>
+                <p>Database (MongoDB): <span id="dbStatus" class="status-box">Checking...</span></p>
+                <p>Gmail (IMAP): <span id="imapStatus" class="status-box">Checking...</span></p>
+            </div>
+            <div>
+                <button class="btn-refresh" onclick="checkSystemHealth()">Refresh Status</button>
+            </div>
+        </div>
+
+        <p style="font-size: 14px; color: var(--text-muted);"><strong>UPI ID:</strong> paytm.s2ujlw0@pty | <strong>Monitored Gmail:</strong> sibadityapal7@gmail.com</p>
+
+        <h3 style="margin-top: 30px;">Recent Transactions</h3>
         <table>
             <thead>
                 <tr>
                     <th>Order ID</th>
                     <th>Amount</th>
                     <th>Status</th>
-                    <th>Date</th>
+                    <th>Date & Time</th>
                 </tr>
             </thead>
             <tbody id="txTable">
-                <tr><td colspan="4" style="text-align:center;">Loading...</td></tr>
+                <tr><td colspan="4" style="text-align:center; color: var(--text-muted);">Loading transactions...</td></tr>
             </tbody>
         </table>
     </div>
 
     <script>
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('liveClock').innerText = now.toLocaleTimeString();
+        }, 1000);
+
+        async function checkSystemHealth() {
+            try {
+                const res = await fetch('/api/admin/health');
+                const data = await res.json();
+                if(data.success) {
+                    const dbEl = document.getElementById('dbStatus');
+                    dbEl.innerText = data.database;
+                    dbEl.className = data.database === 'Connected' ? 'status-box connected' : 'status-box disconnected';
+
+                    const imapEl = document.getElementById('imapStatus');
+                    imapEl.innerText = data.gmailImap;
+                    imapEl.className = data.gmailImap.includes('Connected') ? 'status-box connected' : 'status-box disconnected';
+                }
+            } catch(e) {
+                console.error("Health check failed", e);
+            }
+        }
+
         async function fetchTransactions() {
             try {
                 const res = await fetch('/api/admin/transactions');
@@ -41,19 +142,27 @@
                 if(data.success) {
                     const tbody = document.getElementById('txTable');
                     tbody.innerHTML = '';
+                    if(data.payments.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color: var(--text-muted);">No transactions found</td></tr>';
+                        return;
+                    }
                     data.payments.forEach(tx => {
                         tbody.innerHTML += `<tr>
-                            <td>${tx.orderId}</td>
+                            <td><strong>${tx.orderId}</strong></td>
                             <td>₹${tx.amount}</td>
-                            <td class="${tx.status.toLowerCase()}">${tx.status}</td>
+                            <td><span class="${tx.status.toLowerCase()}">${tx.status}</span></td>
                             <td>${new Date(tx.createdAt).toLocaleString()}</td>
                         </tr>`;
                     });
                 }
             } catch(e) { console.error(e); }
         }
+
+        checkSystemHealth();
         fetchTransactions();
+
         setInterval(fetchTransactions, 5000);
+        setInterval(checkSystemHealth, 15000);
     </script>
 </body>
 </html>
