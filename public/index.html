@@ -2,24 +2,128 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>UPI Payment Gateway - Checkout</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure UPI Checkout</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; width: 350px; }
-        img { width: 200px; height: 200px; margin: 15px 0; }
-        .success { color: green; font-weight: bold; }
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --success: #16a34a;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .checkout-card {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 400px;
+            padding: 35px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            box-sizing: border-box;
+        }
+        h2 {
+            margin-top: 0;
+            color: var(--text-main);
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .order-details {
+            background: #f1f5f9;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 14px;
+            text-align: left;
+        }
+        .order-details div {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+        .order-details div:last-child {
+            margin-bottom: 0;
+        }
+        .qr-box {
+            background: #ffffff;
+            border: 2px dashed #cbd5e1;
+            padding: 15px;
+            border-radius: 12px;
+            display: inline-block;
+            margin: 10px 0;
+        }
+        img {
+            width: 210px;
+            height: 210px;
+            display: block;
+        }
+        .timer {
+            font-size: 15px;
+            color: #e11d48;
+            font-weight: 600;
+            margin: 15px 0;
+            background: #fff1f2;
+            padding: 8px;
+            border-radius: 6px;
+        }
+        .status {
+            font-weight: 600;
+            margin: 15px 0;
+            font-size: 15px;
+            color: #d97706;
+        }
+        .success {
+            color: var(--success) !important;
+        }
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            width: 100%;
+            transition: background 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            background: var(--primary-hover);
+        }
     </style>
 </head>
 <body>
-    <div class="card">
+    <div class="checkout-card">
         <h2>Complete Payment</h2>
-        <p>Order ID: <span id="displayOrderId"></span></p>
-        <p>Amount: ₹<span id="displayAmount"></span></p>
-        <div id="qr-container">
-            <img id="qrCodeImg" src="" alt="Loading QR...">
-            <p>Scan & Pay using any UPI App</p>
+        <p style="color: var(--text-muted); font-size: 14px; margin-top: -5px;">Scan QR code with any UPI app</p>
+        
+        <div class="order-details">
+            <div><span>Order ID:</span> <strong id="displayOrderId">--</strong></div>
+            <div><span>Amount:</span> <strong id="displayAmount">₹--</strong></div>
         </div>
-        <p id="status" style="font-weight: bold; color: orange;">Waiting for payment verification...</p>
+
+        <div class="qr-box">
+            <img id="qrCodeImg" src="" alt="Loading QR...">
+        </div>
+
+        <div class="timer" id="timerDisplay">Time Left: 05:00</div>
+        
+        <div class="status" id="status">Waiting for payment verification...</div>
+        
+        <button class="btn" onclick="manualCheckStatus()">Check Payment Status</button>
     </div>
 
     <script>
@@ -28,7 +132,9 @@
         const amount = urlParams.get('amount') || '10';
 
         document.getElementById('displayOrderId').innerText = orderId;
-        document.getElementById('displayAmount').innerText = amount;
+        document.getElementById('displayAmount').innerText = '₹' + amount;
+
+        let checkInterval;
 
         async function initPayment() {
             try {
@@ -44,6 +150,7 @@
                 if(data.success) {
                     document.getElementById('qrCodeImg').src = data.qrCodeUrl;
                     startPolling(orderId);
+                    startTimer(300);
                 } else {
                     alert('Error: ' + data.message);
                 }
@@ -52,16 +159,64 @@
             }
         }
 
-        function startPolling(oid) {
-            const interval = setInterval(async () => {
+        async function checkStatus(oid) {
+            try {
                 const res = await fetch(`/api/check-status/${oid}`);
                 const data = await res.json();
                 if(data.status === 'SUCCESS') {
-                    clearInterval(interval);
-                    document.getElementById('status').innerHTML = '<span class="success">Payment Successful! Verified.</span>';
-                    setTimeout(() => { alert('Payment Verified Successfully!'); }, 1000);
+                    clearInterval(checkInterval);
+                    const statusEl = document.getElementById('status');
+                    statusEl.innerText = 'Payment Successful & Verified!';
+                    statusEl.className = 'status success';
+                    document.getElementById('timerDisplay').style.display = 'none';
+                    setTimeout(() => { 
+                        alert('Payment Verified Successfully!'); 
+                    }, 500);
+                    return true;
                 }
+                return false;
+            } catch (e) {
+                console.error(e);
+                return false;
+            }
+        }
+
+        function startPolling(oid) {
+            checkInterval = setInterval(async () => {
+                await checkStatus(oid);
             }, 4000);
+        }
+
+        async function manualCheckStatus() {
+            const statusText = document.getElementById('status');
+            statusText.innerText = "Checking status with server...";
+            const success = await checkStatus(orderId);
+            if (!success) {
+                statusText.innerText = "Still Pending. Please complete the payment.";
+                statusText.style.color = "#d97706";
+            }
+        }
+
+        function startTimer(duration) {
+            let timer = duration, minutes, seconds;
+            const display = document.getElementById('timerDisplay');
+            const countdown = setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.innerText = "Time Left: " + minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    clearInterval(countdown);
+                    clearInterval(checkInterval);
+                    display.innerText = "QR Code Expired!";
+                    document.getElementById('status').innerText = "Session Expired. Refresh page.";
+                    document.getElementById('status').style.color = "#e11d48";
+                }
+            }, 1000);
         }
 
         initPayment();
