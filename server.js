@@ -29,15 +29,19 @@ const Payment = mongoose.model('Payment', paymentSchema);
 const BUSINESS_UPI = 'paytm.s2ujlw0@pty';
 const API_SECRET_KEY = 'sibaditya_secure_api_key_2026';
 
-// IMAP Config
+// IMAP Config (Updated with your brand new App Password)
 const imapConfig = {
     imap: {
         user: 'sibadityapal7@gmail.com',
-        password: 'qkrxjnnmwzynsjvo',
+        password: 'qkrxjnnmwzynsjvo', // आपका नया ऐप पासवर्ड (बिना स्पेस के)
         host: 'imap.gmail.com',
         port: 993,
         tls: true,
-        authTimeout: 10000
+        authTimeout: 25000,
+        tlsOptions: { 
+            rejectUnauthorized: false,
+            servername: 'imap.gmail.com'
+        }
     }
 };
 
