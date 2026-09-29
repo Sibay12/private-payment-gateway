@@ -3,223 +3,269 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure UPI Checkout</title>
+    <title>Secure UPI Checkout - Tekna Technologies</title>
     <style>
         :root {
             --primary: #4f46e5;
-            --primary-hover: #4338ca;
-            --success: #16a34a;
-            --bg-color: #f8fafc;
+            --primary-dark: #4338ca;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --bg-gradient: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
             --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
         }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--bg-color);
-            color: var(--text-main);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg-gradient);
+            margin: 0;
+            padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
+            color: var(--text-main);
         }
         .checkout-card {
             background: var(--card-bg);
-            width: 100%;
-            max-width: 400px;
-            padding: 35px;
+            padding: 35px 30px;
             border-radius: 16px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
             text-align: center;
+            max-width: 420px;
+            width: 100%;
             box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+        }
+        .badge-secure {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #ecfdf5;
+            color: #065f46;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            border: 1px solid #a7f3d0;
         }
         h2 {
-            margin-top: 0;
+            margin: 0 0 5px 0;
+            font-size: 22px;
             color: var(--text-main);
-            font-size: 24px;
-            font-weight: 600;
         }
-        .order-details {
-            background: #f1f5f9;
+        .order-id {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+        .amount-box {
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
             padding: 12px;
-            border-radius: 8px;
-            margin: 20px 0;
-            font-size: 14px;
-            text-align: left;
+            border-radius: 10px;
+            margin-bottom: 20px;
         }
-        .order-details div {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 6px;
+        .amount-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        .order-details div:last-child {
-            margin-bottom: 0;
+        .amount-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-top: 2px;
         }
-        .qr-box {
-            background: #ffffff;
-            border: 2px dashed #cbd5e1;
-            padding: 15px;
+        .qr-container {
+            background: #fff;
+            padding: 12px;
             border-radius: 12px;
+            border: 1px solid #e2e8f0;
             display: inline-block;
-            margin: 10px 0;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
-        img {
-            width: 210px;
-            height: 210px;
+        #qrCode {
+            width: 190px;
+            height: 190px;
             display: block;
         }
-        .timer {
-            font-size: 15px;
-            color: #e11d48;
-            font-weight: 600;
-            margin: 15px 0;
-            background: #fff1f2;
-            padding: 8px;
-            border-radius: 6px;
+        .instruction {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 15px;
         }
-        .status {
-            font-weight: 600;
-            margin: 15px 0;
-            font-size: 15px;
-            color: #d97706;
+        .app-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
         }
-        .success {
-            color: var(--success) !important;
-        }
-        .btn {
+        .upi-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px;
             background: var(--primary);
             color: white;
-            border: none;
-            padding: 12px 20px;
+            text-decoration: none;
             border-radius: 8px;
-            cursor: pointer;
-            font-size: 15px;
             font-weight: 600;
-            width: 100%;
-            transition: background 0.2s;
-            margin-top: 10px;
+            font-size: 14px;
+            transition: background 0.2s, transform 0.1s;
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
         }
-        .btn:hover {
-            background: var(--primary-hover);
+        .upi-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+        .status-box {
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .status-pending {
+            background: #fffbeb;
+            color: #b45309;
+            border: 1px solid #fde68a;
+        }
+        .status-success {
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+        }
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #b45309;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .footer-credit {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #e5e7eb;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .footer-credit a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .footer-credit a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
+
     <div class="checkout-card">
-        <h2>Complete Payment</h2>
-        <p style="color: var(--text-muted); font-size: 14px; margin-top: -5px;">Scan QR code with any UPI app</p>
-        
-        <div class="order-details">
-            <div><span>Order ID:</span> <strong id="displayOrderId">--</strong></div>
-            <div><span>Amount:</span> <strong id="displayAmount">₹--</strong></div>
+        <!-- Security Badge -->
+        <div class="badge-secure">
+            🔒 256-Bit Secure Encrypted Checkout
         </div>
 
-        <div class="qr-box">
-            <img id="qrCodeImg" src="" alt="Loading QR...">
+        <h2>Secure UPI Payment</h2>
+        <div class="order-id" id="orderIdText">Loading Order...</div>
+
+        <div class="amount-box">
+            <div class="amount-label">Total Payable Amount</div>
+            <div class="amount-value" id="displayAmount">₹0.00</div>
         </div>
 
-        <div class="timer" id="timerDisplay">Time Left: 05:00</div>
-        
-        <div class="status" id="status">Waiting for payment verification...</div>
-        
-        <button class="btn" onclick="manualCheckStatus()">Check Payment Status</button>
+        <div>
+            <div class="qr-container">
+                <img id="qrCode" src="" alt="UPI QR Code">
+            </div>
+        </div>
+
+        <div class="instruction">Scan QR with any UPI App or click below to pay instantly:</div>
+
+        <!-- Direct UPI App Button -->
+        <div class="app-buttons" id="appButtonsContainer" style="display:none;">
+            <a id="upiIntentBtn" href="#" class="upi-btn">⚡ Pay via UPI App</a>
+        </div>
+
+        <!-- Status Box -->
+        <div class="status-box status-pending" id="paymentStatusBox">
+            <div class="spinner" id="statusSpinner"></div>
+            <span id="paymentStatusText">Waiting for payment...</span>
+        </div>
+
+        <!-- Footer Branding -->
+        <div class="footer-credit">
+            Created by Sibaditya Pal from <a href="https://www.tekna.online" target="_blank">Tekna Technologies</a>
+        </div>
     </div>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        const orderId = urlParams.get('orderId') || 'TEST_' + Date.now();
-        const amount = urlParams.get('amount') || '10';
+        const orderId = urlParams.get('orderId');
+        const amount = urlParams.get('amount');
 
-        document.getElementById('displayOrderId').innerText = orderId;
-        document.getElementById('displayAmount').innerText = '₹' + amount;
+        if (!orderId || !amount) {
+            document.querySelector('.checkout-card').innerHTML = '<h3 style="color:red;">Error</h3><p>Invalid or missing payment parameters.</p>';
+        } else {
+            document.getElementById('orderIdText').innerHTML = `Order ID: <b>${orderId}</b>`;
+            document.getElementById('displayAmount').innerHTML = `₹${Number(amount).toFixed(2)}`;
 
-        let checkInterval;
+            // Create Payment & Get QR
+            fetch('/api/create-payment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-api-key': 'sibaditya_secure_api_key_2026'
+                },
+                body: JSON.stringify({ amount: Number(amount), orderId: orderId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('qrCode').src = data.qrCodeUrl;
+                    
+                    // UPI Intent link
+                    const upiString = `upi://pay?pa=paytm.s2ujlw0@pty&pn=TeknaTechnologies&am=${amount}&tr=${orderId}&cu=INR`;
+                    const upiBtn = document.getElementById('upiIntentBtn');
+                    upiBtn.href = upiString;
+                    document.getElementById('appButtonsContainer').style.display = 'flex';
+                }
+            });
 
-        async function initPayment() {
-            try {
-                const res = await fetch('/api/create-payment', {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'x-api-key': 'sibaditya_secure_api_key_2026'
-                    },
-                    body: JSON.stringify({ amount: Number(amount), orderId })
+            // Poll Status Every 4 seconds
+            const checkInterval = setInterval(() => {
+                fetch(`/api/check-status/${orderId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success && data.status === 'SUCCESS') {
+                        const statusBox = document.getElementById('paymentStatusBox');
+                        statusBox.className = 'status-box status-success';
+                        document.getElementById('statusSpinner').style.display = 'none';
+                        document.getElementById('paymentStatusText').innerHTML = '✅ Payment Successful! Verified.';
+                        clearInterval(checkInterval);
+                        
+                        setTimeout(() => {
+                            // Optional redirection or success action
+                        }, 2000);
+                    }
                 });
-                const data = await res.json();
-                if(data.success) {
-                    document.getElementById('qrCodeImg').src = data.qrCodeUrl;
-                    startPolling(orderId);
-                    startTimer(300);
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            } catch (err) {
-                alert('Server connection error');
-            }
-        }
-
-        async function checkStatus(oid) {
-            try {
-                const res = await fetch(`/api/check-status/${oid}`);
-                const data = await res.json();
-                if(data.status === 'SUCCESS') {
-                    clearInterval(checkInterval);
-                    const statusEl = document.getElementById('status');
-                    statusEl.innerText = 'Payment Successful & Verified!';
-                    statusEl.className = 'status success';
-                    document.getElementById('timerDisplay').style.display = 'none';
-                    setTimeout(() => { 
-                        alert('Payment Verified Successfully!'); 
-                    }, 500);
-                    return true;
-                }
-                return false;
-            } catch (e) {
-                console.error(e);
-                return false;
-            }
-        }
-
-        function startPolling(oid) {
-            checkInterval = setInterval(async () => {
-                await checkStatus(oid);
             }, 4000);
         }
-
-        async function manualCheckStatus() {
-            const statusText = document.getElementById('status');
-            statusText.innerText = "Checking status with server...";
-            const success = await checkStatus(orderId);
-            if (!success) {
-                statusText.innerText = "Still Pending. Please complete the payment.";
-                statusText.style.color = "#d97706";
-            }
-        }
-
-        function startTimer(duration) {
-            let timer = duration, minutes, seconds;
-            const display = document.getElementById('timerDisplay');
-            const countdown = setInterval(function () {
-                minutes = parseInt(timer / 60, 10);
-                seconds = parseInt(timer % 60, 10);
-
-                minutes = minutes < 10 ? "0" + minutes : minutes;
-                seconds = seconds < 10 ? "0" + seconds : seconds;
-
-                display.innerText = "Time Left: " + minutes + ":" + seconds;
-
-                if (--timer < 0) {
-                    clearInterval(countdown);
-                    clearInterval(checkInterval);
-                    display.innerText = "QR Code Expired!";
-                    document.getElementById('status').innerText = "Session Expired. Refresh page.";
-                    document.getElementById('status').style.color = "#e11d48";
-                }
-            }, 1000);
-        }
-
-        initPayment();
     </script>
 </body>
 </html>
