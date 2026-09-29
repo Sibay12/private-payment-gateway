@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UPI Payment Gateway - Checkout</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; width: 350px; }
+        img { width: 200px; height: 200px; margin: 15px 0; }
+        .success { color: green; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Complete Payment</h2>
+        <p>Order ID: <span id="displayOrderId"></span></p>
+        <p>Amount: ₹<span id="displayAmount"></span></p>
+        <div id="qr-container">
+            <img id="qrCodeImg" src="" alt="Loading QR...">
+            <p>Scan & Pay using any UPI App</p>
+        </div>
+        <p id="status" style="font-weight: bold; color: orange;">Waiting for payment verification...</p>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get('orderId') || 'TEST_' + Date.now();
+        const amount = urlParams.get('amount') || '10';
+
+        document.getElementById('displayOrderId').innerText = orderId;
+        document.getElementById('displayAmount').innerText = amount;
+
+        async function initPayment() {
+            try {
+                const res = await fetch('/api/create-payment', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'x-api-key': 'sibaditya_secure_api_key_2026'
+                    },
+                    body: JSON.stringify({ amount: Number(amount), orderId })
+                });
+                const data = await res.json();
+                if(data.success) {
+                    document.getElementById('qrCodeImg').src = data.qrCodeUrl;
+                    startPolling(orderId);
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (err) {
+                alert('Server connection error');
+            }
+        }
+
+        function startPolling(oid) {
+            const interval = setInterval(async () => {
+                const res = await fetch(`/api/check-status/${oid}`);
+                const data = await res.json();
+                if(data.status === 'SUCCESS') {
+                    clearInterval(interval);
+                    document.getElementById('status').innerHTML = '<span class="success">Payment Successful! Verified.</span>';
+                    setTimeout(() => { alert('Payment Verified Successfully!'); }, 1000);
+                }
+            }, 4000);
+        }
+
+        initPayment();
+    </script>
+</body>
+</html>
