@@ -135,20 +135,20 @@ app.get('/api/admin/health', async (req, res) => {
     });
 });
 
-// --- CORE FUNCTION: Direct Order ID Search via IMAP ---
+// --- CORE FUNCTION: Direct Order ID Search & Fixed Parser ---
 async function verifyAndUpdatePendingPayments() {
     let connection;
     try {
         const pendingPayments = await Payment.find({ status: 'PENDING' });
-        if (pendingPayments.length === 0) return; // अगर कोई पेंडिंग आर्डर नहीं है तो IMAP कनेक्ट नहीं करेगा
+        if (pendingPayments.length === 0) return;
 
         connection = await imap.connect(imapConfig);
         await connection.openBox('INBOX');
 
         for (let payment of pendingPayments) {
-            // सीधे जीमेल सर्वर पर ऑर्डर आईडी से सर्च करेगा
             const searchCriteria = [['TEXT', payment.orderId]];
-            const fetchOptions = { bodies: ['TEXT'], markSeen: true };
+            // bodies: [''] का उपयोग किया गया है ताकि पूरा ईमेल सोर्स मिल सके बिना किसी findParts एरर के
+            const fetchOptions = { bodies: [''], markSeen: true };
 
             let messages = [];
             try {
@@ -159,20 +159,23 @@ async function verifyAndUpdatePendingPayments() {
 
             if (messages && messages.length > 0) {
                 for (const item of messages) {
-                    const allParts = imap.findParts(item.parts, 'TEXT');
-                    for (const part of allParts) {
-                        const mail = await simpleParser(item.parts[part.bodyID]);
-                        const bodyText = (mail.text || mail.html || '').toLowerCase();
-                        const fromAddress = (mail.from ? mail.from.text : '').toLowerCase();
-
-                        const cleanAmount = payment.amount.toString().trim();
-
-                        // जांचें कि मेल पेटीएम से आया है और उसमें सही अमाउंट मौजूद है
-                        if (fromAddress.includes('paytm.com') && bodyText.includes(cleanAmount)) {
-                            payment.status = 'SUCCESS';
-                            await payment.save();
-                            console.log(`[Payment Verified] Order ID: ${payment.orderId} marked as SUCCESS.`);
+                    let rawData = '';
+                    for (const part of item.parts) {
+                        if (part.body) {
+                            rawData += part.body;
                         }
+                    }
+
+                    const mail = await simpleParser(rawData);
+                    const bodyText = (mail.text || mail.html || '').toLowerCase();
+                    const fromAddress = (mail.from ? mail.from.text : '').toLowerCase();
+
+                    const cleanAmount = payment.amount.toString().trim();
+
+                    if (fromAddress.includes('paytm.com') && bodyText.includes(cleanAmount)) {
+                        payment.status = 'SUCCESS';
+                        await payment.save();
+                        console.log(`[Payment Verified] Order ID: ${payment.orderId} marked as SUCCESS.`);
                     }
                 }
             }
@@ -197,14 +200,10 @@ const server = app.listen(PORT, () => {
 
 // --- ANTI-SLEEP / AUTO-PING SYSTEM ---
 function startAntiSleepPing(port) {
-    const INTERVAL_TIME = 4 * 60 * 1000; // हर 4 मिनट में खुद को पिंग करेगा ताकि रेंडर स्लीप न हो
+    const INTERVAL_TIME = 4 * 60 * 1000;
     
     setInterval(() => {
         const url = `http://127.0.0.1:${port}/api/admin/health`;
-        http.get(url, (res) => {
-            // पिंग एक्टिविटी
-        }).on('error', (err) => {
-            // इग्नोर एरर
-        });
+        http.get(url, (res) => {}).on('error', (err) => {});
     }, INTERVAL_TIME);
 }
