@@ -21,27 +21,38 @@ mongoose.connect(MONGO_URI, {
 const paymentSchema = new mongoose.Schema({
     orderId: { type: String, unique: true, required: true },
     amount: { type: Number, required: true },
-    status: { type: String, default: 'PENDING' }, // PENDING, SUCCESS
+    status: { type: String, default: 'PENDING' },
     createdAt: { type: Date, default: Date.now }
 });
 const Payment = mongoose.model('Payment', paymentSchema);
 
-// Business Details & API Secret Key
 const BUSINESS_UPI = 'paytm.s2ujlw0@pty';
-const API_SECRET_KEY = 'sibaditya_secure_api_key_2026'; // इसे अपनी मर्जी से बदल भी सकते हैं
+const API_SECRET_KEY = 'sibaditya_secure_api_key_2026';
+
+// IMAP Config
+const imapConfig = {
+    imap: {
+        user: 'sibadityapal7@gmail.com',
+        password: 'tvlxcmlwcrweghaf',
+        host: 'imap.gmail.com',
+        port: 993,
+        tls: true,
+        authTimeout: 10000
+    }
+};
 
 // --- API ROUTES ---
 
-// 1. Create Payment API (Telegram Bot & Other Sites will call this)
+// 1. Create Payment API
 app.post('/api/create-payment', async (req, res) => {
     const clientApiKey = req.headers['x-api-key'] || req.query.apiKey;
     if (!clientApiKey || clientApiKey !== API_SECRET_KEY) {
-        return res.status(401).json({ success: false, message: 'Unauthorized: Invalid or missing API Key' });
+        return res.status(401).json({ success: false, message: 'Unauthorized API Key' });
     }
 
     const { amount, orderId } = req.body;
     if (!amount || !orderId) {
-        return res.status(400).json({ success: false, message: 'Amount and orderId are required' });
+        return res.status(400).json({ success: false, message: 'Amount and orderId required' });
     }
 
     try {
@@ -53,18 +64,15 @@ app.post('/api/create-payment', async (req, res) => {
 
         const upiString = `upi://pay?pa=${BUSINESS_UPI}&pn=TelegramBotGateway&am=${amount}&tr=${orderId}&cu=INR`;
         const qrCodeUrl = await QRCode.toDataURL(upiString);
-        
-        // Checkout page URL for direct user redirection if needed
         const checkoutUrl = `${req.protocol}://${req.get('host')}/index.html?orderId=${orderId}&amount=${amount}`;
 
         res.json({ success: true, orderId, amount, qrCodeUrl, checkoutUrl });
     } catch (error) {
-        console.error('Create Payment Error:', error);
         res.status(500).json({ success: false, message: 'Internal server error' });
     }
 });
 
-// 2. Check Payment Status API (For Polling by Telegram Bot or Checkout Page)
+// 2. Check Payment Status API (IMAP Email Scanner)
 app.get('/api/check-status/:orderId', async (req, res) => {
     const { orderId } = req.params;
     try {
@@ -81,7 +89,6 @@ app.get('/api/check-status/:orderId', async (req, res) => {
 
         res.json({ success: true, status: payment.status, amount: payment.amount, orderId: payment.orderId });
     } catch (error) {
-        console.error('Status Check Error:', error);
         res.status(500).json({ success: false, message: 'Error checking status' });
     }
 });
@@ -96,33 +103,51 @@ app.get('/api/admin/transactions', async (req, res) => {
     }
 });
 
-// --- IMAP GMAIL VERIFICATION FUNCTION ---
-async function checkPaytmEmail(targetAmount, orderId) {
-    const config = {
-        imap: {
-            user: 'sibadityapal7@gmail.com',
-            password: 'tvlxcmlwcrweghaf', // आपका जीमेल ऐप पासवर्ड
-            host: 'imap.gmail.com',
-            port: 993,
-            tls: true,
-            authTimeout: 10000
-        }
-    };
+// 4. System Health & Connection Status API (New)
+app.get('/api/admin/health', async (req, res) => {
+    let dbStatus = mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected';
+    let imapStatus = 'Connected & Working';
+    let imapError = null;
 
     try {
-        const connection = await imap.connect(config);
+        const connection = await imap.connect(imapConfig);
+        await connection.openBox('INBOX');
+        connection.end();
+    } catch (err) {
+        imapStatus = 'Failed / Authentication Error';
+        imapError = err.message;
+    }
+
+    res.json({
+        success: true,
+        database: dbStatus,
+        gmailImap: imapStatus,
+        errorDetails: imapError,
+        timestamp: new Date().toLocaleString()
+    });
+});
+
+// --- IMAP GMAIL VERIFICATION FUNCTION (Improved to check recent messages if UNSEEN fails) ---
+async function checkPaytmEmail(targetAmount, orderId) {
+    try {
+        const connection = await imap.connect(imapConfig);
         await connection.openBox('INBOX');
 
-        const searchCriteria = ['UNSEEN', ['SUBJECT', 'Paytm']];
-        const fetchOptions = { bodies: [''], markSeen: true };
+        // Search both UNSEEN and recent ALL messages containing Paytm to avoid miss
+        const searchCriteria = [['SUBJECT', 'Paytm']];
+        const fetchOptions = { bodies: [''], markSeen: false }; // false रखा ताकि ईमेल सीधा रीड न हो जाए, पर चाहें तो true कर सकते हैं
         const messages = await connection.search(searchCriteria, fetchOptions);
 
-        for (const item of messages) {
+        // ताज़ा 15 ईमेल चेक करें
+        const recentMessages = messages.slice(-15);
+
+        for (const item of recentMessages) {
             const allParts = imap.findParts(item.parts, 'BODY');
             for (const part of allParts) {
                 const mail = await simpleParser(item.parts[part.bodyID]);
                 const bodyText = mail.text || mail.html || '';
 
+                // मैचिंग चेक करें
                 if (bodyText.includes(targetAmount.toString()) && bodyText.includes(orderId)) {
                     connection.end();
                     return true;
