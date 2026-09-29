@@ -4,7 +4,7 @@ const QRCode = require('qrcode');
 const imap = require('imap-simple');
 const { simpleParser } = require('mailparser');
 const path = require('path');
-const http = require('http'); // Auto-ping के लिए
+const http = require('http');
 
 const app = express();
 app.use(express.json());
@@ -30,7 +30,7 @@ const Payment = mongoose.model('Payment', paymentSchema);
 const BUSINESS_UPI = 'paytm.s2ujlw0@pty';
 const API_SECRET_KEY = 'sibaditya_secure_api_key_2026';
 
-// IMAP Config (Updated with your App Password & secure settings)
+// IMAP Config (Updated with your App Password & secure TLS settings)
 const imapConfig = {
     imap: {
         user: 'sibadityapal7@gmail.com',
@@ -38,7 +38,7 @@ const imapConfig = {
         host: 'imap.gmail.com',
         port: 993,
         tls: true,
-        authTimeout: 30000,
+        authTimeout: 20000,
         tlsOptions: { 
             rejectUnauthorized: false,
             servername: 'imap.gmail.com'
@@ -136,21 +136,23 @@ app.get('/api/admin/health', async (req, res) => {
     });
 });
 
-// --- IMAP GMAIL VERIFICATION FUNCTION ---
+// --- OPTIMIZED IMAP GMAIL VERIFICATION FUNCTION (Memory Safe) ---
 async function checkPaytmEmail(targetAmount, orderId) {
     let connection;
     try {
         connection = await imap.connect(imapConfig);
         await connection.openBox('INBOX');
 
-        const searchCriteria = [['ALL']];
-        const fetchOptions = { bodies: [''], markSeen: false }; 
+        // केवल Paytm विषय वाले ईमेल खोजें ताकि मेमोरी ओवरलोड न हो
+        const searchCriteria = [['SUBJECT', 'Paytm']];
+        const fetchOptions = { bodies: ['TEXT'], markSeen: false }; 
         const messages = await connection.search(searchCriteria, fetchOptions);
 
-        const recentMessages = messages.slice(-20);
+        // केवल आखिरी के 5 सबसे नए ईमेल चेक करें (मेमोरी बचाने के लिए)
+        const recentMessages = messages.slice(-5);
 
         for (const item of recentMessages) {
-            const allParts = imap.findParts(item.parts, 'BODY');
+            const allParts = imap.findParts(item.parts, 'TEXT');
             for (const part of allParts) {
                 const mail = await simpleParser(item.parts[part.bodyID]);
                 const bodyText = (mail.text || mail.html || '').toLowerCase();
@@ -159,6 +161,7 @@ async function checkPaytmEmail(targetAmount, orderId) {
                 const cleanAmount = targetAmount.toString().trim();
                 const cleanOrderId = orderId.toString().toLowerCase().trim();
 
+                // पीडीएफ के अनुसार अमाउंट और आर्डर आईडी की पुष्टि
                 if ((bodyText.includes(cleanAmount) || subjectText.includes(cleanAmount)) && 
                     bodyText.includes(cleanOrderId)) {
                     
@@ -186,12 +189,12 @@ async function checkPaytmEmail(targetAmount, orderId) {
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
-    startAntiSleepPing(PORT); // एंटी-स्लिप सिस्टम एक्टिवेट करें
+    startAntiSleepPing(PORT);
 });
 
 // --- ANTI-SLEEP / AUTO-PING SYSTEM ---
 function startAntiSleepPing(port) {
-    const INTERVAL_TIME = 4 * 60 * 1000; // हर 4 मिनट में पिंग करेगा (रेंडर 15 मिनट में सोता है)
+    const INTERVAL_TIME = 4 * 60 * 1000; // हर 4 मिनट में खुद को पिंग करेगा
     
     setInterval(() => {
         const url = `http://127.0.0.1:${port}/api/admin/health`;
