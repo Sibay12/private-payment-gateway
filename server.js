@@ -129,7 +129,7 @@ async function checkPaytmEmail(targetAmount, orderId) {
     const config = {
         imap: {
             user: 'sibadityapal7@gmail.com',         // Your Gmail
-            password: 'your-16-digit-app-password', // Google App Password
+            password: 'tvlxcmlwcrweghaf', // Google App Password
             host: 'imap.gmail.com',
             port: 993,
             tls: true,
