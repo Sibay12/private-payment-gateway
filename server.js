@@ -33,7 +33,7 @@ const API_SECRET_KEY = 'sibaditya_secure_api_key_2026';
 const imapConfig = {
     imap: {
         user: 'sibadityapal7@gmail.com',
-        password: 'tvlxcmlwcrweghaf',
+        password: 'qkrxjnnmwzynsjvo',
         host: 'imap.gmail.com',
         port: 993,
         tls: true,
