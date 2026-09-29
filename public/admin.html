@@ -3,166 +3,261 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - UPI Gateway</title>
+    <title>Admin Dashboard - Tekna Technologies</title>
     <style>
         :root {
             --primary: #4f46e5;
-            --bg-color: #f1f5f9;
+            --primary-dark: #4338ca;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg-color: #f8fafc;
             --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border-color: #e2e8f0;
         }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             background: var(--bg-color);
-            color: var(--text-main);
             margin: 0;
-            padding: 30px;
+            padding: 20px;
+            color: var(--text-main);
         }
         .container {
-            max-width: 1000px;
-            margin: auto;
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            max-width: 1100px;
+            margin: 0 auto;
         }
-        .header-flex {
+        header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid #f1f5f9;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
-        h2 { margin: 0; color: var(--text-main); }
-        .timer-clock { font-size: 14px; font-weight: 600; color: var(--text-muted); background: #f8fafc; padding: 6px 12px; border-radius: 6px; border: 1px solid #e2e8f0; }
-        
-        .health-card {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            padding: 20px;
+            background: var(--card-bg);
+            padding: 20px 25px;
             border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
             margin-bottom: 25px;
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 20px;
-            align-items: center;
         }
-        .health-info p { margin: 6px 0; font-size: 14px; }
-        .status-box { font-weight: 600; padding: 3px 10px; border-radius: 20px; font-size: 12px; display: inline-block; }
-        .connected { background: #dcfce7; color: #166534; }
-        .disconnected { background: #fee2e2; color: #991b1b; }
-        
-        .btn-refresh {
+        header h1 {
+            margin: 0;
+            font-size: 22px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn {
             background: var(--primary);
             color: white;
             border: none;
-            padding: 8px 16px;
+            padding: 10px 18px;
             border-radius: 8px;
-            cursor: pointer;
             font-weight: 600;
-            font-size: 14px;
+            cursor: pointer;
             transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
-        .btn-refresh:hover { background: #4338ca; }
-
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { padding: 14px; border-bottom: 1px solid #e2e8f0; text-align: left; font-size: 14px; }
-        th { background: #f8fafc; color: var(--text-muted); font-weight: 600; }
-        .success { color: #16a34a; font-weight: 600; }
-        .pending { color: #d97706; font-weight: 600; }
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        .metric-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--primary);
+        }
+        .metric-card.success { border-left-color: var(--success); }
+        .metric-card.pending { border-left-color: var(--warning); }
+        .metric-title {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .metric-value {
+            font-size: 26px;
+            font-weight: 700;
+            margin-top: 5px;
+            color: var(--text-main);
+        }
+        /* Table Section */
+        .table-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        .table-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .table-header h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        th, td {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+        th {
+            background: #f1f5f9;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+        }
+        tr:hover {
+            background: #f8fafc;
+        }
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+        .badge-success { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+        .badge-pending { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
+
     <div class="container">
-        <div class="header-flex">
-            <h2>Admin Dashboard</h2>
-            <div class="timer-clock" id="liveClock">--:--:--</div>
-        </div>
-        
-        <!-- System Health Section -->
-        <div class="health-card">
-            <div class="health-info">
-                <strong>System Connection Status:</strong>
-                <p>Database (MongoDB): <span id="dbStatus" class="status-box">Checking...</span></p>
-                <p>Gmail (IMAP): <span id="imapStatus" class="status-box">Checking...</span></p>
+        <!-- Header -->
+        <header>
+            <h1>🛡️ Admin Dashboard <span style="font-size: 12px; background: #e0e7ff; color: var(--primary); padding: 4px 8px; border-radius: 6px;">Live Gateway</span></h1>
+            <button class="btn" onclick="loadTransactions()">🔄 Refresh Data</button>
+        </header>
+
+        <!-- Metrics Cards -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-title">Total Transactions</div>
+                <div class="metric-value" id="totalCount">0</div>
             </div>
-            <div>
-                <button class="btn-refresh" onclick="checkSystemHealth()">Refresh Status</button>
+            <div class="metric-card success">
+                <div class="metric-title">Successful Payments</div>
+                <div class="metric-value" id="successCount">0</div>
+            </div>
+            <div class="metric-card pending">
+                <div class="metric-title">Pending Payments</div>
+                <div class="metric-value" id="pendingCount">0</div>
             </div>
         </div>
 
-        <p style="font-size: 14px; color: var(--text-muted);"><strong>UPI ID:</strong> paytm.s2ujlw0@pty | <strong>Monitored Gmail:</strong> sibadityapal7@gmail.com</p>
+        <!-- Transactions Table -->
+        <div class="table-container">
+            <div class="table-header">
+                <h3>Recent Transactions</h3>
+                <span style="font-size: 13px; color: var(--text-muted);" id="lastUpdated">Updating...</span>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Created At</th>
+                    </tr>
+                </thead>
+                <tbody id="transactionTableBody">
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: var(--text-muted);">Loading transactions...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-        <h3 style="margin-top: 30px;">Recent Transactions</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Order ID</th>
-                    <th>Amount</th>
-                    <th>Status</th>
-                    <th>Date & Time</th>
-                </tr>
-            </thead>
-            <tbody id="txTable">
-                <tr><td colspan="4" style="text-align:center; color: var(--text-muted);">Loading transactions...</td></tr>
-            </tbody>
-        </table>
+        <!-- Footer -->
+        <div class="footer">
+            Created by Sibaditya Pal from <a href="https://www.tekna.online" target="_blank">Tekna Technologies</a>
+        </div>
     </div>
 
     <script>
-        setInterval(() => {
-            const now = new Date();
-            document.getElementById('liveClock').innerText = now.toLocaleTimeString();
-        }, 1000);
+        function loadTransactions() {
+            fetch('/api/admin/transactions')
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const payments = data.payments;
+                    let total = payments.length;
+                    let success = payments.filter(p => p.status === 'SUCCESS').length;
+                    let pending = payments.filter(p => p.status === 'PENDING').length;
 
-        async function checkSystemHealth() {
-            try {
-                const res = await fetch('/api/admin/health');
-                const data = await res.json();
-                if(data.success) {
-                    const dbEl = document.getElementById('dbStatus');
-                    dbEl.innerText = data.database;
-                    dbEl.className = data.database === 'Connected' ? 'status-box connected' : 'status-box disconnected';
+                    document.getElementById('totalCount').innerText = total;
+                    document.getElementById('successCount').innerText = success;
+                    document.getElementById('pendingCount').innerText = pending;
+                    document.getElementById('lastUpdated').innerText = `Last synced: ${new Date().toLocaleTimeString()}`;
 
-                    const imapEl = document.getElementById('imapStatus');
-                    imapEl.innerText = data.gmailImap;
-                    imapEl.className = data.gmailImap.includes('Connected') ? 'status-box connected' : 'status-box disconnected';
-                }
-            } catch(e) {
-                console.error("Health check failed", e);
-            }
-        }
-
-        async function fetchTransactions() {
-            try {
-                const res = await fetch('/api/admin/transactions');
-                const data = await res.json();
-                if(data.success) {
-                    const tbody = document.getElementById('txTable');
-                    tbody.innerHTML = '';
-                    if(data.payments.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color: var(--text-muted);">No transactions found</td></tr>';
+                    const tbody = document.getElementById('transactionTableBody');
+                    if (payments.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">No transactions found.</td></tr>`;
                         return;
                     }
-                    data.payments.forEach(tx => {
-                        tbody.innerHTML += `<tr>
-                            <td><strong>${tx.orderId}</strong></td>
-                            <td>₹${tx.amount}</td>
-                            <td><span class="${tx.status.toLowerCase()}">${tx.status}</span></td>
-                            <td>${new Date(tx.createdAt).toLocaleString()}</td>
-                        </tr>`;
+
+                    tbody.innerHTML = '';
+                    payments.forEach(tx => {
+                        const dateStr = new Date(tx.createdAt).toLocaleString();
+                        const badgeClass = tx.status === 'SUCCESS' ? 'badge-success' : 'badge-pending';
+                        
+                        const row = `
+                            <tr>
+                                <td style="font-weight: 600; font-family: monospace;">${tx.orderId}</td>
+                                <td style="font-weight: 700; color: #0f172a;">₹${tx.amount}</td>
+                                <td><span class="status-badge ${badgeClass}">${tx.status}</span></td>
+                                <td style="color: var(--text-muted); font-size: 13px;">${dateStr}</td>
+                            </tr>
+                        `;
+                        tbody.innerHTML += row;
                     });
                 }
-            } catch(e) { console.error(e); }
+            })
+            .catch(err => {
+                console.error('Error loading admin data:', err);
+            });
         }
 
-        checkSystemHealth();
-        fetchTransactions();
-
-        setInterval(fetchTransactions, 5000);
-        setInterval(checkSystemHealth, 15000);
+        // Load on start & auto-refresh every 10 seconds
+        loadTransactions();
+        setInterval(loadTransactions, 10000);
     </script>
 </body>
 </html>
