@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment successful - Takna Technology</title>
+<link rel="stylesheet" href="/gateway.css">
+<script src="/gateway.js"></script>
+</head>
+<body>
+<div class="shell result" id="box">
+  <div class="main">
+    <div id="ringBox"></div>
+    <h2 id="title">Confirming your payment...</h2>
+    <p class="sub" id="sub">Please wait a moment</p>
+    <div class="rows" id="rows" style="display:none">
+      <div><span>Amount paid</span><b id="amt"></b></div>
+      <div><span>Order ID</span><b id="oid"></b></div>
+      <div><span>Status</span><b id="st"></b></div>
+    </div>
+    <div class="stack"><a id="back" class="btn pri" href="#" style="display:none">Return to merchant</a></div>
+    <p class="note" id="note"></p>
+    <div class="foot">Powered by <a href="https://www.takna.online" target="_blank" rel="noopener">Takna Technology</a></div>
+  </div>
+</div>
+<script>
+(function () {
+  var q = new URLSearchParams(location.search);
+  var orderId = q.get('orderId'), redirectUrl = q.get('redirectUrl');
+  var $ = function (id) { return document.getElementById(id); };
+  function ring(cls, path) {
+    $('ringBox').innerHTML = '<svg class="ring ' + cls + '" viewBox="0 0 84 84"><circle cx="42" cy="42" r="36"/><path d="' + path + '"/></svg>';
+  }
+  var host = null;
+  function target(status) { return GW.redirectTarget(redirectUrl, orderId, status, host); }
+  if (!orderId) { $('title').textContent = 'Invalid link'; $('sub').textContent = ''; return; }
+
+  // The page trusts the server, not the URL: it only shows success if the order is really SUCCESS.
+  fetch('/api/order/' + encodeURIComponent(orderId), { cache: 'no-store' })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      if (!d.success) throw new Error(d.message || 'Order not found');
+      host = d.redirectHost || null;
+      if (d.status !== 'SUCCESS') {
+        ring('wa', 'M42 24v22M42 56v1');
+        $('title').textContent = 'Payment not confirmed yet';
+        $('sub').textContent = 'We have not received this payment. If money was deducted, it will be confirmed automatically.';
+        var b = $('back'); b.textContent = 'Go back to payment'; b.href = '/index.html?' + (redirectUrl ? 'redirectUrl=' + encodeURIComponent(redirectUrl) + '&' : '') + 'orderId=' + encodeURIComponent(orderId); b.style.display = 'flex';
+        return;
+      }
+      ring('ok', 'M27 43l10 10 20-22');
+      $('title').textContent = 'Payment successful';
+      $('sub').textContent = 'Thank you! Your payment has been received.';
+      $('amt').textContent = '₹' + Number(d.amount).toFixed(2);
+      $('oid').textContent = d.orderId;
+      $('st').textContent = 'Paid';
+      $('rows').style.display = '';
+      var t = target('SUCCESS');
+      if (t) {
+        var back = $('back'); back.href = t; back.style.display = 'flex';
+        var s = 6;
+        (function tick() {
+          $('note').textContent = 'Returning to the merchant in ' + s + 's';
+          if (s-- <= 0) { location.href = t; return; }
+          setTimeout(tick, 1000);
+        })();
+      }
+    })
+    .catch(function (e) {
+      ring('er', 'M30 30l24 24M54 30L30 54');
+      $('title').textContent = 'Could not verify';
+      $('sub').textContent = e.message;
+    });
+})();
+</script>
+</body>
+</html>

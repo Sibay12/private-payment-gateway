@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Ping & Status - Takna Gateway</title>
+<style>
+:root{--bg:#0b1020;--card:#141b2f;--bd:#243049;--tx:#e6eaf5;--mu:#8b97b5;--pr:#6366f1;--ok:#10b981;--er:#ef4444}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px system-ui,-apple-system,sans-serif;padding:16px}
+.wrap{max-width:640px;margin:0 auto}
+h1{font-size:20px;margin:8px 0 14px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px;margin-bottom:12px}
+.big{display:flex;align-items:center;gap:12px}
+.dot{width:14px;height:14px;border-radius:50%;background:var(--mu);flex:none}
+.dot.ok{background:var(--ok);box-shadow:0 0 0 4px #10b98133;animation:pulse 2s infinite}
+.dot.er{background:var(--er);box-shadow:0 0 0 4px #ef444433}
+@keyframes pulse{50%{box-shadow:0 0 0 8px #10b98111}}
+.big b{font-size:18px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.s small{color:var(--mu);display:block;font-size:12px}
+.s b{font-size:17px}
+code{background:#0b1020;border:1px solid var(--bd);padding:3px 7px;border-radius:6px;font-size:13px;word-break:break-all}
+ol{padding-left:20px;margin:8px 0 0;color:var(--mu);line-height:1.7}
+ol b{color:var(--tx)}
+button{background:var(--pr);color:#fff;border:0;border-radius:8px;padding:9px 14px;font:inherit;font-weight:600;cursor:pointer}
+.mu{color:var(--mu);font-size:13px;margin:6px 0 0}
+.log{max-height:150px;overflow:auto;font:12px monospace;color:var(--mu);margin-top:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🟢 Ping &amp; Status</h1>
+
+  <div class="card">
+    <div class="big"><span class="dot" id="dot"></span><div><b id="state">Checking...</b><div class="mu" id="sub">&nbsp;</div></div></div>
+  </div>
+
+  <div class="card grid">
+    <div class="s"><small>Response time</small><b id="rt">-</b></div>
+    <div class="s"><small>Server uptime</small><b id="up">-</b></div>
+    <div class="s"><small>Database</small><b id="db">-</b></div>
+    <div class="s"><small>Auto self-ping</small><b id="ka">-</b></div>
+    <div class="s"><small>Self pings OK</small><b id="sp">-</b></div>
+    <div class="s"><small>Last external ping</small><b id="ex">-</b></div>
+  </div>
+
+  <div class="card">
+    <b>Server कभी सोए नहीं, इसके लिए (एक बार करें)</b>
+    <ol>
+      <li><b>uptimerobot.com</b> या <b>cron-job.org</b> पर free account बनाएँ</li>
+      <li>नया HTTP monitor बनाएँ, interval <b>5 minute</b></li>
+      <li>URL में यह डालें:<br><code id="pingUrl"></code></li>
+    </ol>
+    <p class="mu">Server खुद को भी हर 4 मिनट में ping करता है, पर एक बार सो जाने पर वह खुद को जगा नहीं सकता, इसलिए बाहर वाला pinger ज़रूरी है। यह पेज खुला रहने पर भी हर 30 सेकंड में ping करता है।</p>
+    <div style="margin-top:10px"><button id="copy">URL कॉपी करें</button></div>
+  </div>
+
+  <div class="card">
+    <b>Ping log</b>
+    <div class="log" id="log"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var url = location.origin + '/healthz';
+  $('pingUrl').textContent = url;
+  $('copy').onclick = function () {
+    if (navigator.clipboard) navigator.clipboard.writeText(url).then(function () { $('copy').textContent = 'कॉपी हो गया ✓'; });
+  };
+
+  function fmtUp(s) {
+    if (s < 60) return s + 's';
+    if (s < 3600) return Math.floor(s / 60) + 'm';
+    return Math.floor(s / 3600) + 'h ' + Math.floor((s % 3600) / 60) + 'm';
+  }
+  function ago(ts) {
+    if (!ts) return 'अभी तक नहीं';
+    var s = Math.round((Date.now() - ts) / 1000);
+    if (s < 60) return s + 's पहले';
+    if (s < 3600) return Math.floor(s / 60) + ' min पहले';
+    return Math.floor(s / 3600) + ' h पहले';
+  }
+  function log(msg) {
+    var l = $('log');
+    var d = document.createElement('div');
+    d.textContent = new Date().toLocaleTimeString() + '  ' + msg;
+    l.insertBefore(d, l.firstChild);
+    while (l.childNodes.length > 40) l.removeChild(l.lastChild);
+  }
+
+  var wasDown = false;
+  function ping() {
+    var t0 = performance.now();
+    var ctrl = new AbortController();
+    var to = setTimeout(function () { ctrl.abort(); }, 60000); // cold start on Render can take ~50s
+    $('sub').textContent = 'Pinging...';
+    fetch('/api/ping?_=' + Date.now(), { cache: 'no-store', signal: ctrl.signal })
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (d) {
+        clearTimeout(to);
+        var ms = Math.round(performance.now() - t0);
+        $('dot').className = 'dot ok';
+        $('state').textContent = 'Server चालू है';
+        $('sub').textContent = wasDown ? 'वापस आ गया ✓' : 'सब ठीक है';
+        wasDown = false;
+        $('rt').textContent = ms + ' ms';
+        $('up').textContent = fmtUp(d.uptimeSec);
+        $('db').textContent = d.db ? 'Connected ✓' : 'Disconnected ✗';
+        $('ka').textContent = d.keepAlive ? 'ON' : 'OFF';
+        $('sp').textContent = d.selfOk + ' / ' + d.selfPings;
+        $('ex').textContent = ago(d.lastExternalHit);
+        log('OK ' + ms + ' ms');
+      })
+      .catch(function (e) {
+        clearTimeout(to);
+        wasDown = true;
+        $('dot').className = 'dot er';
+        $('state').textContent = 'Server जवाब नहीं दे रहा';
+        $('sub').textContent = 'शायद सो रहा है / जाग रहा है, दोबारा कोशिश होगी';
+        log('FAIL ' + e.message);
+      });
+  }
+  ping();
+  setInterval(ping, 30000);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API documentation - Takna Pay</title>
+<link rel="stylesheet" href="/gateway.css">
+<style>
+body{display:block;padding:0;align-items:initial;background:#fff}
+.top{background:var(--navy);color:#fff}.top div{max-width:1100px;margin:0 auto;padding:14px 18px;display:flex;gap:18px;align-items:center}
+.top b{flex:1;font-size:17px}.top a{color:#cfe0ff;text-decoration:none;font-size:14px}.top a:hover{color:#fff}
+.layout{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:210px 1fr;gap:34px;padding:0 18px}
+nav.side2{position:sticky;top:0;align-self:start;padding:24px 0;max-height:100vh;overflow:auto}
+nav.side2 a{display:block;color:var(--mu);text-decoration:none;font-size:14px;padding:6px 10px;border-left:2px solid var(--line)}
+nav.side2 a:hover{color:var(--blue-d);border-color:var(--blue)}
+nav.side2 small{display:block;margin:14px 0 4px 10px;color:var(--mu);font-weight:700;font-size:12px}
+main{padding:26px 0 60px;min-width:0;line-height:1.7;font-size:15px}
+h1{font-size:28px;margin:0 0 8px;letter-spacing:-.4px}
+h2{font-size:21px;margin:42px 0 8px;padding-top:6px;border-top:1px solid var(--line)}
+h3{font-size:16px;margin:22px 0 6px}
+p,li{color:#33445e}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#eef3fb;border-radius:5px;padding:1px 6px;font-size:13px;color:#16315c}
+pre{background:#0d1b33;color:#e6eefc;border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.8px;line-height:1.6;margin:10px 0}
+pre code{background:none;color:inherit;padding:0}
+.ep{display:flex;gap:10px;align-items:center;background:#f3f8ff;border:1px solid #d6e6fb;border-radius:8px;padding:9px 12px;margin:10px 0;font-family:ui-monospace,Menlo,monospace;font-size:13.5px;flex-wrap:wrap}
+.m{font-weight:700;border-radius:5px;padding:2px 8px;font-size:12px;color:#fff;background:var(--ok)}.m.get{background:var(--blue-d)}.m.del{background:var(--er)}
+.tag{font-size:12px;color:var(--mu);margin-left:auto;font-family:system-ui,sans-serif}
+table{border-collapse:collapse;width:100%;margin:10px 0;font-size:14px}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}th{background:#f6f9fe}
+.tw{overflow-x:auto}
+.note{background:var(--wabg);border-left:4px solid #f0a53a;border-radius:6px;padding:10px 14px;margin:12px 0;color:#6a4300;font-size:14px}
+.tip{background:var(--okbg);border-left:4px solid var(--ok);border-radius:6px;padding:10px 14px;margin:12px 0;color:#0b5a33;font-size:14px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:12px 0}
+.cards div{border:1px solid var(--line);border-radius:10px;padding:14px;background:#fbfdff}
+.cards b{display:block;margin-bottom:4px;color:var(--ink)}.cards span{font-size:13.5px;color:var(--mu)}
+.tabs2{display:flex;gap:6px;margin-top:10px}.tb{border:1px solid var(--line);background:#fff;border-radius:8px 8px 0 0;padding:6px 14px;cursor:pointer;font:inherit;font-size:13.5px;color:var(--mu)}
+.tb.on{background:#0d1b33;color:#fff;border-color:#0d1b33}.tabs2+pre{margin-top:0;border-radius:0 10px 10px 10px}
+.foot{border-top:1px solid var(--line);margin-top:40px;padding-top:16px;font-size:13px;color:var(--mu)}
+@media(max-width:820px){.layout{grid-template-columns:1fr;gap:0}nav.side2{position:static;display:flex;flex-wrap:wrap;gap:4px;padding:12px 0;max-height:none}nav.side2 a{border:1px solid var(--line);border-radius:99px}nav.side2 small{display:none}}
+</style>
+</head>
+<body>
+<div class="top"><div><b>Takna Pay developer docs</b><a href="/merchant.html">Register your site</a><a href="/ping.html">Status</a></div></div>
+<div class="layout">
+<nav class="side2">
+  <small>Start</small><a href="#overview">Overview</a><a href="#quickstart">Quick start</a><a href="#auth">Authentication</a>
+  <small>API</small><a href="#create">Create payment</a><a href="#checkout">Checkout and redirect</a><a href="#status">Check status</a><a href="#webhook">Webhooks</a><a href="#statuses">Order statuses</a><a href="#errors">Errors and limits</a>
+  <small>More</small><a href="#merchants">Merchant accounts</a><a href="#plans">Plans and fees</a><a href="#payouts">Payouts</a><a href="#refunds">Refunds</a><a href="#pages">Built-in pages</a><a href="#features">Feature list</a><a href="#selfhost">Self-hosting</a><a href="#changelog">What is new</a>
+</nav>
+<main>
+<h1>UPI payment gateway API</h1>
+<p>Accept UPI payments with a dynamic QR code and a hosted checkout page. Payments are verified automatically from the bank confirmation email, so you never touch card or bank details. Your server creates an order, sends the customer to the checkout, and gets told when it is paid.</p>
+
+<h2 id="overview">Overview</h2>
+<div class="cards">
+  <div><b>1. Create the order</b><span>Your server calls <code>POST /api/create-payment</code> with the amount and your own order ID.</span></div>
+  <div><b>2. Customer pays</b><span>Send them to the returned <code>checkoutUrl</code>. They scan the QR or tap Pay with UPI app.</span></div>
+  <div><b>3. We verify</b><span>The gateway matches the payment confirmation email to the order, usually within seconds.</span></div>
+  <div><b>4. You get told</b><span>A signed webhook reaches your server and the customer returns to your site.</span></div>
+</div>
+<div class="note">Never trust the browser redirect alone. The <code>status=SUCCESS</code> in the return URL can be edited by anyone. Always confirm with the webhook or with <code>GET /api/check-status/:orderId</code> before delivering anything.</div>
+
+<h2 id="quickstart">Quick start</h2>
+<p>You need an API key. If you run this gateway yourself, it is the <code>API_SECRET_KEY</code> you set on the server. If you are using someone else's gateway, <a href="/merchant.html">register here</a> and use the key shown in your dashboard after approval.</p>
+<div class="tabs2" data-g="qs"><button class="tb on" data-t="0">curl</button><button class="tb" data-t="1">Node.js</button><button class="tb" data-t="2">PHP</button><button class="tb" data-t="3">Python</button></div>
+<pre data-g="qs" data-i="0"><code>curl -X POST https://YOUR-GATEWAY/api/create-payment \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"amount": 99, "orderId": "ORDER_1001"}'</code></pre>
+<pre data-g="qs" data-i="1" style="display:none"><code>const r = await fetch('https://YOUR-GATEWAY/api/create-payment', {
+  method: 'POST',
+  headers: { 'x-api-key': process.env.GATEWAY_API_KEY, 'Content-Type': 'application/json' },
+  body: JSON.stringify({ amount: 99, orderId: 'ORDER_1001' })
+});
+const data = await r.json();
+// send the customer to:
+const url = data.checkoutUrl + '&amp;redirectUrl=' + encodeURIComponent('https://yoursite.com/thanks');</code></pre>
+<pre data-g="qs" data-i="2" style="display:none"><code>&lt;?php
+$ch = curl_init('https://YOUR-GATEWAY/api/create-payment');
+curl_setopt_array($ch, [
+  CURLOPT_POST => true, CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_HTTPHEADER => ['x-api-key: ' . getenv('GATEWAY_API_KEY'), 'Content-Type: application/json'],
+  CURLOPT_POSTFIELDS => json_encode(['amount' => 99, 'orderId' => 'ORDER_1001']),
+]);
+$data = json_decode(curl_exec($ch), true);
+header('Location: ' . $data['checkoutUrl'] . '&amp;redirectUrl=' . urlencode('https://yoursite.com/thanks'));</code></pre>
+<pre data-g="qs" data-i="3" style="display:none"><code>import os, requests, urllib.parse
+r = requests.post('https://YOUR-GATEWAY/api/create-payment',
+    headers={'x-api-key': os.environ['GATEWAY_API_KEY']},
+    json={'amount': 99, 'orderId': 'ORDER_1001'}, timeout=15)
+data = r.json()
+url = data['checkoutUrl'] + '&amp;redirectUrl=' + urllib.parse.quote('https://yoursite.com/thanks', safe='')</code></pre>
+
+<h2 id="auth">Authentication</h2>
+<p>Server-to-server calls send your key in the <code>x-api-key</code> header. Keep it on your server only, never in browser code or a mobile app.</p>
+<pre><code>x-api-key: YOUR_API_KEY</code></pre>
+<p>The same key signs the webhooks we send you, so you can prove a webhook really came from the gateway.</p>
+
+<h2 id="create">Create payment</h2>
+<div class="ep"><span class="m">POST</span>/api/create-payment<span class="tag">needs x-api-key</span></div>
+<div class="tw"><table><tr><th>Field</th><th>Type</th><th>Rules</th></tr>
+<tr><td><code>amount</code></td><td>number</td><td>Rupees. Greater than 0, at most 10,00,000.</td></tr>
+<tr><td><code>orderId</code></td><td>string</td><td>Your unique ID. 1 to 100 characters: letters, digits and <code>_ - . :</code></td></tr></table></div>
+<pre><code>{
+  "success": true,
+  "orderId": "ORDER_1001",
+  "amount": 99,
+  "status": "PENDING",
+  "qrCodeUrl": "data:image/png;base64,...",
+  "checkoutUrl": "https://YOUR-GATEWAY/index.html?orderId=ORDER_1001&amp;amount=99"
+}</code></pre>
+<ul>
+<li>Calling it again with the same <code>orderId</code> is safe. The original amount and status are kept, so a paid order can never be reset to pending.</li>
+<li>An <code>orderId</code> already used by another account returns <code>409</code>. Use IDs that are unique to you, such as your database order number.</li>
+<li>The amount shown to the customer always comes from the gateway's record, never from the URL.</li>
+</ul>
+
+<h2 id="checkout">Checkout and redirect</h2>
+<p>Send the customer to <code>checkoutUrl</code> and append <code>&amp;redirectUrl=</code> with your return page, URL-encoded. After the payment they land on our success page, then come back to your <code>redirectUrl</code> with two values added:</p>
+<div class="tw"><table><tr><th>Outcome</th><th>Customer sees</th><th>Your return URL gets</th></tr>
+<tr><td>Paid</td><td><code>/success.html</code></td><td><code>?orderId=...&amp;status=SUCCESS</code></td></tr>
+<tr><td>Cancelled</td><td><code>/cancel.html</code></td><td><code>?orderId=...&amp;status=CANCELLED</code></td></tr></table></div>
+<ul>
+<li>The checkout has a QR code, a Pay with UPI app button on phones, a Check payment status button and a Cancel payment link. It also checks by itself every few seconds.</li>
+<li>Cancelling does not change the order. If the customer pays later, the order still becomes <code>SUCCESS</code>.</li>
+<li>Registered merchants can only be redirected to their own registered website. Other return URLs are ignored.</li>
+<li>If the return URL already has a query string, the values are added correctly.</li>
+</ul>
+
+<h2 id="status">Check status</h2>
+<div class="ep"><span class="m get">GET</span>/api/check-status/:orderId</div>
+<pre><code>{ "success": true, "status": "SUCCESS", "amount": 99, "orderId": "ORDER_1001" }</code></pre>
+<p>If the order is still pending, this call also triggers a fresh look at the mailbox, so it is the quickest way to confirm a payment. Do not call it more than once every few seconds. Limit: 40 requests per minute per IP.</p>
+<div class="ep"><span class="m get">GET</span>/api/order/:orderId</div>
+<p>Public read-only details used by the checkout page: amount, status, QR code and UPI link.</p>
+
+<h2 id="webhook">Webhooks</h2>
+<p>When a payment is verified, the gateway sends a <code>POST</code> to your webhook URL. For registered merchants, set it in your <a href="/merchant.html">dashboard</a> (https only). On a self-hosted gateway it is <code>SITE_WEBHOOK_URL</code>.</p>
+<pre><code>POST https://yoursite.com/api/payment-webhook
+Content-Type: application/json
+x-timestamp: 1767225600000
+x-signature: 9f2c...  (hex)
+
+{ "event": "payment.success", "orderId": "ORDER_1001", "status": "SUCCESS", "amount": 99, "paidAt": "2026-01-01T10:00:00.000Z" }</code></pre>
+<p><b>Verify the signature.</b> It is an HMAC-SHA256 of <code>timestamp + "." + raw body</code>, using your API key, written as hex. Use the raw request body, not re-encoded JSON, and reject old timestamps.</p>
+<div class="tabs2" data-g="wh"><button class="tb on" data-t="0">Node.js</button><button class="tb" data-t="1">PHP</button><button class="tb" data-t="2">Python</button></div>
+<pre data-g="wh" data-i="0"><code>const crypto = require('crypto');
+app.post('/api/payment-webhook', express.raw({ type: 'application/json' }), (req, res) =&gt; {
+  const ts = req.headers['x-timestamp'] || '';
+  const sig = req.headers['x-signature'] || '';
+  const body = req.body.toString();
+  const expected = crypto.createHmac('sha256', process.env.GATEWAY_API_KEY).update(ts + '.' + body).digest('hex');
+  const ok = sig.length === expected.length &amp;&amp; crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(expected));
+  if (!ok || Math.abs(Date.now() - Number(ts)) &gt; 5 * 60 * 1000) return res.sendStatus(401);
+  const e = JSON.parse(body);
+  if (e.status === 'SUCCESS') { /* mark the order paid. Do it only once per orderId. */ }
+  res.sendStatus(200);
+});</code></pre>
+<pre data-g="wh" data-i="1" style="display:none"><code>&lt;?php
+$body = file_get_contents('php://input');
+$ts   = $_SERVER['HTTP_X_TIMESTAMP'] ?? '';
+$sig  = $_SERVER['HTTP_X_SIGNATURE'] ?? '';
+$expected = hash_hmac('sha256', $ts . '.' . $body, getenv('GATEWAY_API_KEY'));
+if (!hash_equals($expected, $sig) || abs(microtime(true) * 1000 - (float)$ts) &gt; 300000) { http_response_code(401); exit; }
+$e = json_decode($body, true);
+if ($e['status'] === 'SUCCESS') { /* mark the order paid, once */ }
+http_response_code(200);</code></pre>
+<pre data-g="wh" data-i="2" style="display:none"><code>import hmac, hashlib, time, os
+from flask import request, abort
+
+@app.post('/api/payment-webhook')
+def webhook():
+    body = request.get_data()
+    ts = request.headers.get('x-timestamp', '')
+    expected = hmac.new(os.environ['GATEWAY_API_KEY'].encode(), ts.encode() + b'.' + body, hashlib.sha256).hexdigest()
+    if not hmac.compare_digest(expected, request.headers.get('x-signature', '')) or abs(time.time() * 1000 - float(ts or 0)) &gt; 300000:
+        abort(401)
+    e = request.get_json()
+    if e['status'] == 'SUCCESS':
+        pass  # mark the order paid, once
+    return '', 200</code></pre>
+<ul>
+<li>Reply with any <code>2xx</code> status to confirm. Anything else counts as not received.</li>
+<li><b>Retries:</b> 3 quick attempts, then the gateway keeps re-sending every minute for 48 hours until you reply 2xx. Your handler must be safe to run twice for the same order.</li>
+<li>Use <b>Send test</b> in your merchant dashboard to try your endpoint. It sends <code>"event": "webhook.test"</code> with <code>"status": "TEST"</code>, which you should ignore.</li>
+<li>Self-hosted main site: the old <code>x-api-key</code> header is still sent as well, so existing integrations keep working.</li>
+</ul>
+
+<h2 id="statuses">Order statuses</h2>
+<div class="tw"><table><tr><th>Status</th><th>Meaning</th></tr>
+<tr><td><code>PENDING</code></td><td>Order created, payment not seen yet. Checked for <code>PENDING_WINDOW_HOURS</code> (24 by default).</td></tr>
+<tr><td><code>SUCCESS</code></td><td>Payment found and the amount matched exactly. Final.</td></tr>
+<tr><td><code>FAILED</code></td><td>Marked failed by the admin.</td></tr></table></div>
+<p>The amount must match exactly. Paying 150 for a 15 order is not accepted as payment of that order.</p>
+
+<h2 id="errors">Errors and limits</h2>
+<div class="tw"><table><tr><th>Code</th><th>When</th></tr>
+<tr><td><code>400</code></td><td>Missing or invalid <code>amount</code> or <code>orderId</code>.</td></tr>
+<tr><td><code>401</code></td><td>Missing or wrong API key.</td></tr>
+<tr><td><code>403</code></td><td>Merchant account is not approved, or is suspended.</td></tr>
+<tr><td><code>404</code></td><td>Order not found.</td></tr>
+<tr><td><code>409</code></td><td><code>orderId</code> already used by someone else.</td></tr>
+<tr><td><code>429</code></td><td>Too many requests. Wait a minute and retry.</td></tr>
+<tr><td><code>500</code></td><td>Server problem. Retry shortly.</td></tr></table></div>
+<p>All errors look like <code>{ "success": false, "message": "..." }</code>. Limits per IP: order lookup 60 per minute, status check 40 per minute, merchant sign-up 5 per hour, merchant login 10 per 15 minutes. Requests larger than 50 KB are rejected.</p>
+
+<h2 id="merchants">Merchant accounts</h2>
+<p>Anyone can ask to use the gateway on their own site. This is how it works:</p>
+<ol>
+<li>Open <a href="/merchant.html">/merchant.html</a> and register with your PAN number, a photo of your PAN card (KYC is required), your business name, email, website and an optional https webhook URL. You receive a private login token, shown once.</li>
+<li>The admin checks your KYC in the admin panel under Merchants and approves or rejects your request. An account cannot be approved without PAN details.</li>
+<li>Log in to the dashboard with your email and token. Once approved, your API key appears there, along with your orders, revenue and a webhook tester.</li>
+<li>Use the key with the API above. Orders you create are yours: only you receive their webhooks.</li>
+</ol>
+<div class="tip">You can regenerate your key from the dashboard at any time. The old key stops working immediately. If you lose your login token, ask the admin for a new one.</div>
+<p>Payments go to the gateway owner's UPI account, as set by the admin. Settlement to merchants is arranged directly with the admin.</p>
+
+<h2 id="plans">Plans and fees</h2>
+<p>Every approved merchant starts on the <b>Free</b> plan. Fees are taken from each successful order and shown per order in the dashboard.</p>
+<div class="tw"><table><tr><th></th><th>Free (default)</th><th>Pro</th></tr>
+<tr><td>Monthly fee</td><td>₹0</td><td>₹499 (30 days)</td></tr>
+<tr><td>Fee per transaction</td><td>5% of the amount</td><td>₹1</td></tr>
+<tr><td>Settlement time</td><td>3 working days</td><td>3 working days</td></tr>
+<tr><td>Payout charge: bank (NEFT)</td><td>1%</td><td>Free</td></tr>
+<tr><td>Payout charge: bank (IMPS)</td><td>1.5%</td><td>0.5%</td></tr>
+<tr><td>Payout charge: UPI</td><td>2%</td><td>Free</td></tr>
+<tr><td>Refund charge</td><td>1% of the refund</td><td>1% of the refund</td></tr></table></div>
+<p>Buy Pro from the dashboard (₹499 is deducted from your available balance) or ask the admin to activate it. When Pro ends, the account returns to Free. A plan change applies to new orders only: each order keeps the fee of the plan it was created under.</p>
+
+<h2 id="payouts">Payouts</h2>
+<ol>
+<li>Money from a successful order is available to withdraw <b>3 working days</b> (Monday to Friday) after payment, minus the plan fee.</li>
+<li>In the dashboard open <b>Request a payout</b>. Pick <b>Bank account (NEFT)</b>, <b>Bank account (IMPS)</b> or <b>UPI</b>. For a bank account enter the holder name, account number and IFSC code. For UPI enter your UPI ID. Minimum amount is ₹100.</li>
+<li>The payout charge (see the table above) is cut from the amount. You receive amount minus charge.</li>
+<li>The admin receives your request, sends the money and enters the <b>UTR number</b>, then accepts it. The request turns PAID and shows the UTR in your payout history.</li>
+<li>If the admin rejects a request, the full amount returns to your available balance.</li></ol>
+<div class="note">Check your account details before submitting. A transfer to wrong details cannot be reversed.</div>
+
+<h2 id="refunds">Refunds</h2>
+<ol>
+<li>In the dashboard use the <b>Refund</b> button next to a paid order, or open <b>Refunds</b> and enter the order ID. Full or partial refunds are possible. Add a reason, and optionally the customer UPI ID.</li>
+<li>The admin refunds the customer from the same payment account and enters the refund UTR. The request turns REFUNDED.</li>
+<li>The payment fee of the order (5% on Free, ₹1 on Pro) is <b>never refunded</b>. It stays cut.</li>
+<li>Every refund has a <b>1% refund charge</b> on the refunded amount, on all plans. It is cut from your available balance.</li>
+<li>From your balance we take refund amount plus refund charge. A pending refund already lowers it; a rejected refund restores everything. Your available balance must cover the charge, and your total balance (including money still settling) must cover the refund.</li></ol>
+
+<h2 id="pages">Built-in pages</h2>
+<div class="tw"><table><tr><th>Page</th><th>Purpose</th></tr>
+<tr><td><code>/index.html</code></td><td>Hosted checkout: QR, UPI app button, check status, cancel</td></tr>
+<tr><td><code>/success.html</code></td><td>Payment successful. Verified on the server, then returns the customer to you</td></tr>
+<tr><td><code>/cancel.html</code></td><td>Payment cancelled or failed, with try again and return options</td></tr>
+<tr><td><code>/merchant.html</code></td><td>Sign up and merchant dashboard</td></tr>
+<tr><td><code>/admin.html</code></td><td>Admin panel: transactions, merchants, health, CSV export</td></tr>
+<tr><td><code>/ping.html</code></td><td>Live status and keep-awake page</td></tr>
+<tr><td><code>/healthz</code> and <code>/api/ping</code></td><td>Light endpoints for uptime monitors</td></tr></table></div>
+
+<h2 id="features">Feature list</h2>
+<div class="cards">
+  <div><b>Automatic verification</b><span>Matches the bank confirmation email to the order. No manual work.</span></div>
+  <div><b>Exact amount matching</b><span>15 never matches 150, 115 or 1,500.</span></div>
+  <div><b>Signed, retried webhooks</b><span>HMAC signature, 3 quick tries, then every minute for 48 hours.</span></div>
+  <div><b>Merchant sign-up</b><span>Other sites register, wait for approval, then get their own key.</span></div>
+  <div><b>Admin panel</b><span>Revenue chart, search, filters, per-merchant view, mark paid or failed, resend webhook, CSV export, light and dark theme.</span></div>
+  <div><b>Safe by default</b><span>Rate limits, input checks, timing-safe key checks, locked redirects, webhook URLs limited to public https addresses.</span></div>
+  <div><b>Fast</b><span>Cached QR codes, database index, narrow mailbox search, cached static files.</span></div>
+  <div><b>Never sleeps</b><span>Self-ping every few minutes, plus a GitHub Actions workflow and a status page.</span></div>
+</div>
+
+<h2 id="selfhost">Self-hosting</h2>
+<p>Deploy on Render with GitHub. Set these environment variables on the service:</p>
+<div class="tw"><table><tr><th>Variable</th><th></th><th>What it does</th></tr>
+<tr><td><code>MONGO_URI</code></td><td>required</td><td>MongoDB connection string</td></tr>
+<tr><td><code>API_SECRET_KEY</code></td><td>required</td><td>Key for your own main site. Also signs the merchant login sessions</td></tr>
+<tr><td><code>GMAIL_USER</code>, <code>GMAIL_APP_PASSWORD</code></td><td>required</td><td>Mailbox that receives the payment emails (IMAP enabled, app password)</td></tr>
+<tr><td><code>ADMIN_SECRET_PASS</code></td><td>for admin panel</td><td>Admin panel password</td></tr>
+<tr><td><code>BUSINESS_UPI</code>, <code>PAYEE_NAME</code></td><td>optional</td><td>UPI address and name shown in the payment app</td></tr>
+<tr><td><code>SITE_WEBHOOK_URL</code></td><td>optional</td><td>Webhook for orders from your own main site</td></tr>
+<tr><td><code>PENDING_WINDOW_HOURS</code></td><td>optional</td><td>How long an unpaid order keeps being checked (default 24)</td></tr>
+<tr><td><code>KEEP_ALIVE</code>, <code>KEEP_ALIVE_URL</code>, <code>PING_INTERVAL_MIN</code></td><td>optional</td><td>Self-ping on or off, its target, and its interval in minutes (default 5)</td></tr></table></div>
+<p><b>Keeping a free Render service awake:</b> the server pings itself, but a sleeping server cannot wake itself. Add the GitHub workflow in <code>.github/workflows/keep-alive.yml</code> (set the repository variable <code>PING_URL</code> to <code>https://YOUR-GATEWAY/healthz</code>), or add the same URL to UptimeRobot or cron-job.org every 5 minutes. <a href="/ping.html">/ping.html</a> shows whether it is working.</p>
+<div class="note">Registered merchants' API keys are stored in your database so they can see them in their dashboard. Protect your MongoDB credentials accordingly.</div>
+
+<h2 id="changelog">What is new</h2>
+<ul>
+<li><b>Merchant sign-up</b> with admin approval, per-merchant API keys, dashboards and webhooks.</li>
+<li><b>Signed webhooks</b> with <code>x-signature</code> and <code>x-timestamp</code>.</li>
+<li><b>New checkout</b> in a Razorpay and Cashfree style, with success and cancel pages and a Check payment status button.</li>
+<li><b>Admin panel</b> now has a Merchants tab with approve, reject, suspend and token reset, plus a source filter for orders.</li>
+<li><b>Ping system</b>: self-ping, <code>/ping.html</code>, GitHub Actions keep-alive.</li>
+<li><b>Fixes:</b> safer CSV export, input validation, rate limits, locked redirects, no duplicate order IDs across accounts.</li>
+</ul>
+
+<div class="foot">Built by <b>Sibaditya Pal</b> · <a href="https://www.takna.online" target="_blank" rel="noopener">Takna Technology</a></div>
+</main>
+</div>
+<script>
+document.querySelectorAll('.tabs2').forEach(function (bar) {
+  var g = bar.getAttribute('data-g');
+  bar.addEventListener('click', function (e) {
+    var b = e.target.closest('.tb'); if (!b) return;
+    bar.querySelectorAll('.tb').forEach(function (x) { x.classList.toggle('on', x === b); });
+    document.querySelectorAll('pre[data-g="' + g + '"]').forEach(function (p) { p.style.display = p.getAttribute('data-i') === b.getAttribute('data-t') ? '' : 'none'; });
+  });
+});
+</script>
+</body>
+</html>
