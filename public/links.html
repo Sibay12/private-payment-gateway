@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/assets/favicon.png"><link rel="apple-touch-icon" href="/assets/favicon.png"><meta name="theme-color" content="#26338a"><script src="/loader.js"></script>
+<meta name="robots" content="noindex">
+<title>Payment Links - TaknaPay.in</title>
+<style>
+:root{--navy:#26338a;--navy-d:#141c55;--navy-l:#eef0fb;--green:#4fae55;--green-d:#3b9442;--green-l:#e9f6ea;--ink:#101a3a;--mu:#5d6b8c;--line:#e4e8f3;--bg:#f6f8fc;--er:#d93025;--erbg:#fdeceb;--wa:#b26a00;--wabg:#fff4e0;--ok:#0f9d58;--okbg:#e8f6ee}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;line-height:1.5}
+a{color:var(--navy)}
+.nav{background:#fff;border-bottom:1px solid var(--line)}
+.nav div{max-width:980px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:14px}
+.nav img{height:40px;display:block}.nav .sp{flex:1}.nav a.l{font-size:14px;font-weight:600;color:var(--mu);text-decoration:none}
+.wrap{max-width:980px;margin:0 auto;padding:22px 16px 60px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:0 14px 34px -22px rgba(38,51,138,.35)}
+h1{font-size:26px;margin:0 0 4px;letter-spacing:-.5px}h2{font-size:19px;margin:0 0 12px}h3{font-size:16px;margin:18px 0 8px}
+.mu{color:var(--mu);font-size:14px}.sm{font-size:12.5px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:10px;padding:11px 18px;font:inherit;font-weight:700;font-size:15px;cursor:pointer;text-decoration:none}
+.btn.pri{background:var(--navy);color:#fff}.btn.pri:hover{background:var(--navy-d)}
+.btn.grn{background:var(--green);color:#fff}.btn.grn:hover{background:var(--green-d)}
+.btn.out{background:#fff;color:var(--navy);border:1.5px solid var(--line)}.btn.out:hover{border-color:var(--navy)}
+.btn.er{background:#fff;color:var(--er);border:1.5px solid #f3c7c3}
+.btn.s{padding:7px 12px;font-size:13px;border-radius:8px}.btn[disabled]{opacity:.6;cursor:wait}
+.hide{display:none!important}
+.auth{max-width:520px;margin:10px auto 0}
+.tabs{display:flex;gap:6px;background:var(--navy-l);padding:5px;border-radius:12px;margin:14px 0 18px}
+.tab{flex:1;border:0;background:none;padding:10px;border-radius:9px;font:inherit;font-weight:700;color:var(--mu);cursor:pointer}
+.tab.on{background:#fff;color:var(--navy);box-shadow:0 2px 8px rgba(38,51,138,.15)}
+form{display:grid;gap:13px}
+label{font-size:13px;font-weight:700;display:grid;gap:5px}label small{font-weight:400;color:var(--mu)}
+input,select,textarea{border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;font:inherit;width:100%;color:var(--ink);background:#fff}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(38,51,138,.15)}
+input[type=file]{border-style:dashed;background:#f9fbff;padding:9px}
+label.chk{display:flex;gap:9px;align-items:flex-start;font-weight:400;font-size:13px;color:var(--mu)}label.chk input{width:auto;margin-top:3px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fs{border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;gap:12px;margin:0}.fs legend{font-weight:800;font-size:14px;padding:0 6px}
+.thumb{max-width:100%;max-height:140px;border-radius:8px;border:1px solid var(--line);display:none}
+.msg{font-size:13.5px;font-weight:600;min-height:18px}.msg.er{color:var(--er)}.msg.ok{color:var(--ok)}
+.perks{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.perks div{background:var(--green-l);border-radius:12px;padding:10px 12px;font-size:12.5px;font-weight:700;color:var(--green-d);text-align:center}
+.banner{border-radius:12px;padding:13px 16px;font-size:14px;margin-bottom:16px}
+.banner.PENDING{background:var(--wabg);color:var(--wa)}.banner.REJECTED,.banner.SUSPENDED{background:var(--erbg);color:var(--er)}
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}.top .sp{flex:1}
+.badge,.st{display:inline-block;border-radius:99px;padding:3px 11px;font-size:12px;font-weight:800}
+.APPROVED,.SUCCESS,.PAID,.ACTIVE{background:var(--okbg);color:var(--ok)}.PENDING,.PAUSED{background:var(--wabg);color:var(--wa)}.REJECTED,.SUSPENDED,.FAILED{background:var(--erbg);color:var(--er)}
+.pt{display:flex;gap:6px;overflow-x:auto;margin-bottom:16px;padding-bottom:4px}
+.pt button{flex:none;border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:9px 18px;font:inherit;font-weight:700;color:var(--mu);cursor:pointer}
+.pt button.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px}
+.stats div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px}
+.stats small{display:block;color:var(--mu);font-size:12.5px;font-weight:600}.stats b{display:block;font-size:22px;letter-spacing:-.5px;margin-top:2px}
+.stats .hl{background:linear-gradient(135deg,var(--navy),#3b4fc4);border:0;color:#fff}.stats .hl small{color:#cfd6ff}
+.lk{border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:8px;margin-bottom:10px;background:#fff}
+.lk .h{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.lk .h b{flex:1;min-width:140px}
+.lk code{display:block;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;word-break:break-all}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:14px;min-width:520px}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line)}th{font-size:12px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px}
+.kv{display:grid;grid-template-columns:130px 1fr;gap:8px;font-size:14px;padding:9px 0;border-bottom:1px solid var(--line)}.kv span{color:var(--mu)}
+.fee{background:var(--navy-l);border-radius:10px;padding:10px 12px;font-size:13.5px}
+@media(max-width:700px){.stats{grid-template-columns:1fr 1fr}.g2,.perks{grid-template-columns:1fr}.stats b{font-size:19px}}
+</style>
+</head>
+<body>
+<div class="nav"><div><a href="/"><img src="/assets/logo.png" alt="TaknaPay.in"></a><span class="sp"></span><a class="l" href="/">Home</a><a class="l" href="/merchant.html">Merchant onboarding</a></div></div>
+<div class="wrap">
+
+<!-- AUTH -->
+<div id="vAuth" class="auth hide">
+  <div style="text-align:center"><h1>Payment Links</h1><p class="mu" style="margin:0">Create free payment links and get paid by UPI. Instant verification.</p></div>
+  <div class="card" style="margin-top:18px">
+    <div class="tabs"><button class="tab on" id="tReg" type="button">Register</button><button class="tab" id="tLog" type="button">Login</button></div>
+
+    <form id="regForm" autocomplete="on">
+      <label>Full name<input id="rName" type="text" autocomplete="name" required maxlength="80" placeholder="Your name"></label>
+      <div class="g2">
+        <label>Mobile number<input id="rMob" type="tel" inputmode="numeric" autocomplete="tel" required maxlength="14" placeholder="10-digit mobile"></label>
+        <label>Email ID<input id="rEmail" type="email" autocomplete="email" required maxlength="120" placeholder="you@example.com"></label>
+      </div>
+      <label>Password<input id="rPw" type="password" autocomplete="new-password" required minlength="8" maxlength="64" placeholder="Min 8 characters, letters + numbers"></label>
+      <fieldset class="fs"><legend>PAN card details</legend>
+        <label>Name as on PAN card<input id="rPanName" type="text" required maxlength="80" placeholder="e.g. RAHUL KUMAR"></label>
+        <label>PAN number<input id="rPan" type="text" required maxlength="10" style="text-transform:uppercase" placeholder="ABCDE1234F"></label>
+        <label>PAN card photo<input id="rPanImg" type="file" accept="image/*"><small>Clear photo, all four corners visible.</small></label>
+        <img id="rThumb" class="thumb" alt="PAN preview">
+      </fieldset>
+      <label class="chk"><input id="rAgree" type="checkbox"><span>I confirm all details are true and I accept the terms. Fee: 2% on payment received and 1% on withdrawal. Creating links is free.</span></label>
+      <button class="btn grn" id="rBtn" type="submit">Register &amp; verify instantly</button>
+      <div class="msg" id="rMsg" role="alert"></div>
+    </form>
+
+    <form id="logForm" class="hide">
+      <label>Email ID<input id="lEmail" type="email" autocomplete="username" required></label>
+      <label>Password<input id="lPw" type="password" autocomplete="current-password" required></label>
+      <button class="btn pri" id="lBtn" type="submit">Login</button>
+      <div class="msg" id="lMsg" role="alert"></div>
+      <p class="mu sm" style="margin:0">Forgot your password? Contact support and we will set a new one for you.</p>
+    </form>
+    <div class="perks"><div>⚡ Instant verification</div><div>🔗 Free links</div><div>💰 Fast payouts</div></div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="vDash" class="hide"></div>
+</div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var KEY = 'tk_link_session', session = null, D = null, links = [], pays = [], pg = 'home';
+  try { session = sessionStorage.getItem(KEY); } catch (e) {}
+
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function inr(n) { return '₹' + Number(n || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 }); }
+  function say(el, cls, t) { el.className = 'msg ' + cls; el.textContent = t; }
+  function call(method, url, body) {
+    var h = { 'Content-Type': 'application/json' }; if (session) h.Authorization = 'Bearer ' + session;
+    return fetch(url, { method: method, headers: h, body: body ? JSON.stringify(body) : undefined, cache: 'no-store' }).then(function (r) { return r.json().then(function (d) { d._status = r.status; return d; }); });
+  }
+  function copy(text, btn) { if (navigator.clipboard) navigator.clipboard.writeText(text).then(function () { var t = btn.textContent; btn.textContent = 'Copied ✓'; setTimeout(function () { btn.textContent = t; }, 1500); }); }
+  function done() { if (window.GWLoader) GWLoader.hide(); }
+
+  // resize PAN photo in the browser (max 1400px JPEG) so the upload stays small
+  function readImage(file) {
+    return new Promise(function (resolve, reject) {
+      if (!file) return reject(new Error('Choose the PAN card photo.'));
+      if (!/^image\//.test(file.type)) return reject(new Error('Choose an image file (JPG or PNG).'));
+      var fr = new FileReader();
+      fr.onerror = function () { reject(new Error('Could not read the photo.')); };
+      fr.onload = function () {
+        var img = new Image();
+        img.onerror = function () { reject(new Error('This file is not a valid image.')); };
+        img.onload = function () {
+          var sc = Math.min(1, 1400 / Math.max(img.width, img.height)), c = document.createElement('canvas');
+          c.width = Math.round(img.width * sc); c.height = Math.round(img.height * sc);
+          var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); x.drawImage(img, 0, 0, c.width, c.height);
+          var q = 0.82, out = c.toDataURL('image/jpeg', q);
+          while (out.length > 1100000 && q > 0.4) { q -= 0.1; out = c.toDataURL('image/jpeg', q); }
+          resolve(out);
+        };
+        img.src = fr.result;
+      };
+      fr.readAsDataURL(file);
+    });
+  }
+
+  // ---------- auth ----------
+  function authTab(w) {
+    $('regForm').classList.toggle('hide', w !== 'reg'); $('logForm').classList.toggle('hide', w !== 'log');
+    $('tReg').classList.toggle('on', w === 'reg'); $('tLog').classList.toggle('on', w === 'log');
+  }
+  $('tReg').onclick = function () { authTab('reg'); }; $('tLog').onclick = function () { authTab('log'); };
+  var panImg = '';
+  $('rPanImg').onchange = function () {
+    panImg = ''; $('rThumb').style.display = 'none';
+    readImage(this.files[0]).then(function (d) { panImg = d; $('rThumb').src = d; $('rThumb').style.display = 'block'; $('rMsg').className = 'msg'; })
+      .catch(function (e) { say($('rMsg'), 'er', e.message); });
+  };
+  function startSession(tok) { session = tok; try { sessionStorage.setItem(KEY, tok); } catch (e) {} loadDash(); }
+  $('regForm').onsubmit = function (e) {
+    e.preventDefault();
+    if (!panImg) { say($('rMsg'), 'er', 'Upload a clear photo of your PAN card first.'); return; }
+    var b = $('rBtn'); b.disabled = true; b.textContent = 'Submitting...'; $('rMsg').className = 'msg';
+    call('POST', '/api/link/register', { name: $('rName').value, mobile: $('rMob').value, email: $('rEmail').value, password: $('rPw').value, panName: $('rPanName').value, panNumber: $('rPan').value, panImage: panImg, agree: $('rAgree').checked })
+      .then(function (d) { if (!d.success) { say($('rMsg'), 'er', d.message || 'Could not register'); return; } startSession(d.token); })
+      .catch(function () { say($('rMsg'), 'er', 'Network error. Please try again.'); })
+      .then(function () { b.disabled = false; b.textContent = 'Register & verify instantly'; });
+  };
+  $('logForm').onsubmit = function (e) {
+    e.preventDefault();
+    var b = $('lBtn'); b.disabled = true; b.textContent = 'Logging in...'; $('lMsg').className = 'msg';
+    call('POST', '/api/link/login', { email: $('lEmail').value, password: $('lPw').value })
+      .then(function (d) { if (!d.success) { say($('lMsg'), 'er', d.message || 'Login failed'); return; } startSession(d.token); })
+      .catch(function () { say($('lMsg'), 'er', 'Network error. Please try again.'); })
+      .then(function () { b.disabled = false; b.textContent = 'Login'; });
+  };
+  function logout() { session = null; try { sessionStorage.removeItem(KEY); } catch (e) {} D = null; $('vDash').classList.add('hide'); $('vAuth').classList.remove('hide'); authTab('log'); }
+
+  // ---------- dashboard ----------
+  function loadDash(keepPg) {
+    return call('GET', '/api/merchant/me').then(function (d) {
+      if (d._status === 401 || !d.success) { logout(); return; }
+      if (d.merchant.type !== 'LINK') { logout(); $('lMsg').className = 'msg er'; $('lMsg').textContent = 'This account is not a Payment Links account. Use Merchant login.'; return; }
+      D = d;
+      var ok = d.merchant.status === 'APPROVED';
+      return Promise.all([ok ? call('GET', '/api/link/list') : { links: [] }, ok ? call('GET', '/api/link/payments') : { payments: [] }]).then(function (r) {
+        links = r[0].links || []; pays = r[1].payments || [];
+        if (!keepPg) pg = 'home';
+        render();
+      });
+    }).catch(function () { $('vDash').innerHTML = '<div class="card">Could not load. <button class="btn out s" id="rt" type="button">Retry</button></div>'; $('vAuth').classList.add('hide'); $('vDash').classList.remove('hide'); $('rt').onclick = function () { loadDash(); }; })
+      .then(done);
+  }
+
+  function render() {
+    var m = D.merchant, b = D.balance, ok = m.status === 'APPROVED', cfg = D.config;
+    $('vAuth').classList.add('hide'); $('vDash').classList.remove('hide');
+    var banner = '';
+    if (m.status === 'PENDING') banner = '<div class="banner PENDING"><b>Verification in progress.</b> Your PAN details are being verified. You can create payment links as soon as your account is approved. Tap Refresh to check.</div>';
+    if (m.status === 'REJECTED') banner = '<div class="banner REJECTED"><b>Not approved.</b> ' + (m.kycNote ? esc(m.kycNote) + ' ' : '') + 'Fix your PAN details in Profile and submit again.</div>';
+    if (m.status === 'SUSPENDED') banner = '<div class="banner SUSPENDED"><b>Account suspended.</b> Links are paused. Please contact support.</div>';
+    var tabs = [['home', 'Overview']].concat(ok ? [['links', 'My links'], ['pays', 'Payments'], ['out', 'Withdraw']] : []).concat([['prof', 'Profile']]);
+    var h = '<div class="top"><div><h1 style="font-size:22px">Hi, ' + esc(m.name.split(' ')[0]) + '</h1><span class="mu sm">' + esc(m.email) + '</span></div><span class="sp"></span><span class="badge ' + esc(m.status) + '">' + esc(m.status === 'APPROVED' ? 'VERIFIED' : m.status) + '</span><button class="btn out s" id="bRef" type="button">Refresh</button><button class="btn out s" id="bOut" type="button">Log out</button></div>' + banner +
+      '<div class="pt">' + tabs.map(function (t) { return '<button type="button" data-pg="' + t[0] + '" class="' + (pg === t[0] ? 'on' : '') + '">' + t[1] + '</button>'; }).join('') + '</div>';
+
+    // overview
+    h += '<section data-s="home" class="' + (pg === 'home' ? '' : 'hide') + '">';
+    if (ok) {
+      var collected = pays.filter(function (p) { return p.status === 'SUCCESS'; }).length;
+      h += '<div class="stats"><div class="hl"><small>Available to withdraw</small><b>' + inr(b.available) + '</b></div><div><small>Settling (' + cfg.settlementDays + ' working days)</small><b>' + inr(b.pending) + '</b></div><div><small>Payout requested</small><b>' + inr(b.requested) + '</b></div><div><small>Paid out</small><b>' + inr(b.paidOut) + '</b></div></div>' +
+        '<div class="stats"><div><small>Active links</small><b>' + links.filter(function (l) { return l.status === 'ACTIVE'; }).length + '</b></div><div><small>Total received</small><b>' + inr(b.gross) + '</b></div><div><small>Fees (' + cfg.plans.LINK.percent + '%)</small><b>' + inr(b.fees) + '</b></div><div><small>Recent paid</small><b>' + collected + '</b></div></div>' +
+        '<div class="row"><button class="btn grn" type="button" data-go="links">+ Create payment link</button><button class="btn out" type="button" data-go="out">Withdraw money</button></div>';
+    } else h += '<div class="card"><h2>Welcome to Payment Links</h2><p class="mu">Once your account is verified you can create free links, receive payments and withdraw to your bank or UPI.</p></div>';
+    h += '</section>';
+
+    if (ok) {
+      // links
+      h += '<section data-s="links" class="' + (pg === 'links' ? '' : 'hide') + '"><div class="card"><h2>Create a payment link</h2><p class="mu" style="margin-top:-6px">Free. A ' + cfg.plans.LINK.percent + '% fee applies only when a payment is received.</p>' +
+        '<form id="lkForm"><label>Title<input id="lkT" type="text" maxlength="80" required placeholder="e.g. Class fees, Order #12, Donation"></label>' +
+        '<label>Description (optional)<input id="lkD" type="text" maxlength="200" placeholder="Shown to the payer"></label>' +
+        '<label>Amount in ₹ <small>(leave empty to let the payer type any amount)</small><input id="lkA" type="number" min="1" max="500000" step="0.01" inputmode="decimal" placeholder="Fixed amount, e.g. 499"></label>' +
+        '<button class="btn grn" id="lkB" type="submit">Create link</button><div class="msg" id="lkM"></div></form></div><h3>Your links</h3>' +
+        (links.length ? links.map(function (l) {
+          return '<div class="lk"><div class="h"><b>' + esc(l.title) + '</b><span class="st ' + esc(l.status) + '">' + esc(l.status) + '</span><span class="mu sm">' + (l.amount != null ? inr(l.amount) : 'Any amount') + '</span></div>' +
+            (l.description ? '<div class="mu sm">' + esc(l.description) + '</div>' : '') + '<code>' + esc(l.url) + '</code>' +
+            '<div class="mu sm">' + l.paid + ' payment' + (l.paid === 1 ? '' : 's') + ' · ' + inr(l.collected) + ' collected</div>' +
+            '<div class="row"><button class="btn pri s" type="button" data-copy="' + esc(l.url) + '">Copy link</button><a class="btn out s" target="_blank" rel="noopener" href="https://wa.me/?text=' + encodeURIComponent(l.title + ' - pay here: ' + l.url) + '">Share on WhatsApp</a><a class="btn out s" target="_blank" rel="noopener" href="' + esc(l.url) + '">Open</a>' +
+            '<button class="btn out s" type="button" data-st="' + esc(l.id) + '" data-to="' + (l.status === 'ACTIVE' ? 'PAUSED' : 'ACTIVE') + '">' + (l.status === 'ACTIVE' ? 'Pause' : 'Resume') + '</button><button class="btn er s" type="button" data-st="' + esc(l.id) + '" data-to="DELETED">Delete</button></div></div>';
+        }).join('') : '<p class="mu">No links yet. Create your first one above.</p>') + '</section>';
+
+      // payments
+      h += '<section data-s="pays" class="' + (pg === 'pays' ? '' : 'hide') + '"><h2>Payments received</h2><div class="card tw"><table><thead><tr><th>Date</th><th>Link</th><th>Payer</th><th>Amount</th><th>Fee</th><th>You get</th><th>Status</th></tr></thead><tbody>' +
+        (pays.length ? pays.map(function (p) { return '<tr><td>' + new Date(p.createdAt).toLocaleString('en-IN') + '</td><td>' + esc(p.linkTitle) + '</td><td>' + esc(p.payerName || '-') + (p.payerContact ? '<br><span class="mu sm">' + esc(p.payerContact) + '</span>' : '') + '</td><td>' + inr(p.amount) + '</td><td>' + (p.fee != null ? inr(p.fee) : '-') + '</td><td>' + (p.fee != null ? inr(p.amount - p.fee) : '-') + '</td><td><span class="st ' + esc(p.status) + '">' + esc(p.status) + '</span></td></tr>'; }).join('') : '<tr><td colspan="7" class="mu" style="text-align:center">No payments yet</td></tr>') + '</tbody></table></div></section>';
+
+      // withdraw
+      var hist = (D.payouts || []).map(function (p) { return '<tr><td>' + new Date(p.createdAt).toLocaleString('en-IN') + '</td><td>' + esc(p.method) + '</td><td>' + inr(p.amount) + '</td><td>' + inr(p.fee) + '</td><td>' + inr(p.payable) + '</td><td><span class="st ' + esc(p.status) + '">' + esc(p.status) + '</span>' + (p.utr ? '<br><span class="mu sm">UTR ' + esc(p.utr) + '</span>' : '') + (p.note ? '<br><span class="mu sm">' + esc(p.note) + '</span>' : '') + '</td></tr>'; }).join('');
+      h += '<section data-s="out" class="' + (pg === 'out' ? '' : 'hide') + '"><div class="card"><h2>Withdraw money</h2><p class="mu" style="margin-top:-6px">Available: <b>' + inr(b.available) + '</b> · Minimum ' + inr(cfg.minPayout) + ' · Withdrawal fee ' + cfg.plans.LINK.payoutRates.UPI + '%</p>' +
+        '<form id="poForm"><div class="g2"><label>Amount (₹)<input id="pA" type="number" min="' + cfg.minPayout + '" step="0.01" inputmode="decimal" required></label><label>Method<select id="pM"><option value="UPI">UPI ID</option><option value="IMPS">IMPS (bank)</option><option value="NEFT">NEFT (bank)</option></select></label></div>' +
+        '<div id="pUpi"><label>UPI ID<input id="pU" type="text" placeholder="name@bank"></label></div>' +
+        '<div id="pBank" class="hide" style="display:grid;gap:13px"><label>Account holder name<input id="pN" type="text"></label><div class="g2"><label>Account number<input id="pAc" type="text" inputmode="numeric"></label><label>IFSC<input id="pI" type="text" style="text-transform:uppercase" placeholder="SBIN0001234"></label></div></div>' +
+        '<div class="fee" id="pFee">Enter an amount to see the fee.</div><button class="btn pri" id="pB" type="submit">Request withdrawal</button><div class="msg" id="pMsg"></div></form></div>' +
+        '<h3>Withdrawal history</h3><div class="card tw"><table><thead><tr><th>Date</th><th>Method</th><th>Amount</th><th>Fee</th><th>You receive</th><th>Status</th></tr></thead><tbody>' + (hist || '<tr><td colspan="6" class="mu" style="text-align:center">No withdrawals yet</td></tr>') + '</tbody></table></div></section>';
+    }
+
+    // profile
+    h += '<section data-s="prof" class="' + (pg === 'prof' ? '' : 'hide') + '"><div class="card"><h2>Profile</h2>' +
+      '<div class="kv"><span>Name</span><b>' + esc(m.name) + '</b></div><div class="kv"><span>Mobile</span><b>' + esc(m.contact) + '</b></div><div class="kv"><span>Email</span><b>' + esc(m.email) + '</b></div><div class="kv"><span>PAN name</span><b>' + esc(m.panName || '-') + '</b></div><div class="kv"><span>PAN</span><b>' + esc(m.panMasked || '-') + '</b></div><div class="kv"><span>KYC</span><b>' + esc(m.kycStatus) + '</b></div></div>';
+    if (m.kycStatus !== 'VERIFIED') {
+      h += '<h3>Update PAN details</h3><div class="card"><form id="kForm"><label>Name as on PAN<input id="kN" type="text" required maxlength="80"></label><label>PAN number<input id="kP" type="text" required maxlength="10" style="text-transform:uppercase"></label><label>PAN card photo<input id="kF" type="file" accept="image/*"></label><button class="btn pri" id="kB" type="submit">Submit for verification</button><div class="msg" id="kM"></div></form></div>';
+    }
+    h += '</section>';
+    $('vDash').innerHTML = h;
+    wire();
+  }
+
+  function wire() {
+    var root = $('vDash'), ok = D.merchant.status === 'APPROVED';
+    function go(p) { pg = p; root.querySelectorAll('[data-s]').forEach(function (s) { s.classList.toggle('hide', s.getAttribute('data-s') !== p); }); root.querySelectorAll('.pt button').forEach(function (x) { x.classList.toggle('on', x.getAttribute('data-pg') === p); }); }
+    root.querySelectorAll('[data-pg]').forEach(function (x) { x.onclick = function () { go(x.getAttribute('data-pg')); }; });
+    root.querySelectorAll('[data-go]').forEach(function (x) { x.onclick = function () { go(x.getAttribute('data-go')); }; });
+    root.querySelectorAll('[data-copy]').forEach(function (x) { x.onclick = function () { copy(x.getAttribute('data-copy'), x); }; });
+    $('bRef').onclick = function () { $('bRef').textContent = '...'; loadDash(true); };
+    $('bOut').onclick = logout;
+    root.querySelectorAll('[data-st]').forEach(function (x) {
+      x.onclick = function () {
+        var to = x.getAttribute('data-to');
+        if (to === 'DELETED' && !confirm('Delete this payment link? Payers will no longer be able to use it.')) return;
+        call('POST', '/api/link/' + x.getAttribute('data-st') + '/status', { status: to }).then(function (d) { if (!d.success) alert(d.message || 'Failed'); loadDash(true); });
+      };
+    });
+    if (ok) {
+      $('lkForm').onsubmit = function (e) {
+        e.preventDefault(); var b = $('lkB'); b.disabled = true; b.textContent = 'Creating...'; $('lkM').className = 'msg';
+        call('POST', '/api/link/create', { title: $('lkT').value, description: $('lkD').value, amount: $('lkA').value })
+          .then(function (d) { if (!d.success) { say($('lkM'), 'er', d.message || 'Could not create'); b.disabled = false; b.textContent = 'Create link'; return; } pg = 'links'; loadDash(true); })
+          .catch(function () { say($('lkM'), 'er', 'Network error.'); b.disabled = false; b.textContent = 'Create link'; });
+      };
+      var rates = D.config.plans.LINK.payoutRates;
+      function upd() {
+        var m = $('pM').value, a = Number($('pA').value);
+        $('pUpi').classList.toggle('hide', m !== 'UPI'); $('pBank').classList.toggle('hide', m === 'UPI'); $('pBank').style.display = m === 'UPI' ? 'none' : 'grid';
+        var r = rates[m]; $('pFee').textContent = a > 0 ? 'Fee ' + r + '% = ' + inr(Math.round(a * r) / 100) + ' · You receive ' + inr(Math.round((a - a * r / 100) * 100) / 100) : 'Withdrawal fee is ' + r + '%. Enter an amount to see the total.';
+      }
+      $('pM').onchange = upd; $('pA').oninput = upd; upd();
+      $('poForm').onsubmit = function (e) {
+        e.preventDefault(); var b = $('pB'); b.disabled = true; b.textContent = 'Sending...'; $('pMsg').className = 'msg';
+        call('POST', '/api/merchant/payout', { amount: $('pA').value, method: $('pM').value, upiId: $('pU').value, accountName: $('pN').value, accountNumber: $('pAc').value, ifsc: $('pI').value })
+          .then(function (d) { if (!d.success) { say($('pMsg'), 'er', d.message || 'Failed'); b.disabled = false; b.textContent = 'Request withdrawal'; return; } pg = 'out'; loadDash(true); })
+          .catch(function () { say($('pMsg'), 'er', 'Network error.'); b.disabled = false; b.textContent = 'Request withdrawal'; });
+      };
+    }
+    if ($('kForm')) {
+      var img = '';
+      $('kF').onchange = function () { img = ''; readImage(this.files[0]).then(function (d) { img = d; }).catch(function (e) { say($('kM'), 'er', e.message); }); };
+      $('kForm').onsubmit = function (e) {
+        e.preventDefault(); if (!img) { say($('kM'), 'er', 'Upload the PAN card photo.'); return; }
+        var b = $('kB'); b.disabled = true; call('POST', '/api/merchant/kyc', { panName: $('kN').value, panNumber: $('kP').value, panImage: img })
+          .then(function (d) { if (!d.success) { say($('kM'), 'er', d.message || 'Failed'); b.disabled = false; return; } pg = 'home'; loadDash(); });
+      };
+    }
+  }
+
+  // ---------- start ----------
+  if (session) loadDash(); else { $('vAuth').classList.remove('hide'); authTab(location.hash === '#login' ? 'log' : 'reg'); done(); }
+})();
+</script>
+</body>
+</html>

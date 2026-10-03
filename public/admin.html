@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" type="image/png" href="/assets/favicon.png"><link rel="apple-touch-icon" href="/assets/favicon.png"><meta name="theme-color" content="#2b3a8c"><script src="/loader.js"></script>
+<meta name="robots" content="noindex">
+<title>TaknaPay.in Admin</title>
+<style>
+:root{--bg:#0b1020;--sb:#0e1428;--card:#121a31;--bd:#1f2a48;--tx:#e8eeff;--mu:#8b9bc2;--pr:#6c8cff;--prd:#4f6ef0;--pr2:#8b5cf6;--ok:#2dd4a0;--wa:#fbbf24;--er:#f87171;--sh:0 10px 30px -14px #000a}
+:root.light{--bg:#f4f6fb;--sb:#fff;--card:#fff;--bd:#e6eaf3;--tx:#18233d;--mu:#6b7a99;--pr:#4f6ef0;--prd:#3d58d6;--pr2:#7c4dff;--ok:#0e9f6e;--wa:#b7791f;--er:#dc2626;--sh:0 10px 28px -16px #1c2a5a55}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}.hide{display:none!important}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;box-shadow:var(--sh)}
+.btn{background:linear-gradient(135deg,var(--pr),var(--pr2));color:#fff;border:0;border-radius:10px;padding:9px 16px;cursor:pointer;font-weight:600;transition:transform .12s,filter .12s}.btn:hover{filter:brightness(1.1)}.btn:active{transform:scale(.97)}
+.btn.g{background:transparent;color:var(--tx);border:1px solid var(--bd)}.btn.g:hover{border-color:var(--pr);filter:none}.btn.s{padding:5px 11px;font-size:12.5px;border-radius:8px}
+.btn.ok{background:var(--ok);color:#06241a}.btn.er{background:var(--er);color:#fff}.btn.wa{background:var(--wa);color:#2b1c00}
+input,select{background:color-mix(in srgb,var(--bg) 60%,var(--card));border:1px solid var(--bd);border-radius:10px;padding:10px 13px;width:100%}
+input:focus,select:focus{outline:none;border-color:var(--pr);box-shadow:0 0 0 3px color-mix(in srgb,var(--pr) 28%,transparent)}
+#login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(900px 500px at 15% -10%,color-mix(in srgb,var(--pr) 26%,transparent),transparent),radial-gradient(700px 480px at 100% 110%,color-mix(in srgb,var(--pr2) 22%,transparent),transparent)}
+#login .card{width:100%;max-width:360px;display:grid;gap:14px;text-align:center;padding:28px}
+.lg{width:84px;height:46px;padding:4px 8px;border-radius:12px;background:#fff;color:#fff;font-weight:800;font-size:19px;display:grid;place-items:center;flex:none;margin:0 auto}
+.shell{display:flex;min-height:100vh}
+#sb{width:250px;flex:none;position:sticky;top:0;height:100vh;background:var(--sb);border-right:1px solid var(--bd);padding:18px 12px;display:flex;flex-direction:column;gap:4px;overflow-y:auto;z-index:50}
+.brand{display:flex;align-items:center;gap:11px;padding:2px 8px 18px}.brand .lg{margin:0}.brand b{display:block;font-size:15px}.brand small{color:var(--mu);font-size:12px}
+.nvh{font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:var(--mu);padding:12px 12px 4px}
+.nv{display:flex;align-items:center;gap:11px;width:100%;background:none;border:0;border-radius:10px;padding:10px 12px;cursor:pointer;color:var(--mu);font-weight:600;text-align:left;text-decoration:none}
+.nv i{font-style:normal;width:20px;text-align:center;font-size:16px}.nv:hover{background:color-mix(in srgb,var(--pr) 9%,transparent);color:var(--tx)}
+.nv.on{background:color-mix(in srgb,var(--pr) 16%,transparent);color:var(--pr)}.nv .badge{margin-left:auto}
+.sp{flex:1}
+.main{flex:1;min-width:0}
+.topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:12px;padding:14px 24px;border-bottom:1px solid var(--bd);background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(12px)}
+.topbar h1{font-size:19px;margin:0;flex:1;letter-spacing:-.2px}.ham{display:none}
+.content{padding:24px;max-width:1280px;margin:0 auto}
+.ovl{display:none}
+.pill{padding:5px 12px;border-radius:99px;font-size:12px;border:1px solid var(--bd);color:var(--mu);background:var(--card)}
+.pill.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 50%,transparent)}.pill.er{color:var(--er);border-color:color-mix(in srgb,var(--er) 50%,transparent)}
+.hd{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:16px}.hd h2{margin:0;font-size:20px;flex:1;min-width:160px}
+.badge{background:var(--er);color:#fff;border-radius:99px;font-size:11px;font-weight:700;padding:1px 7px;margin-left:5px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:16px}
+.stat{position:relative;overflow:hidden}.stat:before{content:"";position:absolute;left:0;top:0;right:0;height:3px;background:linear-gradient(90deg,var(--pr),var(--pr2))}
+.stat small{color:var(--mu);font-weight:600}.stat b{display:block;font-size:26px;margin-top:6px;letter-spacing:-.5px}
+.att{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px 16px;cursor:pointer;text-align:left;box-shadow:var(--sh)}
+.att b{font-size:24px;min-width:34px}.att span{flex:1;color:var(--mu);font-weight:600}.att i{font-style:normal;color:var(--mu);font-size:20px}.att.hot{border-color:color-mix(in srgb,var(--wa) 60%,transparent)}.att.hot b{color:var(--wa)}.att:hover{border-color:var(--pr)}
+.chart{display:flex;align-items:flex-end;gap:10px;height:150px;margin-top:14px}
+.chart div{flex:1;text-align:center;font-size:11px;color:var(--mu);display:flex;flex-direction:column;justify-content:flex-end;height:100%}
+.chart i{display:block;background:linear-gradient(180deg,var(--pr),var(--pr2));border-radius:7px 7px 0 0;min-height:3px;margin:3px 0}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px;align-items:center}.bar input{flex:1;min-width:150px}.bar select{width:auto}
+.chip{border:1px solid var(--bd);background:var(--card);border-radius:99px;padding:6px 14px;cursor:pointer;color:var(--mu);font-weight:600}.chip:hover{border-color:var(--pr)}
+.chip.on{background:linear-gradient(135deg,var(--pr),var(--pr2));border-color:transparent;color:#fff}
+.tw{overflow-x:auto;padding:6px 8px}table{width:100%;border-collapse:collapse;min-width:720px}
+th,td{padding:12px 10px;text-align:left;border-bottom:1px solid var(--bd);white-space:nowrap;vertical-align:top}tbody tr:last-child td{border-bottom:0}tbody tr:hover{background:color-mix(in srgb,var(--pr) 5%,transparent)}
+th{color:var(--mu);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.6px}
+.st{padding:3px 10px;border-radius:99px;font-size:12px;font-weight:700}
+.st.SUCCESS,.st.APPROVED{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok)}.st.PENDING{background:color-mix(in srgb,var(--wa) 16%,transparent);color:var(--wa)}.st.FAILED,.st.REJECTED,.st.SUSPENDED{background:color-mix(in srgb,var(--er) 16%,transparent);color:var(--er)}
+.pg{display:flex;justify-content:space-between;align-items:center;padding:12px 10px 6px;color:var(--mu)}
+.mu{color:var(--mu)}.sm{font-size:12.5px}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+.tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}.tools .card{display:grid;gap:10px;align-content:start}.tools h3{margin:0;font-size:15px}.tools p{margin:0;color:var(--mu)}
+a.nv{color:var(--mu)}
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:11px 18px;border-radius:12px;opacity:0;transition:.3s;pointer-events:none;max-width:90%;font-weight:600;z-index:90}
+#toast.on{opacity:1}
+#modal{position:fixed;inset:0;background:#000a;display:flex;align-items:center;justify-content:center;padding:16px;z-index:95}
+#modal .card{max-width:420px;width:100%}
+#modal code{display:block;background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:10px;margin:10px 0;word-break:break-all;font-size:15px}
+@media(max-width:900px){#sb{position:fixed;left:0;top:0;transform:translateX(-102%);transition:transform .2s;width:260px;box-shadow:var(--sh)}#sb.open{transform:none}.ham{display:inline-block}.ovl.on{display:block;position:fixed;inset:0;background:#0008;z-index:40}.content{padding:14px}.topbar{padding:12px 14px}}
+</style></head><body>
+<div id="login"><form class="card" onsubmit="return login(event)">
+<div class="lg"><img src="/assets/logo.png" alt="TaknaPay.in" style="width:100%;height:100%;object-fit:contain;display:block"></div><h2 style="margin:0">TaknaPay.in admin</h2><small class="mu">Sign in to manage payments, merchants, payouts and refunds</small>
+<input id="pw" type="password" placeholder="Admin password" autocomplete="current-password" required>
+<button class="btn">Log in</button><small id="lerr" style="color:var(--er)"></small></form></div>
+
+<div id="app" class="shell hide">
+<aside id="sb">
+<div class="brand"><div class="lg"><img src="/assets/logo.png" alt="TaknaPay.in" style="width:100%;height:100%;object-fit:contain;display:block"></div><div><b>TaknaPay.in</b><small>Admin console</small></div></div>
+<button class="nv on" id="tabD" onclick="tab('d')"><i>&#9638;</i>Dashboard</button>
+<button class="nv" id="tabT" onclick="tab('t')"><i>&#8644;</i>Transactions</button>
+<div class="nvh">Manage</div>
+<button class="nv" id="tabM" onclick="tab('m')"><i>&#9786;</i>Merchants<span class="badge hide" id="mBadge"></span></button>
+<button class="nv" id="tabP" onclick="tab('p')"><i>&#8681;</i>Payouts<span class="badge hide" id="pBadge"></span></button>
+<button class="nv" id="tabR" onclick="tab('r')"><i>&#8634;</i>Refunds<span class="badge hide" id="rBadge"></span></button>
+<div class="nvh">System</div>
+<button class="nv" id="tabS" onclick="tab('s')"><i>&#9881;</i>Tools and links</button>
+<div class="sp"></div>
+<button class="nv" onclick="theme()"><i>&#9680;</i>Switch theme</button>
+<button class="nv" onclick="logout()"><i>&#10162;</i>Log out</button>
+</aside>
+<div class="ovl" id="ovl" onclick="menu(false)"></div>
+<div class="main">
+<header class="topbar"><button class="btn g s ham" onclick="menu(true)" aria-label="Open menu">&#9776; Menu</button><h1 id="ttl">Dashboard</h1>
+<label class="mu sm" style="display:flex;align-items:center;gap:6px;white-space:nowrap"><input type="checkbox" id="auto" checked style="width:auto"> Auto refresh</label></header>
+<div class="content">
+
+<!-- DASHBOARD -->
+<div id="paneD">
+<div class="hd"><h2>Overview</h2><span class="pill" id="pDb">DB…</span><span class="pill" id="pMail">Gmail…</span><span class="pill" id="pHook">Webhook…</span><button class="btn g s" onclick="health()">Test connections</button></div>
+<div class="grid" id="att"></div>
+<div class="grid" id="stats"></div>
+<div class="card"><b>Revenue, last 7 days</b> <small class="mu">(successful orders)</small><div class="chart" id="chart"></div></div>
+</div>
+
+<!-- TOOLS -->
+<div id="paneS" class="hide">
+<div class="tools">
+<div class="card"><h3>Payment checks</h3><p>Scan the mailbox for new payment emails right now.</p><div><button class="btn" onclick="recheck()">Re-check emails</button></div></div>
+<div class="card"><h3>Connections</h3><p>Test the database, Gmail and webhook status.</p><div><button class="btn g" onclick="health();tab('d')">Run test</button></div></div>
+<div class="card"><h3>Links</h3><p>Open the other pages of the gateway.</p><div class="acts"><a class="btn g s" style="text-decoration:none" href="/docs.html" target="_blank">API docs</a><a class="btn g s" style="text-decoration:none" href="/merchant.html" target="_blank">Merchant page</a><a class="btn g s" style="text-decoration:none" href="/ping.html" target="_blank">Ping status</a></div></div>
+</div></div>
+
+<!-- TRANSACTIONS -->
+<div id="paneT" class="hide">
+<div class="bar"><input id="q" placeholder="Search order ID…" oninput="debounce()">
+<select id="mf" onchange="page=1;load()"><option value="">All sources</option><option value="main">Main site</option></select>
+<span id="chips"></span>
+<button class="btn g" onclick="recheck()">Re-check emails</button><button class="btn g" onclick="exportCsv()">Export CSV</button></div>
+<div class="card tw"><table><thead><tr><th>Order</th><th>Source</th><th>Amount</th><th>Status</th><th>Coins</th><th>User</th><th>Created</th><th></th></tr></thead><tbody id="rows"></tbody></table>
+<div class="pg"><span id="info"></span><span><button class="btn g s" onclick="go(-1)">Prev</button> <button class="btn g s" onclick="go(1)">Next</button></span></div></div>
+</div>
+
+<!-- MERCHANTS -->
+<div id="paneM" class="hide">
+<div class="bar"><span id="mchips"></span><span class="mu sm" style="flex:1">People who registered to use your gateway on their own site. Approve to give them an API key.</span><button class="btn g" onclick="loadM()">Refresh</button></div>
+<div class="card tw"><table><thead><tr><th>Merchant</th><th>Site</th><th>Status</th><th>Plan</th><th>Orders</th><th>Revenue</th><th>API key</th><th>Registered</th><th>Actions</th></tr></thead><tbody id="mrows"></tbody></table></div>
+</div>
+<!-- PAYOUTS -->
+<div id="paneP" class="hide">
+<div class="bar"><span id="pchips"></span><span class="mu sm" style="flex:1">Send the money to the merchant, then Accept with the UTR number. Reject returns the money to their balance.</span><button class="btn g" onclick="loadP()">Refresh</button></div>
+<div class="card tw"><table><thead><tr><th>Merchant</th><th>Method</th><th>Pay to</th><th>Amount</th><th>Charge</th><th>Transfer</th><th>Status</th><th>Requested</th><th>UTR / note</th><th></th></tr></thead><tbody id="prows"></tbody></table></div>
+</div>
+<!-- REFUNDS -->
+<div id="paneR" class="hide">
+<div class="bar"><span id="rchips"></span><span class="mu sm" style="flex:1">Refund the customer from the same payment account, then Accept with the refund UTR. Reject returns the amount to the merchant balance.</span><button class="btn g" onclick="loadR()">Refresh</button></div>
+<div class="card tw"><table><thead><tr><th>Merchant</th><th>Order</th><th>Refund to customer</th><th>Charge</th><th>Customer UPI</th><th>Reason</th><th>Status</th><th>Requested</th><th>UTR / note</th><th></th></tr></thead><tbody id="rrows"></tbody></table></div>
+</div>
+</div></div></div><div id="toast"></div><div id="modal" class="hide"></div>
+
+<script>
+let rstatus='PENDING';let token=sessionStorage.getItem('gwtok'),status='',mstatus='PENDING',pstatus='PENDING',page=1,pages=1,t,merchants=[];
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const inr=n=>'₹'+Number(n||0).toLocaleString('en-IN');
+function toast(m){const e=$('toast');e.textContent=m;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),2800)}
+async function api(u,o={}){const r=await fetch(u,{...o,headers:{'Content-Type':'application/json',Authorization:'Bearer '+token}});
+ if(r.status===401){logout();throw 0}return o.raw?r:r.json()}
+async function login(e){e.preventDefault();$('lerr').textContent='';
+ const r=await fetch('/api/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:$('pw').value})});
+ const d=await r.json();if(!d.success){$('lerr').textContent=d.message;return false}
+ token=d.token;sessionStorage.setItem('gwtok',token);start();return false}
+function logout(){sessionStorage.removeItem('gwtok');location.reload()}
+function theme(){const l=document.documentElement.classList.toggle('light');localStorage.setItem('gwtheme',l?'l':'d')}
+if(localStorage.getItem('gwtheme')==='l')document.documentElement.classList.add('light');
+const TT={d:'Dashboard',t:'Transactions',m:'Merchants',p:'Payouts',r:'Refunds',s:'Tools and links'};
+function menu(o){$('sb').classList.toggle('open',o);$('ovl').classList.toggle('on',o)}
+function tab(w){['D','T','M','P','R','S'].forEach(k=>{$('pane'+k).classList.toggle('hide',w!==k.toLowerCase());$('tab'+k).classList.toggle('on',w===k.toLowerCase())});$('ttl').textContent=TT[w];menu(false);window.scrollTo(0,0);if(w==='m')loadM();if(w==='p')loadP();if(w==='r')loadR()}
+function chips(){$('chips').innerHTML=['','PENDING','SUCCESS','FAILED'].map(s=>`<button class="chip ${s===status?'on':''}" onclick="setS('${s}')">${s||'All'}</button>`).join(' ')}
+function mchipsR(){$('mchips').innerHTML=['PENDING','APPROVED','SUSPENDED','REJECTED',''].map(s=>`<button class="chip ${s===mstatus?'on':''}" onclick="setM('${s}')">${s||'All'}</button>`).join(' ')}
+function setS(s){status=s;page=1;chips();load()}
+function setM(s){mstatus=s;mchipsR();loadM()}
+function debounce(){clearTimeout(t);t=setTimeout(()=>{page=1;load()},350)}
+function go(d){page=Math.min(pages,Math.max(1,page+d));load()}
+async function stats(){const d=await api('/api/admin/stats');if(!d.success)return;
+ const rate=d.ok.count+d.failed.count?Math.round(d.ok.count/(d.ok.count+d.failed.count)*100)+'%':'-';
+ $('stats').innerHTML=[['Total orders',d.total],['Successful',d.ok.count],['Pending',d.pending.count],['Failed',d.failed.count],['Total revenue',inr(d.ok.amount)],['Today',inr(d.todayRevenue)],['Success rate',rate]]
+  .map(([a,b])=>`<div class="card stat"><small>${a}</small><b>${b}</b></div>`).join('');
+ const mx=Math.max(1,...d.series.map(x=>x.amount));
+ $('chart').innerHTML=d.series.map(x=>`<div>${x.amount?inr(x.amount):''}<i style="height:${Math.round(x.amount/mx*85)}px"></i>${x.date.slice(5)}</div>`).join('');
+ const rr=d.pendingRefunds||0;$('rBadge').textContent=rr;$('rBadge').classList.toggle('hide',!rr);const pp=d.pendingPayouts||0;$('pBadge').textContent=pp;$('pBadge').classList.toggle('hide',!pp);
+ const pm=(d.merchants&&d.merchants.PENDING)||0;$('mBadge').textContent=pm;$('mBadge').classList.toggle('hide',!pm);
+ $('att').innerHTML=[['Merchants awaiting approval',pm,'m'],['Payout requests to pay',pp,'p'],['Refunds to process',rr,'r']].map(([a,n,t])=>`<button class="att ${n?'hot':''}" onclick="tab('${t}')"><b>${n}</b><span>${a}</span><i>&rsaquo;</i></button>`).join('')}
+function qs(){return `status=${status}&q=${encodeURIComponent($('q').value)}&merchant=${encodeURIComponent($('mf').value)}`}
+async function load(){const d=await api(`/api/admin/transactions?${qs()}&page=${page}`);if(!d.success)return;pages=d.pages;
+ $('info').textContent=`${d.total} orders · page ${d.page}/${d.pages}`;
+ $('rows').innerHTML=d.payments.map(p=>`<tr><td>${esc(p.orderId)}</td><td>${esc(p.merchantName||'Main site')}</td><td>${inr(p.amount)}</td><td><span class="st ${esc(p.status)}">${esc(p.status)}</span></td>
+ <td>${esc(p.coins||'-')}</td><td>${esc(p.telegramChatId||'-')}</td><td>${new Date(p.createdAt).toLocaleString('en-IN')}</td><td class="acts">
+ ${p.status==='SUCCESS'?`<button class="btn g s" onclick="hook('${esc(p.orderId)}')">Resend webhook</button>`:`<button class="btn ok s" onclick="mark('${esc(p.orderId)}','SUCCESS')">Mark paid</button> <button class="btn er s" onclick="mark('${esc(p.orderId)}','FAILED')">Mark failed</button>`}</td></tr>`).join('')||'<tr><td colspan="8" style="text-align:center" class="mu">No orders</td></tr>'}
+async function mark(id,s){if(!confirm(`Mark ${id} as ${s}?`+(s==='SUCCESS'?'\nOnly do this if you have verified the money was received.':'')))return;
+ const d=await api(`/api/admin/orders/${encodeURIComponent(id)}/mark`,{method:'POST',body:JSON.stringify({status:s})});toast(d.success?'Updated':d.message);refresh()}
+async function hook(id){const d=await api(`/api/admin/orders/${encodeURIComponent(id)}/webhook`,{method:'POST'});toast(d.success?(d.delivered?'Webhook delivered':(d.webhookConfigured?'Webhook not acknowledged, will retry':'No webhook URL set')):d.message)}
+async function recheck(){toast('Checking mailbox…');await api('/api/admin/recheck',{method:'POST'});toast('Done');refresh()}
+async function exportCsv(){const r=await api(`/api/admin/export?${qs()}`,{raw:true});const a=document.createElement('a');
+ a.href=URL.createObjectURL(await r.blob());a.download='transactions.csv';a.click()}
+async function health(){$('pDb').textContent=$('pMail').textContent='Testing…';const d=await api('/api/admin/health');
+ $('pDb').textContent='DB: '+d.database;$('pDb').className='pill '+(d.database==='Connected'?'ok':'er');
+ $('pMail').textContent='Gmail: '+d.gmailImap;$('pMail').className='pill '+(d.gmailImap==='Connected'?'ok':'er');$('pMail').title=d.errorDetails||'';
+ $('pHook').textContent='Main webhook: '+(d.webhook?'on':'off');$('pHook').className='pill '+(d.webhook?'ok':'')}
+
+// ----- merchants
+async function loadM(){const d=await api('/api/admin/merchants?status='+mstatus);if(!d.success)return;merchants=d.merchants;fillMf();
+ $('mrows').innerHTML=merchants.map(m=>`<tr><td><b>${esc(m.name)}</b>${m.type==='LINK'?' <span class="st APPROVED" style="font-size:10px">LINK</span>':''}<br><span class="mu sm">${esc(m.email)}${m.contact?'<br>'+esc(m.contact):''}<br>PAN: <b>${esc(m.panNumber||'not submitted')}</b></span></td>
+ <td>${m.type==='LINK'?'<span class="mu sm">Payment Links user<br>(no website)</span>':''}<a class="lnk" style="padding:0;${m.type==='LINK'?'display:none':''}" href="${esc(m.siteUrl)}" target="_blank" rel="noopener">${esc(m.siteUrl.replace(/^https?:\/\//,''))}</a>${m.webhookUrl?'<br><span class="mu sm">hook: '+esc(m.webhookUrl.replace(/^https?:\/\//,'').slice(0,34))+'</span>':''}</td>
+ <td><span class="st ${esc(m.status)}">${esc(m.status)}</span></td><td><span class="st ${m.type==='LINK'||m.plan==='PAID'?'APPROVED':'PENDING'}">${m.type==='LINK'?'LINKS':m.plan==='PAID'?'PRO':'FREE'}</span></td><td>${m.orders} <span class="mu sm">(${m.paid} paid)</span></td><td>${inr(m.revenue)}</td>
+ <td class="mu sm">${esc(m.apiKey||'not issued')}</td><td class="sm">${new Date(m.createdAt).toLocaleDateString('en-IN')}</td>
+ <td class="acts">${m.status!=='APPROVED'?`<button class="btn ok s" onclick="mstat('${m.id}','APPROVED')">Approve</button>`:`<button class="btn wa s" onclick="mstat('${m.id}','SUSPENDED')">Suspend</button>`}
+ ${m.status==='PENDING'?`<button class="btn er s" onclick="mstat('${m.id}','REJECTED')">Reject</button>`:''}
+ <button class="btn g s" onclick="viewKyc('${m.id}')">View KYC</button>${m.type==='LINK'?'':`<button class="btn g s" onclick="setPlan('${m.id}','${m.plan==='PAID'?'FREE':'PAID'}')">${m.plan==='PAID'?'Make Free':'Make Pro'}</button>`}<button class="btn g s" onclick="resetTok('${m.id}')">${m.type==='LINK'?'New password':'New login token'}</button><button class="btn g s" onclick="delM('${m.id}')">Delete</button></td></tr>`).join('')||'<tr><td colspan="9" style="text-align:center" class="mu">No merchants here</td></tr>'}
+async function mstat(id,s){const m=merchants.find(x=>x.id===id);if(!confirm(`${s==='APPROVED'?'Approve':s==='REJECTED'?'Reject':'Suspend'} ${m?m.name:'this merchant'}?`))return;
+ const d=await api(`/api/admin/merchants/${id}/status`,{method:'POST',body:JSON.stringify({status:s,note:s==='REJECTED'?(prompt('Reason for rejecting (shown to the merchant):')||''):''})});toast(d.success?'Updated':d.message);loadM();stats()}
+async function resetTok(id){const mm=merchants.find(x=>x.id===id);const isL=mm&&mm.type==='LINK';if(!confirm(isL?'Set a new temporary password for this user? The old password stops working.':'Create a new login token? The old one stops working.'))return;
+ const d=await api(`/api/admin/merchants/${id}/reset-token`,{method:'POST'});if(!d.success){toast(d.message);return}
+ const md=$('modal');md.innerHTML=`<div class="card"><b>${isL?'New temporary password':'New login token'}</b><p class="mu sm">Shown only once. Send it to the ${isL?'user':'merchant'} privately.</p><code>${esc(d.token)}</code><div style="display:flex;gap:8px"><button class="btn" id="cp">Copy</button><button class="btn g" onclick="$('modal').classList.add('hide')">Close</button></div></div>`;
+ md.classList.remove('hide');$('cp').onclick=()=>{navigator.clipboard&&navigator.clipboard.writeText(d.token);$('cp').textContent='Copied'}}
+async function delM(id){if(!confirm('Delete this merchant? This cannot be undone.'))return;
+ const d=await api(`/api/admin/merchants/${id}`,{method:'DELETE'});toast(d.success?'Deleted':d.message);loadM();stats()}
+
+async function fillMf(){const d=await api('/api/admin/merchants?status=');if(!d.success)return;const cur=$('mf').value;$('mf').innerHTML='<option value="">All sources</option><option value="main">Main site</option>'+d.merchants.map(m=>`<option value="${esc(m.id)}">${esc(m.name)}</option>`).join('');$('mf').value=cur}
+function pchipsR(){$('pchips').innerHTML=['PENDING','PAID','REJECTED',''].map(s=>`<button class="chip ${s===pstatus?'on':''}" onclick="setP('${s}')">${s||'All'}</button>`).join(' ')}
+function setP(s){pstatus=s;pchipsR();loadP()}
+async function loadP(){const d=await api('/api/admin/payouts?status='+pstatus);if(!d.success)return;
+ $('prows').innerHTML=d.payouts.map(p=>`<tr><td><b>${esc(p.merchantName)}</b><br><span class="mu sm">${esc(p.merchantEmail)}</span></td><td>${esc(p.method)}</td>
+ <td class="sm">${p.method==='UPI'?'UPI: <b>'+esc(p.upiId)+'</b>':esc(p.accountName)+'<br>A/C: <b>'+esc(p.accountNumber)+'</b><br>IFSC: <b>'+esc(p.ifsc)+'</b>'}</td>
+ <td>${inr(p.amount)}</td><td>${inr(p.fee)}</td><td><b>${inr(p.payable)}</b></td><td><span class="st ${p.status==='PAID'?'APPROVED':p.status==='REJECTED'?'REJECTED':'PENDING'}">${esc(p.status)}</span></td>
+ <td class="sm">${new Date(p.createdAt).toLocaleString('en-IN')}</td><td class="sm">${esc(p.utr||p.note||'-')}</td>
+ <td class="acts">${p.status==='PENDING'?`<button class="btn ok s" onclick="payAccept('${p._id}','${p.payable}')">Accept</button><button class="btn er s" onclick="payReject('${p._id}')">Reject</button>`:''}</td></tr>`).join('')||'<tr><td colspan="10" style="text-align:center" class="mu">No payouts here</td></tr>'}
+async function payAccept(id,amt){const utr=prompt('Transfer ₹'+amt+' first, then enter the UTR number:');if(!utr)return;
+ const d=await api(`/api/admin/payouts/${id}/accept`,{method:'POST',body:JSON.stringify({utr})});toast(d.success?'Payout marked as paid':d.message);loadP();stats()}
+async function payReject(id){const note=prompt('Reason for rejecting (shown to the merchant):');if(note===null)return;
+ const d=await api(`/api/admin/payouts/${id}/reject`,{method:'POST',body:JSON.stringify({note})});toast(d.success?'Payout rejected':d.message);loadP();stats()}
+async function viewKyc(id){const d=await api(`/api/admin/merchants/${id}/kyc`);if(!d.success){toast(d.message);return}
+ const md=$('modal');md.innerHTML=`<div class="card" style="max-width:520px;max-height:92vh;overflow:auto"><b>KYC details</b><div class="mu sm" style="margin:8px 0 12px;line-height:1.8">Name on PAN: <b style="color:var(--tx)">${esc(d.panName||'-')}</b><br>PAN number: <b style="color:var(--tx)">${esc(d.panNumber||'-')}</b><br>Status: <b style="color:var(--tx)">${esc(d.kycStatus)}</b></div>${d.image?`<img src="${esc(d.image)}" alt="PAN card" style="width:100%;border-radius:10px;border:1px solid var(--bd)">`:'<p class="mu">No PAN image submitted.</p>'}<div style="margin-top:12px"><button class="btn g" onclick="$('modal').classList.add('hide')">Close</button></div></div>`;md.classList.remove('hide')}
+async function setPlan(id,plan){let days=30;if(plan==='PAID'){days=prompt('Activate Pro plan for how many days?','30');if(!days)return}else if(!confirm('Move this merchant back to the Free plan?'))return;
+ const d=await api(`/api/admin/merchants/${id}/plan`,{method:'POST',body:JSON.stringify({plan,days})});toast(d.success?'Plan updated':d.message);loadM()}
+function rchipsR(){$('rchips').innerHTML=['PENDING','REFUNDED','REJECTED',''].map(s=>`<button class="chip ${s===rstatus?'on':''}" onclick="setR('${s}')">${s||'All'}</button>`).join(' ')}
+function setR(s){rstatus=s;rchipsR();loadR()}
+async function loadR(){const d=await api('/api/admin/refunds?status='+rstatus);if(!d.success)return;
+ $('rrows').innerHTML=d.refunds.map(p=>`<tr><td><b>${esc(p.merchantName)}</b><br><span class="mu sm">${esc(p.merchantEmail)}</span></td><td>${esc(p.orderId)}</td><td><b>${inr(p.amount)}</b></td><td>${inr(p.charge||0)}</td><td class="sm">${esc(p.customerUpi||'-')}</td><td class="sm" style="white-space:normal;max-width:220px">${esc(p.reason)}</td>
+ <td><span class="st ${p.status==='REFUNDED'?'APPROVED':p.status==='REJECTED'?'REJECTED':'PENDING'}">${esc(p.status)}</span></td><td class="sm">${new Date(p.createdAt).toLocaleString('en-IN')}</td><td class="sm">${esc(p.utr||p.note||'-')}</td>
+ <td class="acts">${p.status==='PENDING'?`<button class="btn ok s" onclick="refAccept('${p._id}','${p.amount}','${esc(p.orderId)}')">Accept</button><button class="btn er s" onclick="refReject('${p._id}')">Reject</button>`:''}</td></tr>`).join('')||'<tr><td colspan="10" style="text-align:center" class="mu">No refunds here</td></tr>'}
+async function refAccept(id,amt,oid){const utr=prompt('Refund ₹'+amt+' to the customer of order '+oid+' from the same payment account first, then enter the refund UTR:');if(!utr)return;
+ const d=await api(`/api/admin/refunds/${id}/accept`,{method:'POST',body:JSON.stringify({utr})});toast(d.success?'Refund marked as done':d.message);loadR();stats()}
+async function refReject(id){const note=prompt('Reason for rejecting (shown to the merchant):');if(note===null)return;
+ const d=await api(`/api/admin/refunds/${id}/reject`,{method:'POST',body:JSON.stringify({note})});toast(d.success?'Refund rejected':d.message);loadR();stats()}
+function refresh(){stats();load();if(!$('paneM').classList.contains('hide'))loadM();if(!$('paneP').classList.contains('hide'))loadP();if(!$('paneR').classList.contains('hide'))loadR()}
+function start(){$('login').classList.add('hide');$('app').classList.remove('hide');chips();mchipsR();pchipsR();rchipsR();tab('d');refresh();fillMf();health();setInterval(()=>{if($('auto').checked&&!document.hidden)refresh()},10000)}
+if(token)start();
+</script></body></html>

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/assets/favicon.png"><link rel="apple-touch-icon" href="/assets/favicon.png"><meta name="theme-color" content="#2b3a8c"><script src="/loader.js"></script>
+<title>Accept UPI payments on your site - TaknaPay.in</title>
+<link rel="stylesheet" href="/gateway.css">
+<style>
+body{display:block;padding:0}
+.nav{background:var(--navy);color:#fff}
+.nav div{max-width:960px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;gap:18px}
+.nav b{font-size:17px;flex:1}
+.nav a{color:#cfe0ff;text-decoration:none;font-size:14px}.nav a:hover{color:#fff}
+.hero{background:linear-gradient(160deg,var(--navy),var(--navy2));color:#fff;padding:34px 18px 70px}
+.hero div{max-width:960px;margin:0 auto}
+.hero h1{margin:0 0 8px;font-size:28px;letter-spacing:-.4px}
+.hero p{margin:0;opacity:.85;max-width:560px;line-height:1.6}
+.wrap{max-width:960px;margin:-44px auto 40px;padding:0 14px}
+.panel{background:#fff;border-radius:12px;box-shadow:0 20px 50px -14px rgba(7,38,84,.3);padding:22px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+.steps div{background:#f6f9fe;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:13.5px;color:var(--mu);line-height:1.5}
+.steps b{display:block;color:var(--ink);margin-bottom:2px}
+.tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);margin-bottom:18px}
+.tab{background:none;border:0;border-bottom:3px solid transparent;padding:10px 14px;font:inherit;font-weight:600;color:var(--mu);cursor:pointer}
+.tab.on{color:var(--blue-d);border-color:var(--blue)}
+form{display:grid;gap:12px;max-width:520px}
+label{font-size:13px;font-weight:600;display:grid;gap:5px}
+label small{font-weight:400;color:var(--mu)}
+input[type=text],input[type=email],input[type=url],input[type=password]{border:1.5px solid var(--line);border-radius:8px;padding:11px 12px;font:inherit;width:100%;color:var(--ink)}
+input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px #3395ff33}
+form .btn{max-width:none}
+.msg{font-size:13.5px;padding:10px 12px;border-radius:8px;display:none}
+.msg.er{display:block;background:var(--erbg);color:var(--er)}
+.msg.ok{display:block;background:var(--okbg);color:var(--ok)}
+.tokbox{background:#fffaf0;border:1.5px solid #f2d28a;border-radius:10px;padding:16px;max-width:520px}
+.tokbox code,.keybox code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.tokbox code{display:block;background:#fff;border:1px solid var(--line);border-radius:8px;padding:11px;font-size:15px;word-break:break-all;margin:10px 0}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn.sm{width:auto;padding:8px 14px;font-size:13.5px}
+.badge{display:inline-block;padding:3px 10px;border-radius:99px;font-size:12.5px;font-weight:700}
+.badge.APPROVED{background:var(--okbg);color:var(--ok)}.badge.PENDING{background:var(--wabg);color:var(--wa)}.badge.REJECTED,.badge.SUSPENDED{background:var(--erbg);color:var(--er)}
+.banner{border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:14px;line-height:1.6}
+.banner.PENDING{background:var(--wabg);color:var(--wa)}.banner.REJECTED,.banner.SUSPENDED{background:var(--erbg);color:var(--er)}
+.keybox{border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:16px}
+.keybox code{display:block;background:#f6f9fe;border:1px solid var(--line);border-radius:8px;padding:10px;word-break:break-all;margin:8px 0;font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.stats div{border:1px solid var(--line);border-radius:10px;padding:12px}
+.stats small{color:var(--mu);display:block;font-size:12.5px}.stats b{font-size:20px}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:480px}
+th,td{padding:9px 8px;text-align:left;border-bottom:1px solid var(--line);font-size:13.5px;white-space:nowrap}th{color:var(--mu);font-weight:600}
+.st{padding:2px 9px;border-radius:99px;font-size:12px;font-weight:700}.st.SUCCESS{background:var(--okbg);color:var(--ok)}.st.PENDING{background:var(--wabg);color:var(--wa)}.st.FAILED{background:var(--erbg);color:var(--er)}
+h3{margin:18px 0 8px;font-size:16px}
+pre{background:#0d1b33;color:#e6eefc;border-radius:10px;padding:14px;overflow-x:auto;font-size:12.5px;line-height:1.6;margin:8px 0}
+select{border:1.5px solid var(--line);border-radius:8px;padding:11px 12px;font:inherit;width:100%;color:var(--ink);background:#fff}
+.mbar{display:flex;align-items:center;gap:10px;margin-bottom:14px}.mbar b{flex:1;font-size:18px}
+.drw{position:fixed;top:0;left:0;bottom:0;width:270px;max-width:82vw;background:var(--navy);color:#fff;transform:translateX(-102%);transition:transform .2s;z-index:50;padding:18px 12px;display:flex;flex-direction:column;gap:4px;overflow-y:auto}
+.drw.open{transform:none}.drw .dh{padding:4px 10px 14px;border-bottom:1px solid #ffffff2a;margin-bottom:8px}.drw .dh b{display:block;font-size:16px}.drw .dh small{opacity:.7}
+.drw button{background:none;border:0;color:#cfe0ff;text-align:left;padding:12px;border-radius:8px;font:inherit;cursor:pointer}.drw button:hover{background:#ffffff14}.drw button.on{background:#ffffff26;color:#fff;font-weight:600}.drw .sp{flex:1}
+.ovl{position:fixed;inset:0;background:#0008;z-index:40}
+.pg h3:first-child{margin-top:4px}.kv{display:grid;grid-template-columns:130px 1fr;gap:8px;font-size:14px;padding:9px 0;border-bottom:1px solid var(--line)}.kv span{color:var(--mu)}
+input[type=file]{border:1.5px dashed var(--line);border-radius:8px;padding:10px;width:100%;font:inherit;background:#f9fbff}
+label.chk{display:flex;gap:9px;align-items:flex-start;font-weight:400;font-size:13px;color:var(--mu)}label.chk input{width:auto;margin-top:3px}
+.fs{border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:12px;margin:0}.fs legend{font-weight:700;font-size:14px;padding:0 6px}
+.thumb{max-width:100%;max-height:150px;border-radius:8px;border:1px solid var(--line);display:none}
+.hide{display:none!important}
+.pl{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:10px 0}.pl div{border:1px solid var(--line);border-radius:10px;padding:12px;font-size:13.5px;line-height:1.7}.pl .cur{border-color:var(--blue);background:#f2f8ff}
+details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-top:14px}summary{cursor:pointer;font-weight:600}details li{margin:6px 0;font-size:13.5px;color:var(--mu)}
+.mu{color:var(--mu);font-size:13px}
+@media(max-width:640px){.steps{grid-template-columns:1fr}.hero h1{font-size:23px}}
+</style>
+</head>
+<body>
+<div class="nav"><div><b><a href="/" style="display:inline-block;background:#fff;border-radius:8px;padding:3px 8px;line-height:0"><img src="/assets/logo.png" alt="TaknaPay.in" style="height:34px;width:auto"></a></b><a href="/">Home</a><a href="/links.html">Payment Links</a><a href="/docs.html">API docs</a><a href="/ping.html">Status</a></div></div>
+<div class="hero"><div>
+  <h1>Merchant onboarding: accept UPI payments on your website</h1>
+  <p><b>Instant verification.</b> Register your site and business, get your API key as soon as you are approved, and send customers to a hosted checkout. Payments are confirmed automatically and reported to your server by webhook.</p>
+</div></div>
+
+<div class="wrap"><div class="panel">
+  <div class="steps">
+    <div><b>1. Register</b>Share your PAN card (KYC) and site details. You get a private login token.</div>
+    <div><b>2. Get verified instantly</b>Your KYC is verified right away and your account is approved. Check status in your dashboard.</div>
+    <div><b>3. Integrate</b>Use your API key with the <a href="/docs.html">API docs</a>.</div>
+  </div>
+
+  <div class="tabs" role="tablist">
+    <button class="tab on" id="tReg" type="button" onclick="show('reg')">Merchant onboarding</button>
+    <button class="tab" id="tLog" type="button" onclick="show('log')">Dashboard login</button>
+  </div>
+
+  <!-- REGISTER -->
+  <div id="vReg">
+    <form id="regForm" autocomplete="on">
+      <fieldset class="fs"><legend>1. Identity verification (KYC)</legend>
+        <label>Name as printed on PAN card<input type="text" id="rPanName" maxlength="80" required></label>
+        <label>PAN number<input type="text" id="rPan" maxlength="10" placeholder="ABCDE1234F" style="text-transform:uppercase" autocomplete="off" required></label>
+        <label>Photo of PAN card<input type="file" id="rPanImg" accept="image/*" required><small>Clear photo, all four corners visible. JPG or PNG. Only the admin can see it.</small></label>
+        <img class="thumb" id="rThumb" alt="PAN card preview">
+      </fieldset>
+      <fieldset class="fs"><legend>2. Business details</legend>
+      <label>Business or site name<input type="text" id="rName" maxlength="80" required></label>
+      <label>Email<input type="email" id="rEmail" maxlength="120" required></label>
+      <label>Website URL<input type="url" id="rSite" placeholder="https://yoursite.com" required><small>Customers can only be sent back to this website after payment.</small></label>
+      <label>Webhook URL (optional)<input type="url" id="rHook" placeholder="https://yoursite.com/api/payment-webhook"><small>We call this address when a payment succeeds. Must be https. You can add it later.</small></label>
+      <label>Phone or Telegram (optional)<input type="text" id="rContact" maxlength="30"></label>
+      </fieldset>
+      <label class="chk"><input type="checkbox" id="rAgree" required><span>I confirm that the PAN details and photo are mine and true, and I accept that my account can be rejected or suspended if they are not.</span></label>
+      <button class="btn pri" id="rBtn" type="submit">Submit registration</button>
+      <div class="msg" id="rMsg" role="alert"></div>
+    </form>
+    <div class="tokbox hide" id="tokBox">
+      <b>Registration received. Your KYC is under review.</b>
+      <p class="mu" style="margin:6px 0 0">This is your dashboard login token. It is shown only once, so copy it now. If you lose it, the admin can issue a new one.</p>
+      <code id="tokVal"></code>
+      <div class="row"><button class="btn out sm" type="button" id="tokCopy">Copy token</button><button class="btn pri sm" type="button" onclick="show('log')">Go to dashboard login</button></div>
+    </div>
+  </div>
+
+  <!-- LOGIN -->
+  <div id="vLog" class="hide">
+    <form id="logForm">
+      <label>Email<input type="email" id="lEmail" required></label>
+      <label>Login token<input type="password" id="lTok" autocomplete="current-password" required></label>
+      <button class="btn pri" type="submit">Log in</button>
+      <div class="msg" id="lMsg" role="alert"></div>
+    </form>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="vDash" class="hide"></div>
+</div></div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var session = sessionStorage.getItem('gwm') || null;
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function inr(n) { return '₹' + Number(n || 0).toLocaleString('en-IN'); }
+  function say(el, cls, text) { el.className = 'msg ' + cls; el.textContent = text; }
+  function copy(text, btn) { if (navigator.clipboard) navigator.clipboard.writeText(text).then(function () { var t = btn.textContent; btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = t; }, 1500); }); }
+
+  // Resizes a photo in the browser (max 1400px, JPEG) so the upload stays small
+  function readImage(file) {
+    return new Promise(function (resolve, reject) {
+      if (!file) return reject(new Error('Choose the PAN card photo.'));
+      if (!/^image\//.test(file.type)) return reject(new Error('Choose an image file (JPG or PNG).'));
+      var fr = new FileReader();
+      fr.onerror = function () { reject(new Error('Could not read the photo.')); };
+      fr.onload = function () {
+        var img = new Image();
+        img.onerror = function () { reject(new Error('This file is not a valid image.')); };
+        img.onload = function () {
+          var sc = Math.min(1, 1400 / Math.max(img.width, img.height)), c = document.createElement('canvas');
+          c.width = Math.round(img.width * sc); c.height = Math.round(img.height * sc);
+          var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); x.drawImage(img, 0, 0, c.width, c.height);
+          var q = 0.82, out = c.toDataURL('image/jpeg', q);
+          while (out.length > 1100000 && q > 0.4) { q -= 0.1; out = c.toDataURL('image/jpeg', q); }
+          resolve(out);
+        };
+        img.src = fr.result;
+      };
+      fr.readAsDataURL(file);
+    });
+  }
+  var regImg = '';
+  window.show = function (w) {
+    $('vReg').classList.toggle('hide', w !== 'reg'); $('vLog').classList.toggle('hide', w !== 'log'); $('vDash').classList.toggle('hide', w !== 'dash');
+    $('tReg').classList.toggle('on', w === 'reg'); $('tLog').classList.toggle('on', w === 'log');
+    document.querySelector('.tabs').style.display = w === 'dash' ? 'none' : '';
+    document.querySelector('.steps').style.display = w === 'dash' ? 'none' : '';
+  };
+
+  function post(url, body, auth) {
+    var h = { 'Content-Type': 'application/json' }; if (auth) h.Authorization = 'Bearer ' + session;
+    return fetch(url, { method: 'POST', headers: h, body: JSON.stringify(body || {}) }).then(function (r) { return r.json(); });
+  }
+
+  // ----- register
+  var regToken = '';
+  $('rPanImg').onchange = function () {
+    regImg = ''; $('rThumb').style.display = 'none';
+    readImage(this.files[0]).then(function (d) { regImg = d; $('rThumb').src = d; $('rThumb').style.display = 'block'; $('rMsg').className = 'msg'; })
+      .catch(function (e) { say($('rMsg'), 'er', e.message); });
+  };
+  $('regForm').onsubmit = function (e) {
+    e.preventDefault();
+    if (!regImg) { say($('rMsg'), 'er', 'Upload a clear photo of your PAN card first.'); return; }
+    var b = $('rBtn'); b.disabled = true; b.textContent = 'Submitting...'; $('rMsg').className = 'msg';
+    post('/api/merchant/register', { panName: $('rPanName').value, panNumber: $('rPan').value, panImage: regImg, agree: $('rAgree').checked, name: $('rName').value, email: $('rEmail').value, siteUrl: $('rSite').value, webhookUrl: $('rHook').value, contact: $('rContact').value })
+      .then(function (d) {
+        if (!d.success) { say($('rMsg'), 'er', d.message || 'Could not register'); return; }
+        regToken = d.token; $('tokVal').textContent = d.token;
+        $('regForm').classList.add('hide'); $('tokBox').classList.remove('hide');
+        $('lEmail').value = $('rEmail').value;
+      })
+      .catch(function () { say($('rMsg'), 'er', 'Network error. Please try again.'); })
+      .then(function () { b.disabled = false; b.textContent = 'Submit registration'; });
+  };
+  $('tokCopy').onclick = function () { copy(regToken, $('tokCopy')); };
+
+  // ----- login
+  $('logForm').onsubmit = function (e) {
+    e.preventDefault(); $('lMsg').className = 'msg';
+    post('/api/merchant/login', { email: $('lEmail').value, token: $('lTok').value })
+      .then(function (d) {
+        if (!d.success) { say($('lMsg'), 'er', d.message || 'Login failed'); return; }
+        session = d.token; sessionStorage.setItem('gwm', session); $('lTok').value = ''; loadDash();
+      })
+      .catch(function () { say($('lMsg'), 'er', 'Network error. Please try again.'); });
+  };
+
+  function logout() { sessionStorage.removeItem('gwm'); session = null; show('log'); }
+
+  // ----- dashboard
+  var keyShown = false, apiKey = '';
+  function loadDash() {
+    fetch('/api/merchant/me', { headers: { Authorization: 'Bearer ' + session }, cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (d) { if (!d.success) { logout(); return; } render(d); })
+      .catch(function () { logout(); });
+  }
+  var curPg = 'home';
+  function go(pg) {
+    curPg = pg;
+    var sec = document.querySelectorAll('#vDash .pg'), nav = document.querySelectorAll('#drw button[data-pg]'), t = pg;
+    for (var i = 0; i < sec.length; i++) sec[i].classList.toggle('hide', sec[i].id !== 'pg-' + pg);
+    for (var j = 0; j < nav.length; j++) { nav[j].classList.toggle('on', nav[j].getAttribute('data-pg') === pg); if (nav[j].getAttribute('data-pg') === pg) t = nav[j].textContent; }
+    $('pgT').textContent = t; $('drw').classList.remove('open'); $('ovl').classList.add('hide'); window.scrollTo(0, 0);
+  }
+  function render(d) {
+    var m = d.merchant, s = d.stats, v = $('vDash'), ok = m.status === 'APPROVED', host = location.origin;
+    apiKey = m.apiKey || '';
+    var rfm = {}; (d.refunds || []).forEach(function (r) { if (r.status !== 'REJECTED') rfm[r.orderId] = r.status; });
+    var banner = '';
+    if (m.status === 'PENDING') banner = '<div class="banner PENDING"><b>Waiting for approval.</b> The admin is checking your KYC and request. Your API key and payouts unlock once you are approved. Use Refresh to check.</div>';
+    if (m.status === 'REJECTED') banner = '<div class="banner REJECTED"><b>Registration not approved.</b> ' + (m.kycNote ? esc(m.kycNote) + ' ' : '') + 'Correct your KYC in Profile and submit again, or contact the admin.</div>';
+    if (m.status === 'SUSPENDED') banner = '<div class="banner SUSPENDED"><b>Account suspended.</b> New payments are blocked. Contact the admin.</div>';
+    var items = [['home', 'Overview']].concat(ok ? [['orders', 'Orders'], ['payouts', 'Payouts'], ['refunds', 'Refunds'], ['plans', 'Plans and fees']] : []).concat([['docs', 'Documentation'], ['profile', 'Profile']]);
+    var html = '<div class="mbar"><button class="btn out sm" type="button" id="mnuB" aria-label="Open menu">&#9776; Menu</button><b id="pgT"></b><span class="badge ' + esc(m.status) + '">' + esc(m.status) + '</span><button class="btn out sm" type="button" id="bRef">Refresh</button></div>' +
+      '<div id="ovl" class="ovl hide"></div><aside class="drw" id="drw"><div class="dh"><b>' + esc(m.name) + '</b><small>' + esc(m.email) + '</small></div>' +
+      items.map(function (i) { return '<button type="button" data-pg="' + i[0] + '">' + i[1] + '</button>'; }).join('') + '<div class="sp"></div><button type="button" id="bOut">Log out</button></aside>' + banner;
+
+    html += '<section class="pg" id="pg-home"><h3>Overview</h3>';
+    if (ok) {
+      var b = d.balance;
+      html += '<div class="stats"><div><small>Orders</small><b>' + s.total + '</b></div><div><small>Paid</small><b>' + s.paid + '</b></div><div><small>Pending</small><b>' + s.pending + '</b></div><div><small>Revenue</small><b>' + inr(s.revenue) + '</b></div></div>' +
+        '<div class="stats"><div><small>Available to withdraw</small><b>' + inr(b.available) + '</b></div><div><small>Settling (' + d.config.settlementDays + ' working days)</small><b>' + inr(b.pending) + '</b></div><div><small>Payout requested</small><b>' + inr(b.requested) + '</b></div><div><small>Paid out</small><b>' + inr(b.paidOut) + '</b></div></div>' +
+        '<div class="row"><button class="btn pri sm" type="button" data-go="payouts">Request payout</button><button class="btn out sm" type="button" data-go="plans">Plans and fees</button></div>';
+    } else html += '<p class="mu">Your overview, balance and payouts appear here after approval.</p>';
+    html += '</section>';
+
+    if (ok) {
+      html += '<section class="pg hide" id="pg-orders"><h3>Recent orders</h3><div class="tw"><table><thead><tr><th>Order</th><th>Amount</th><th>Status</th><th>Created</th><th>Fee</th><th>You get</th><th>Webhook</th><th></th></tr></thead><tbody>' +
+        (d.recent.length ? d.recent.map(function (p) { return '<tr><td>' + esc(p.orderId) + '</td><td>' + inr(p.amount) + '</td><td><span class="st ' + esc(p.status) + '">' + esc(p.status) + '</span></td><td>' + new Date(p.createdAt).toLocaleString('en-IN') + '</td><td>' + (p.fee != null ? inr(p.fee) : '-') + '</td><td>' + (p.fee != null ? inr(p.amount - p.fee) : '-') + '</td><td>' + (p.status === 'SUCCESS' ? (p.webhookSent ? 'Delivered' : 'Retrying') : '-') + '</td><td>' + (p.status === 'SUCCESS' ? (rfm[p.orderId] ? '<span class="st PENDING">Refund ' + esc(rfm[p.orderId].toLowerCase()) + '</span>' : '<button class="btn out sm" type="button" data-refund="' + esc(p.orderId) + '">Refund</button>') : '') + '</td></tr>'; }).join('') : '<tr><td colspan="8" class="mu">No orders yet. Create one with the API (see Documentation).</td></tr>') + '</tbody></table></div></section>';
+      html += '<section class="pg hide" id="pg-payouts">' + payoutHtml(d) + '</section>';
+      html += '<section class="pg hide" id="pg-refunds">' + refundsHtml(d) + '</section>';
+      html += '<section class="pg hide" id="pg-plans">' + plansHtml(d) + '</section>';
+    }
+
+    html += '<section class="pg hide" id="pg-docs"><h3>Payout documentation</h3>' + payDocHtml(d) + '<h3>Refund documentation</h3>' + refundDocHtml(d) + '<h3>API quick start</h3>' + (ok ? '<pre id="snip"></pre>' : '<p class="mu">The API snippet appears after approval.</p>') + '<p class="mu">Full developer docs: <a href="/docs.html">API docs</a> · <a href="/docs.html#plans">Plans and fees</a> · <a href="/docs.html#payouts">Payouts</a> · <a href="/docs.html#webhook">Webhooks</a></p></section>';
+
+    html += '<section class="pg hide" id="pg-profile"><h3>Profile</h3><div class="kv"><span>Business</span><b>' + esc(m.name) + '</b></div><div class="kv"><span>Email</span><b>' + esc(m.email) + '</b></div><div class="kv"><span>Website</span><b>' + esc(m.siteUrl) + '</b></div><div class="kv"><span>Status</span><b>' + esc(m.status) + '</b></div><div class="kv"><span>Plan</span><b>' + (d.plan === 'PAID' ? 'Pro (till ' + new Date(m.planExpiresAt).toLocaleDateString('en-IN') + ')' : 'Free') + '</b></div><div class="kv"><span>Registered</span><b>' + new Date(m.createdAt).toLocaleDateString('en-IN') + '</b></div>';
+    html += kycHtml(m);
+    if (ok) html += '<h3>API key</h3><div class="keybox"><code id="kv"></code><div class="row"><button class="btn out sm" type="button" id="kShow">Show</button><button class="btn out sm" type="button" id="kCopy">Copy</button><button class="btn out sm" type="button" id="kNew">Generate new key</button></div><p class="mu" style="margin:8px 0 0">Keep it secret and use it only on your server. A new key stops the old one working immediately.</p></div>';
+    html += '<h3>Webhook</h3><form id="hookForm" style="max-width:none"><div class="row"><input type="url" id="hUrl" placeholder="https://yoursite.com/api/payment-webhook" style="flex:1;min-width:220px"><button class="btn pri sm" type="submit">Save</button>' + (ok ? '<button class="btn out sm" type="button" id="hTest">Send test</button>' : '') + '</div><div class="msg" id="hMsg"></div></form><p class="mu">We send a signed POST here when a payment succeeds. See <a href="/docs.html#webhook">webhook docs</a>.</p></section>';
+
+    v.innerHTML = html; show('dash');
+    $('mnuB').onclick = function () { $('drw').classList.add('open'); $('ovl').classList.remove('hide'); };
+    $('ovl').onclick = function () { $('drw').classList.remove('open'); $('ovl').classList.add('hide'); };
+    Array.prototype.forEach.call(document.querySelectorAll('#drw button[data-pg]'), function (b) { b.onclick = function () { go(b.getAttribute('data-pg')); }; });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-go]'), function (b) { b.onclick = function () { go(b.getAttribute('data-go')); }; });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-refund]'), function (b) { b.onclick = function () { $('rfO').value = b.getAttribute('data-refund'); go('refunds'); }; });
+    $('bOut').onclick = logout; $('bRef').onclick = loadDash;
+    if ($('kycForm')) {
+      var kData = '';
+      $('kImg').onchange = function () { kData = ''; readImage(this.files[0]).then(function (x) { kData = x; $('kMsg').className = 'msg'; }).catch(function (e) { say($('kMsg'), 'er', e.message); }); };
+      $('kycForm').onsubmit = function (e) {
+        e.preventDefault();
+        if (!kData) { say($('kMsg'), 'er', 'Upload a clear photo of your PAN card first.'); return; }
+        post('/api/merchant/kyc', { panName: $('kName').value, panNumber: $('kPan').value, panImage: kData }, true)
+          .then(function (r) { if (r.success) { alert('KYC submitted. The admin will verify it.'); loadDash(); } else say($('kMsg'), 'er', r.message || 'Could not submit KYC'); })
+          .catch(function () { say($('kMsg'), 'er', 'Network error. Please try again.'); });
+      };
+    }
+    $('hUrl').value = m.webhookUrl || '';
+    $('hookForm').onsubmit = function (e) {
+      e.preventDefault();
+      post('/api/merchant/webhook', { webhookUrl: $('hUrl').value }, true).then(function (r) { say($('hMsg'), r.success ? 'ok' : 'er', r.success ? 'Webhook URL saved.' : r.message); });
+    };
+    if (ok) {
+      keyShown = false; paintKey(); bindPayout(d);
+      $('kShow').onclick = function () { keyShown = !keyShown; paintKey(); };
+      $('kCopy').onclick = function () { copy(apiKey, $('kCopy')); };
+      $('kNew').onclick = function () { if (confirm('Generate a new key? Your current key will stop working immediately.')) post('/api/merchant/regenerate-key', {}, true).then(function (r) { if (r.success) loadDash(); else alert(r.message); }); };
+      $('hTest').onclick = function () {
+        say($('hMsg'), 'ok', 'Sending test...');
+        post('/api/merchant/test-webhook', {}, true).then(function (r) {
+          if (!r.success) say($('hMsg'), 'er', r.message);
+          else if (r.delivered) say($('hMsg'), 'ok', 'Test delivered. Your server replied ' + r.httpStatus + '.');
+          else say($('hMsg'), 'er', 'Test not delivered. ' + (r.error ? r.error : 'Your server replied ' + r.httpStatus + ' (it must reply 2xx).'));
+        });
+      };
+      $('snip').textContent = ['curl -X POST ' + host + '/api/create-payment \\', '  -H "x-api-key: YOUR_API_KEY" \\', '  -H "Content-Type: application/json" \\', '  -d \'{"amount": 99, "orderId": "ORDER_1001"}\'', '', '# open the returned checkoutUrl for the customer, adding:', '#   &redirectUrl=' + encodeURIComponent(m.siteUrl || 'https://yoursite.com/thanks')].join('\n');
+    }
+    go(items.some(function (i) { return i[0] === curPg; }) ? curPg : 'home');
+  }
+  function rate(r) { return r ? r + '%' : 'Free'; }
+  function kycHtml(m) {
+    var k = m.kycStatus || 'NONE', cls = k === 'VERIFIED' ? 'APPROVED' : k === 'REJECTED' ? 'REJECTED' : 'PENDING';
+    var h = '<h3>KYC verification</h3><div class="kv"><span>Status</span><b><span class="badge ' + cls + '">' + (k === 'NONE' ? 'NOT SUBMITTED' : esc(k)) + '</span></b></div>';
+    if (m.panMasked) h += '<div class="kv"><span>PAN</span><b>' + esc(m.panMasked) + ' · ' + esc(m.panName) + '</b></div>';
+    if (k !== 'VERIFIED') h += '<p class="mu">' + (k === 'SUBMITTED' ? 'Submitted. You can upload again if something was wrong.' : 'Submit your PAN details so the admin can verify your account.') + '</p><form id="kycForm" style="max-width:520px"><label>Name as printed on PAN card<input type="text" id="kName" maxlength="80" required></label><label>PAN number<input type="text" id="kPan" maxlength="10" placeholder="ABCDE1234F" style="text-transform:uppercase" required></label><label>Photo of PAN card<input type="file" id="kImg" accept="image/*" required></label><button class="btn pri" type="submit">Submit KYC</button><div class="msg" id="kMsg" role="alert"></div></form>';
+    return h;
+  }
+  function refundDocHtml(d) {
+    var pc = d.config.refundPercent;
+    return '<ol class="mu"><li>You can refund any paid order, fully or partly. Use the Refund button in Orders, or open Refunds and type the order ID.</li><li>Enter the amount (empty means the full remaining amount) and a reason. The customer UPI ID is optional but helps the admin find the payer.</li><li>The admin sends the money back to the customer from the same payment account and enters the refund UTR. Status becomes REFUNDED.</li><li>The payment fee of the order (5% on Free, ₹1 on Pro) is never refunded. It stays cut.</li><li>Every refund has a ' + pc + '% refund charge on the refunded amount, on all plans. It is cut from your available balance.</li><li>From your balance we take refund amount plus refund charge. A pending refund already lowers your balance; if the admin rejects it, everything comes back.</li></ol>';
+  }
+  function refundsHtml(d) {
+    var h = '<h3>Refund a payment</h3><form id="rfForm" style="max-width:520px"><label>Order ID<input type="text" id="rfO" maxlength="100" placeholder="ORDER_1001" required></label>' +
+      '<label>Amount in ₹<input type="text" id="rfA" inputmode="decimal" placeholder="Empty = full amount"></label><div class="mu" id="rfPrev"></div>' +
+      '<label>Reason<input type="text" id="rfR" maxlength="200" placeholder="Customer cancelled the order" required></label>' +
+      '<label>Customer UPI ID (optional)<input type="text" id="rfU" maxlength="70" placeholder="name@bank"></label>' +
+      '<button class="btn pri" type="submit">Request refund</button><div class="msg" id="rfMsg" role="alert"></div></form>';
+    h += '<h3>Refund history</h3><div class="tw"><table><thead><tr><th>Date</th><th>Order</th><th>Refund</th><th>Charge</th><th>Taken from balance</th><th>Status</th><th>UTR / note</th></tr></thead><tbody>' +
+      ((d.refunds || []).length ? d.refunds.map(function (r) { var cls = r.status === 'REFUNDED' ? 'SUCCESS' : r.status === 'REJECTED' ? 'FAILED' : 'PENDING'; return '<tr><td>' + new Date(r.createdAt).toLocaleString('en-IN') + '</td><td>' + esc(r.orderId) + '</td><td>' + inr(r.amount) + '</td><td>' + inr(r.charge || 0) + '</td><td>' + inr(r.deduct) + '</td><td><span class="st ' + cls + '">' + esc(r.status) + '</span></td><td>' + esc(r.utr || r.note || '-') + '</td></tr>'; }).join('') : '<tr><td colspan="7" class="mu">No refunds yet.</td></tr>') + '</tbody></table></div>';
+    return h;
+  }
+  function plansHtml(d) {
+    var c = d.config, P = c.plans, pl = d.plan, F = P.FREE, R = P.PAID;
+    return '<h3>Plans and fees</h3><div class="pl"><div class="' + (pl === 'FREE' ? 'cur' : '') + '"><b>Free ' + (pl === 'FREE' ? '(current)' : '') + '</b><br>₹0 per month<br>' + F.percent + '% on every transaction<br>Payout: NEFT ' + rate(F.payoutRates.NEFT) + ', IMPS ' + rate(F.payoutRates.IMPS) + ', UPI ' + rate(F.payoutRates.UPI) + '</div>' +
+      '<div class="' + (pl === 'PAID' ? 'cur' : '') + '"><b>Pro ' + (pl === 'PAID' ? '(active till ' + new Date(d.merchant.planExpiresAt).toLocaleDateString('en-IN') + ')' : '') + '</b><br>₹' + R.monthly + ' per month<br>₹' + R.perTxn + ' per transaction<br>Payout: NEFT ' + rate(R.payoutRates.NEFT) + ', IMPS ' + rate(R.payoutRates.IMPS) + ', UPI ' + rate(R.payoutRates.UPI) + '</div></div>' +
+      '<div class="row"><button class="btn pri sm" type="button" id="upg">' + (pl === 'PAID' ? 'Renew Pro for ' + c.planDays + ' days' : 'Upgrade to Pro') + ' (₹' + R.monthly + ' from balance)</button></div><p class="mu">Money reaches your balance ' + c.settlementDays + ' working days after each payment. A plan change applies to new orders only. The payment fee is never refunded, and every refund has a ' + c.refundPercent + '% refund charge on all plans.</p>';
+  }
+  function payDocHtml(d) {
+    var c = d.config;
+    return '<ol class="mu"><li>Every successful order adds the amount minus the plan fee to your balance after ' + c.settlementDays + ' working days (Mon-Fri).</li><li>Open Payouts, choose NEFT or IMPS (holder name, account number, IFSC) or UPI (UPI ID), then the amount (minimum ₹' + c.minPayout + ').</li><li>The charge depends on your plan and method (see Plans and fees). It is cut from the amount: you receive amount minus charge.</li><li>The admin sends the money and enters the UTR number. Status becomes PAID and the UTR shows in your payout history.</li><li>If the admin rejects a request, the full amount returns to your available balance.</li><li>Check account details carefully. A transfer to wrong details cannot be reversed.</li></ol>';
+  }
+  function payoutHtml(d) {
+    var b = d.balance, c = d.config;
+    var h = '<h3>Request a payout</h3><div class="stats"><div><small>Available to withdraw</small><b>' + inr(b.available) + '</b></div><div><small>Payout requested</small><b>' + inr(b.requested) + '</b></div></div>' +
+      '<form id="poForm" style="max-width:520px"><label>Payout method<select id="poM"><option value="NEFT">Bank account (NEFT)</option><option value="IMPS">Bank account (IMPS)</option><option value="UPI">UPI</option></select></label>' +
+      '<label>Amount in ₹<input type="text" id="poA" inputmode="decimal" placeholder="Minimum ' + c.minPayout + '"></label>' +
+      '<div id="poBank" style="display:grid;gap:12px"><label>Account holder name<input type="text" id="poN" maxlength="80"></label><label>Account number<input type="text" id="poAc" inputmode="numeric" maxlength="22"></label><label>IFSC code<input type="text" id="poI" maxlength="11" placeholder="SBIN0001234" style="text-transform:uppercase"></label></div>' +
+      '<div id="poUpi" class="hide"><label>UPI ID<input type="text" id="poU" maxlength="70" placeholder="name@bank"></label></div>' +
+      '<div class="mu" id="poPrev"></div><button class="btn pri" type="submit">Request payout</button><div class="msg" id="poMsg" role="alert"></div></form>';
+    h += '<h3>Payout history</h3><div class="tw"><table><thead><tr><th>Date</th><th>Method</th><th>Amount</th><th>Charge</th><th>You receive</th><th>Status</th><th>UTR / note</th></tr></thead><tbody>' +
+      (d.payouts.length ? d.payouts.map(function (p) { var cls = p.status === 'PAID' ? 'SUCCESS' : p.status === 'REJECTED' ? 'FAILED' : 'PENDING'; return '<tr><td>' + new Date(p.createdAt).toLocaleString('en-IN') + '</td><td>' + esc(p.method) + '</td><td>' + inr(p.amount) + '</td><td>' + inr(p.fee) + '</td><td>' + inr(p.payable) + '</td><td><span class="st ' + cls + '">' + esc(p.status) + '</span></td><td>' + esc(p.utr || p.note || '-') + '</td></tr>'; }).join('') : '<tr><td colspan="7" class="mu">No payouts yet.</td></tr>') + '</tbody></table></div>';
+    return h;
+  }
+  function bindPayout(d) {
+    var M = $('poM'); if (!M) return; var rates = d.config.plans[d.plan].payoutRates;
+    function prev() {
+      var a = parseFloat($('poA').value) || 0, r = rates[M.value], f = Math.round(a * r) / 100;
+      $('poBank').classList.toggle('hide', M.value === 'UPI'); $('poUpi').classList.toggle('hide', M.value !== 'UPI');
+      $('poPrev').textContent = a ? 'Charge (' + rate(r) + '): ' + inr(f) + '  ·  You receive: ' + inr(a - f) : 'Charge on your plan for this method: ' + rate(r);
+    }
+    M.onchange = prev; $('poA').oninput = prev; prev();
+    $('poForm').onsubmit = function (e) {
+      e.preventDefault(); $('poMsg').className = 'msg';
+      post('/api/merchant/payout', { method: M.value, amount: $('poA').value, accountName: $('poN').value, accountNumber: $('poAc').value, ifsc: $('poI').value, upiId: $('poU').value }, true)
+        .then(function (r) { if (r.success) { alert('Payout requested. The admin will pay it and add the UTR.'); loadDash(); } else say($('poMsg'), 'er', r.message || 'Could not request payout'); })
+        .catch(function () { say($('poMsg'), 'er', 'Network error. Please try again.'); });
+    };
+    function rfPrev() {
+      var a = parseFloat($('rfA').value) || 0, pc = d.config.refundPercent, c = Math.round(a * pc) / 100;
+      $('rfPrev').textContent = a ? 'Refund charge (' + pc + '%): ' + inr(c) + '  ·  Taken from your balance: ' + inr(a + c) : 'Refund charge: ' + pc + '% of the refund amount, cut from your available balance. The payment fee is not refunded.';
+    }
+    $('rfA').oninput = rfPrev; rfPrev();
+    $('rfForm').onsubmit = function (e) {
+      e.preventDefault(); $('rfMsg').className = 'msg';
+      post('/api/merchant/refund', { orderId: $('rfO').value, amount: $('rfA').value, reason: $('rfR').value, customerUpi: $('rfU').value }, true)
+        .then(function (r) { if (r.success) { alert('Refund requested. The admin will refund the customer and add the UTR.'); loadDash(); } else say($('rfMsg'), 'er', r.message || 'Could not request refund'); })
+        .catch(function () { say($('rfMsg'), 'er', 'Network error. Please try again.'); });
+    };
+    $('upg').onclick = function () { if (confirm('Buy the Pro plan for ₹' + d.config.plans.PAID.monthly + ' from your available balance?')) post('/api/merchant/upgrade', {}, true).then(function (r) { if (r.success) loadDash(); else alert(r.message); }); };
+  }
+  function paintKey() { $('kv').textContent = keyShown ? apiKey : apiKey.slice(0, 8) + '••••••••••••••••••••••••••••••••'; $('kShow').textContent = keyShown ? 'Hide' : 'Show'; }
+
+  if (session) loadDash();
+  if (!session && location.hash === '#login') show('log');
+})();
+</script>
+</body>
+</html>
