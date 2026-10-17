@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/assets/favicon.png"><link rel="apple-touch-icon" href="/assets/favicon.png"><meta name="theme-color" content="#26338a"><script src="/loader.js"></script>
+<title>Merchant Gateway - Accept UPI payments on your site | TaknaPay.in</title>
+<meta name="description" content="Register your website, get verified, and accept UPI payments with a hosted checkout, signed webhooks, refunds and fast payouts.">
+<style>
+:root{--navy:#26338a;--navy-d:#141c55;--navy-l:#eef0fb;--green:#4fae55;--green-d:#3b9442;--green-l:#e9f6ea;--ink:#101a3a;--mu:#5d6b8c;--line:#e4e8f3;--bg:#f4f6fb;--wh:#fff;--ok:#0f9d58;--okbg:#e8f6ee;--er:#d93025;--erbg:#fdeceb;--wa:#b26a00;--wabg:#fff4e0;--blue:#3b5bdb}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;line-height:1.55}
+a{color:var(--navy)}img{max-width:100%}
+.hide{display:none!important}
+.w{max-width:1120px;margin:0 auto;padding:0 20px}
+svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:10px;padding:12px 20px;font:inherit;font-weight:700;font-size:15px;cursor:pointer;text-decoration:none;transition:transform .15s,box-shadow .15s,background .15s,border-color .15s;width:auto}
+.btn:hover{transform:translateY(-1px)}
+.btn:focus-visible,.tab:focus-visible,.drw button:focus-visible{outline:3px solid #3b5bdb55;outline-offset:2px}
+.btn.pri{background:var(--navy);color:#fff;box-shadow:0 8px 20px -8px rgba(38,51,138,.6)}.btn.pri:hover{background:var(--navy-d)}
+.btn.grn{background:var(--green);color:#fff;box-shadow:0 8px 20px -8px rgba(79,174,85,.7)}.btn.grn:hover{background:var(--green-d)}
+.btn.out{background:#fff;color:var(--navy);border:1.5px solid var(--line)}.btn.out:hover{border-color:var(--navy)}
+.btn.sm{padding:9px 15px;font-size:14px}
+.btn[disabled]{opacity:.6;cursor:wait;transform:none}
+form .btn{width:100%}
+
+/* public nav */
+.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav .w{display:flex;align-items:center;gap:22px;height:66px}
+.nav .lg img{height:44px;width:auto;display:block}
+.nav .links{display:flex;gap:22px;margin-left:14px;font-size:14.5px;font-weight:600}
+.nav .links a{color:var(--mu);text-decoration:none}.nav .links a:hover{color:var(--navy)}
+.nav .cta{margin-left:auto;display:flex;gap:10px}
+@media(max-width:860px){.nav .links{display:none}.nav .cta .out{display:none}}
+
+/* hero */
+.hero{background:radial-gradient(900px 480px at 90% -10%,#dfe4ff 0,transparent 60%),radial-gradient(700px 400px at -5% 30%,#e3f5e4 0,transparent 55%),var(--wh);padding:54px 0 70px}
+.hero .w{display:grid;grid-template-columns:1.05fr .95fr;gap:44px;align-items:start}
+.pill{display:inline-flex;align-items:center;gap:8px;background:var(--green-l);color:var(--green-d);font-weight:700;font-size:13px;padding:7px 14px;border-radius:99px}
+.pill i{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px rgba(79,174,85,.25)}
+.hero h1{font-size:clamp(32px,4.4vw,50px);line-height:1.08;letter-spacing:-1.4px;margin:18px 0 14px;font-weight:800}
+.hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--navy),var(--green));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .lead{font-size:17.5px;color:var(--mu);max-width:540px;margin:0 0 22px}
+.hero .acts{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:26px}
+.mini{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:560px}
+.mini div{display:flex;gap:11px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:13.5px;color:var(--mu);line-height:1.4}
+.mini b{display:block;color:var(--ink);font-size:14.5px}
+.mini .ic{width:34px;height:34px;border-radius:10px;background:var(--navy-l);color:var(--navy);display:grid;place-items:center;flex:none}
+.mini .ic.g{background:var(--green-l);color:var(--green-d)}
+
+/* auth card */
+.authcard{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 30px 60px -26px rgba(38,51,138,.4);padding:22px;scroll-margin-top:84px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--bg);padding:5px;border-radius:12px;margin-bottom:18px}
+.tab{background:none;border:0;border-radius:9px;padding:10px 12px;font:inherit;font-weight:700;color:var(--mu);cursor:pointer}
+.tab.on{background:#fff;color:var(--navy);box-shadow:0 2px 8px -2px rgba(16,26,58,.2)}
+.ah{margin:0 0 4px;font-size:19px;letter-spacing:-.3px}.ap{margin:0 0 14px;color:var(--mu);font-size:13.5px}
+form{display:grid;gap:12px}
+label{font-size:13px;font-weight:600;display:grid;gap:5px}
+label small{font-weight:400;color:var(--mu);font-size:12.5px}
+input[type=text],input[type=email],input[type=url],input[type=password],select{border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;font:inherit;width:100%;color:var(--ink);background:#fff}
+input:focus,select:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px #26338a22}
+input[type=file]{border:1.5px dashed #c9d1ea;border-radius:10px;padding:10px;width:100%;font:inherit;background:#f9fbff}
+label.chk{display:flex;gap:9px;align-items:flex-start;font-weight:400;font-size:13px;color:var(--mu)}label.chk input{width:auto;margin-top:3px}
+.fs{border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:12px;margin:0;min-width:0}.fs legend{font-weight:800;font-size:13.5px;padding:0 8px;color:var(--navy)}
+.thumb{max-width:100%;max-height:150px;border-radius:10px;border:1px solid var(--line);display:none}
+.msg{font-size:13.5px;padding:10px 12px;border-radius:10px;display:none}
+.msg.er{display:block;background:var(--erbg);color:var(--er)}.msg.ok{display:block;background:var(--okbg);color:var(--ok)}
+.tokbox{background:#fffaf0;border:1.5px solid #f2d28a;border-radius:14px;padding:16px}
+.tokbox code{display:block;background:#fff;border:1px solid var(--line);border-radius:10px;padding:11px;font-size:15px;word-break:break-all;margin:10px 0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mu{color:var(--mu);font-size:13px}
+
+/* landing sections */
+section.ls{padding:70px 0}
+.sec-h{text-align:center;max-width:640px;margin:0 auto 38px}
+.sec-h .tag{color:var(--green-d);font-weight:800;font-size:13px;letter-spacing:1.4px;text-transform:uppercase}
+.sec-h h2{font-size:clamp(25px,3.4vw,36px);letter-spacing:-.8px;line-height:1.15;margin:8px 0 10px}
+.sec-h p{color:var(--mu);margin:0;font-size:16px}
+.fg{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.fc{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;transition:box-shadow .2s,transform .2s}
+.fc:hover{box-shadow:0 22px 44px -22px rgba(38,51,138,.4);transform:translateY(-3px)}
+.fc .ic{width:44px;height:44px;border-radius:12px;background:var(--navy-l);color:var(--navy);display:grid;place-items:center;margin-bottom:12px}
+.fc:nth-child(even) .ic{background:var(--green-l);color:var(--green-d)}
+.fc h4{margin:0 0 4px;font-size:16px}.fc p{margin:0;color:var(--mu);font-size:14px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;counter-reset:s}
+.steps div{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;position:relative}
+.steps div:before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--navy);color:#fff;font-weight:800;margin-bottom:12px}
+.steps b{display:block;margin-bottom:4px;font-size:16px}.steps span{color:var(--mu);font-size:14px}
+.alt{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.pr{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;max-width:820px;margin:0 auto}
+.pc{background:#fff;border:1px solid var(--line);border-radius:20px;padding:26px;display:flex;flex-direction:column}
+.pc.hot{border:2px solid var(--green);box-shadow:0 24px 50px -24px rgba(79,174,85,.5)}
+.pc h3{margin:0;font-size:19px}.pc .sb{color:var(--mu);font-size:13.5px;margin:2px 0 12px}
+.pc .big{font-size:36px;font-weight:800;letter-spacing:-1px;line-height:1.1}.pc .big small{font-size:14px;color:var(--mu);font-weight:600;letter-spacing:0}
+.pc table{width:100%;border-collapse:collapse;margin:16px 0 0;font-size:14.5px}
+.pc td{padding:9px 0;border-top:1px solid var(--line)}.pc td:last-child{text-align:right;font-weight:800}
+.dev{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center}
+.dev h2{font-size:clamp(25px,3.2vw,34px);letter-spacing:-.7px;margin:8px 0 10px;line-height:1.15}
+.dev ul{list-style:none;padding:0;margin:16px 0 20px;display:grid;gap:9px;font-size:14.5px;color:var(--mu)}
+.dev li:before{content:"✓";color:var(--green);font-weight:800;margin-right:9px}
+pre{background:#0d1b33;color:#e6eefc;border-radius:14px;padding:16px;overflow-x:auto;font-size:12.5px;line-height:1.65;margin:8px 0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.faq{max-width:760px;margin:0 auto;display:grid;gap:12px}
+details{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px 20px}
+summary{cursor:pointer;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}summary:after{content:"+";font-size:22px;line-height:1;color:var(--navy)}
+details[open] summary:after{content:"–"}details p{margin:10px 0 0;color:var(--mu);font-size:15px}
+.ctab{background:linear-gradient(135deg,var(--navy-d),var(--navy));color:#fff;text-align:center;border-radius:26px;padding:48px 22px}
+.ctab h2{margin:0 0 8px;font-size:clamp(24px,3.4vw,34px);letter-spacing:-.7px}.ctab p{margin:0 0 22px;opacity:.85}
+.ctab .acts{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+footer{background:var(--ink);color:#c5cce2;padding:36px 0 22px;margin-top:70px;font-size:14px}
+footer .w{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+footer .lgf{background:#fff;border-radius:10px;padding:4px 10px;line-height:0}footer .lgf img{height:34px}
+footer a{color:#c5cce2;text-decoration:none}footer a:hover{color:#fff}
+footer .cp{margin-left:auto;opacity:.7;font-size:13px}
+
+@media(max-width:980px){.hero .w,.dev{grid-template-columns:1fr}.fg,.steps{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.fg,.steps,.pr,.mini{grid-template-columns:1fr}.hero{padding:34px 0 50px}section.ls{padding:50px 0}footer .cp{margin-left:0}.authcard{padding:16px;border-radius:18px}}
+
+/* ============ DASHBOARD ============ */
+body.in-dash{background:var(--bg)}
+.app{display:grid;grid-template-columns:268px 1fr;min-height:100vh}
+.drw{background:linear-gradient(180deg,var(--navy-d),var(--navy));color:#fff;padding:18px 14px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh;overflow-y:auto}
+.drw .dlogo{background:#fff;border-radius:12px;padding:8px 12px;display:flex;justify-content:center;margin-bottom:14px}.drw .dlogo img{height:42px;width:auto}
+.drw .dh{display:flex;gap:11px;align-items:center;padding:10px;border-radius:12px;background:rgba(255,255,255,.1);margin-bottom:12px}
+.drw .dh .av{width:38px;height:38px;border-radius:50%;background:var(--green);display:grid;place-items:center;font-weight:800;flex:none}
+.drw .dh b{display:block;font-size:14.5px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.drw .dh small{display:block;opacity:.7;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.drw .dh div{min-width:0}
+.drw button{background:none;border:0;color:#cfd6f5;text-align:left;padding:11px 12px;border-radius:10px;font:inherit;font-weight:600;font-size:14.5px;cursor:pointer;display:flex;align-items:center;gap:11px}
+.drw button:hover{background:rgba(255,255,255,.1);color:#fff}.drw button.on{background:#fff;color:var(--navy)}
+.drw .sp{flex:1}
+.ovl{position:fixed;inset:0;background:rgba(10,15,40,.55);z-index:40}
+.amain{min-width:0}
+.mbar{display:flex;align-items:center;gap:10px;padding:14px 26px;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30}
+.mbar b{flex:1;font-size:19px;letter-spacing:-.3px}
+.mbar .ham{display:none}
+.cont{padding:24px 26px 50px;max-width:1100px}
+.badge{display:inline-block;padding:4px 11px;border-radius:99px;font-size:12px;font-weight:800;letter-spacing:.2px}
+.badge.APPROVED{background:var(--okbg);color:var(--ok)}.badge.PENDING{background:var(--wabg);color:var(--wa)}.badge.REJECTED,.badge.SUSPENDED{background:var(--erbg);color:var(--er)}
+.banner{border-radius:14px;padding:14px 16px;margin-bottom:18px;font-size:14px;line-height:1.6}
+.banner.PENDING{background:var(--wabg);color:var(--wa);border:1px solid #f2d28a}.banner.REJECTED,.banner.SUSPENDED{background:var(--erbg);color:var(--er);border:1px solid #f4b8b3}
+.pg{display:grid;gap:18px;align-content:start}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;min-width:0}
+.card.pad0{padding:0;overflow:hidden}
+.card h3{margin:0 0 4px;font-size:17px;letter-spacing:-.2px}.card .sub{color:var(--mu);font-size:13.5px;margin:0 0 14px}
+.pg>.card>h3:not(:first-child){margin-top:22px}
+.card h3+form,.card h3+.tw{margin-top:12px}
+.welcome{background:linear-gradient(135deg,var(--navy),#3b4fc4);color:#fff;border:0;display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap;position:relative;overflow:hidden}
+.welcome:after{content:"";position:absolute;right:-50px;top:-70px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.08)}
+.welcome h2{margin:0 0 4px;font-size:22px;letter-spacing:-.4px}.welcome p{margin:0;opacity:.85;font-size:14px}
+.welcome .row{position:relative;z-index:1}
+.welcome .btn.out{background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.35)}.welcome .btn.out:hover{background:rgba(255,255,255,.24);border-color:#fff}
+.welcome .btn.grn{box-shadow:none}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;gap:13px;align-items:center}
+.kpi .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex:none;background:var(--navy-l);color:var(--navy)}
+.kpi.g .ic{background:var(--green-l);color:var(--green-d)}.kpi.o .ic{background:var(--wabg);color:var(--wa)}.kpi.b .ic{background:#e7efff;color:var(--blue)}
+.kpi small{display:block;color:var(--mu);font-size:12.5px}.kpi b{font-size:22px;letter-spacing:-.4px;line-height:1.2;display:block}
+.bal{display:grid;grid-template-columns:1.2fr 1fr;gap:14px}
+.bal .big{background:linear-gradient(135deg,#1c8a3d,var(--green));color:#fff;border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:6px}
+.bal .big small{opacity:.9;font-size:13px}.bal .big b{font-size:34px;letter-spacing:-1px;line-height:1.1}.bal .big .btn{margin-top:10px;align-self:flex-start;background:#fff;color:#1c6b33;box-shadow:none}
+.bal .sm4{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bal .sm4 div{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:#fff}
+.bal .sm4 small{display:block;color:var(--mu);font-size:12px}.bal .sm4 b{font-size:17px}
+.rate{margin-top:14px}.rate .bar{height:9px;border-radius:99px;background:var(--bg);overflow:hidden}.rate .bar i{display:block;height:100%;background:var(--green);border-radius:99px}.rate small{color:var(--mu);font-size:12.5px;display:flex;justify-content:space-between;margin-bottom:6px}
+.chk-list{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:8px}
+.chk-list li{display:flex;gap:11px;align-items:center;font-size:14px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;color:var(--mu)}
+.chk-list li .dot{width:24px;height:24px;border-radius:50%;border:2px solid #cdd4ea;display:grid;place-items:center;flex:none;color:#fff}
+.chk-list li.done{color:var(--ink);background:var(--green-l);border-color:#cfe9d1}.chk-list li.done .dot{background:var(--green);border-color:var(--green)}
+.chk-list li .dot svg{width:14px;height:14px;stroke-width:3}
+.chk-list li button{margin-left:auto}
+.prog{display:flex;align-items:center;gap:12px;margin-top:6px}.prog .bar{flex:1;height:8px;border-radius:99px;background:var(--bg);overflow:hidden}.prog .bar i{display:block;height:100%;background:var(--navy);border-radius:99px}.prog span{font-size:13px;font-weight:700;color:var(--navy)}
+.ftg{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px}
+.ft{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px;text-align:left;font:inherit;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;gap:6px;transition:box-shadow .2s,transform .2s,border-color .2s}
+.ft:hover{box-shadow:0 16px 34px -18px rgba(38,51,138,.5);transform:translateY(-2px);border-color:#c7cff0}
+.ft .ic{width:38px;height:38px;border-radius:10px;background:var(--navy-l);color:var(--navy);display:grid;place-items:center}
+.ft:nth-child(3n+2) .ic{background:var(--green-l);color:var(--green-d)}
+.ft b{font-size:14.5px}.ft span{color:var(--mu);font-size:12.5px;line-height:1.45}
+.ft.lock{opacity:.6;cursor:not-allowed}.ft.lock:hover{transform:none;box-shadow:none;border-color:var(--line)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.stats div{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:#f9fbff}
+.stats small{color:var(--mu);display:block;font-size:12.5px}.stats b{font-size:20px}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:14px}
+table{width:100%;border-collapse:collapse;min-width:520px}
+th,td{padding:11px 12px;text-align:left;border-bottom:1px solid var(--line);font-size:13.5px;white-space:nowrap}
+th{color:var(--mu);font-weight:700;background:#f9fbff;font-size:12.5px;text-transform:uppercase;letter-spacing:.4px}
+tbody tr:hover td{background:#fafbff}tbody tr:last-child td{border-bottom:0}
+.card.pad0 .tw{border:0;border-radius:0}
+.st{padding:3px 10px;border-radius:99px;font-size:12px;font-weight:800;display:inline-block}.st.SUCCESS{background:var(--okbg);color:var(--ok)}.st.PENDING{background:var(--wabg);color:var(--wa)}.st.FAILED{background:var(--erbg);color:var(--er)}
+.stats+form,.stats+h3{margin-top:16px}
+.empty{text-align:center;color:var(--mu);padding:26px 10px!important;white-space:normal!important}
+.keybox{border:1px solid var(--line);border-radius:14px;padding:14px;background:#f9fbff}
+.keybox code{display:block;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px;word-break:break-all;margin:8px 0;font-size:14px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.kv{display:grid;grid-template-columns:140px 1fr;gap:8px;font-size:14px;padding:10px 0;border-bottom:1px solid var(--line)}.kv span{color:var(--mu)}.kv b{word-break:break-word}
+.pl{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:12px 0}
+.pl>div{border:1.5px solid var(--line);border-radius:16px;padding:18px;font-size:14px;line-height:1.8;background:#fff}
+.pl .cur{border-color:var(--green);background:var(--green-l)}
+.pl b{font-size:17px}
+ol.mu{padding-left:20px;display:grid;gap:8px;line-height:1.6}
+@media(max-width:1000px){.kpis,.ftg{grid-template-columns:1fr 1fr}.bal{grid-template-columns:1fr}}
+@media(max-width:860px){
+ .app{grid-template-columns:1fr}
+ .drw{position:fixed;left:0;top:0;bottom:0;width:276px;max-width:84vw;transform:translateX(-104%);transition:transform .22s;z-index:50;height:auto}
+ .drw.open{transform:none}
+ .mbar{padding:12px 14px}.mbar .ham{display:inline-flex}.mbar b{font-size:17px}
+ .cont{padding:16px 14px 40px}
+}
+@media(max-width:520px){.kpis,.ftg{grid-template-columns:1fr}.kpi b{font-size:20px}.kv{grid-template-columns:1fr;gap:2px}.welcome h2{font-size:19px}.bal .big b{font-size:30px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<!-- ============ PUBLIC LANDING (hidden after login) ============ -->
+<div id="landing">
+<header class="nav"><div class="w">
+  <a class="lg" href="/"><img src="/assets/logo.png" alt="TaknaPay.in"></a>
+  <nav class="links"><a href="#features">Features</a><a href="#how">How it works</a><a href="#pricing">Pricing</a><a href="#developers">Developers</a><a href="#faq">FAQ</a></nav>
+  <div class="cta"><a class="btn out sm" href="/">Home</a><a class="btn pri sm" href="#start" onclick="show('log')">Merchant login</a></div>
+</div></header>
+
+<div class="hero"><div class="w">
+  <div>
+    <span class="pill"><i></i>Merchant Gateway · Instant verification</span>
+    <h1>Accept UPI payments on <em>your website,</em> automatically.</h1>
+    <p class="lead">Register your business, get verified instantly and receive your API key. Send customers to a hosted checkout with a dynamic UPI QR. We confirm every payment and notify your server by signed webhook.</p>
+    <div class="acts">
+      <a class="btn grn" href="#start" onclick="show('reg')">Register as merchant →</a>
+      <a class="btn out" href="#start" onclick="show('log')">Dashboard login</a>
+    </div>
+    <div class="mini">
+      <div><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></span><span><b>Instant verification</b>Request in, verified right away</span></div>
+      <div><span class="ic g"><svg class="i" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span><span><b>Auto confirmation</b>Orders marked paid by themselves</span></div>
+      <div><span class="ic g"><svg class="i" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10 21a2 2 0 0 0 4 0"/></svg></span><span><b>Signed webhooks</b>HMAC-SHA256, retried until 2xx</span></div>
+      <div><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M3 10l9-6 9 6M5 10v8M9 10v8M15 10v8M19 10v8M3 21h18"/></svg></span><span><b>Fast payouts</b>NEFT, IMPS or UPI</span></div>
+    </div>
+  </div>
+
+  <div class="authcard" id="start">
+    <div class="tabs" role="tablist">
+      <button class="tab on" id="tReg" type="button" role="tab" onclick="show('reg')">Register</button>
+      <button class="tab" id="tLog" type="button" role="tab" onclick="show('log')">Dashboard login</button>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="vReg">
+      <h2 class="ah">Create your merchant account</h2>
+      <p class="ap">Takes about two minutes. You need your PAN card and website address.</p>
+      <form id="regForm" autocomplete="on">
+        <fieldset class="fs"><legend>1. Identity verification (KYC)</legend>
+          <label>Name as printed on PAN card<input type="text" id="rPanName" maxlength="80" required></label>
+          <label>PAN number<input type="text" id="rPan" maxlength="10" placeholder="ABCDE1234F" style="text-transform:uppercase" autocomplete="off" required></label>
+          <label>Photo of PAN card<input type="file" id="rPanImg" accept="image/*" required><small>Clear photo, all four corners visible. JPG or PNG. Only the admin can see it.</small></label>
+          <img class="thumb" id="rThumb" alt="PAN card preview">
+        </fieldset>
+        <fieldset class="fs"><legend>2. Business details</legend>
+          <label>Business or site name<input type="text" id="rName" maxlength="80" required></label>
+          <label>Email<input type="email" id="rEmail" maxlength="120" required></label>
+          <label>Website URL<input type="url" id="rSite" placeholder="https://yoursite.com" required><small>Customers can only be sent back to this website after payment.</small></label>
+          <label>Webhook URL (optional)<input type="url" id="rHook" placeholder="https://yoursite.com/api/payment-webhook"><small>We call this address when a payment succeeds. Must be https. You can add it later.</small></label>
+          <label>Phone or Telegram (optional)<input type="text" id="rContact" maxlength="30"></label>
+        </fieldset>
+        <label class="chk"><input type="checkbox" id="rAgree" required><span>I confirm that the PAN details and photo are mine and true, and I accept that my account can be rejected or suspended if they are not.</span></label>
+        <button class="btn pri" id="rBtn" type="submit">Submit registration</button>
+        <div class="msg" id="rMsg" role="alert"></div>
+      </form>
+      <div class="tokbox hide" id="tokBox">
+        <b>Registration received. Your KYC is under review.</b>
+        <p class="mu" style="margin:6px 0 0">This is your dashboard login token. It is shown only once, so copy it now. If you lose it, the admin can issue a new one.</p>
+        <code id="tokVal"></code>
+        <div class="row"><button class="btn out sm" type="button" id="tokCopy">Copy token</button><button class="btn pri sm" type="button" onclick="show('log')">Go to dashboard login</button></div>
+      </div>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="vLog" class="hide">
+      <h2 class="ah">Welcome back</h2>
+      <p class="ap">Log in with your email and the login token you received when you registered.</p>
+      <form id="logForm">
+        <label>Email<input type="email" id="lEmail" required></label>
+        <label>Login token<input type="password" id="lTok" autocomplete="current-password" required></label>
+        <button class="btn pri" type="submit">Log in</button>
+        <div class="msg" id="lMsg" role="alert"></div>
+      </form>
+      <p class="mu" style="margin:14px 0 0">Lost your token? Contact the admin to get a new one. Looking for Payment Links? <a href="/links.html">Go here</a>.</p>
+    </div>
+  </div>
+</div></div>
+
+<section class="ls" id="features"><div class="w">
+  <div class="sec-h"><span class="tag">Features</span><h2>Everything a merchant needs, in one dashboard</h2><p>From the first test order to payouts and refunds, it is all here.</p></div>
+  <div class="fg">
+    <div class="fc"><div class="ic"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M20 20h1"/></svg></div><h4>Hosted checkout + dynamic QR</h4><p>Every order gets its own UPI QR and a one-tap “Pay with UPI app” button on mobile.</p></div>
+    <div class="fc"><div class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></div><h4>Automatic confirmation</h4><p>Payments are detected and marked paid automatically. No screenshots, no manual checks.</p></div>
+    <div class="fc"><div class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10 21a2 2 0 0 0 4 0"/></svg></div><h4>Signed webhooks</h4><p>Your server hears about every successful payment, signed with HMAC-SHA256 and retried.</p></div>
+    <div class="fc"><div class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></div><h4>Live orders table</h4><p>See every order, its status, the fee taken and exactly what you receive.</p></div>
+    <div class="fc"><div class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M3 10l9-6 9 6M5 10v8M9 10v8M15 10v8M19 10v8M3 21h18"/></svg></div><h4>Payouts</h4><p>Withdraw your balance by NEFT, IMPS or UPI. Track every request until the UTR arrives.</p></div>
+    <div class="fc"><div class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></svg></div><h4>Full and partial refunds</h4><p>Refund any paid order with a reason. The status is tracked from request to refund UTR.</p></div>
+    <div class="fc"><div class="ic"><svg class="i" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/></svg></div><h4>API key control</h4><p>View, copy and rotate your API key any time. A new key stops the old one instantly.</p></div>
+    <div class="fc"><div class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div><h4>PAN-verified &amp; safe</h4><p>KYC-verified accounts, and customers can only be returned to your registered website.</p></div>
+  </div>
+</div></section>
+
+<section class="ls alt" id="how"><div class="w">
+  <div class="sec-h"><span class="tag">How it works</span><h2>Live in four steps</h2></div>
+  <div class="steps">
+    <div><b>Register</b><span>Share your PAN details and website. You get a private login token.</span></div>
+    <div><b>Get verified</b><span>Your KYC is checked right away and your account is approved.</span></div>
+    <div><b>Integrate</b><span>Copy your API key and create orders with one API call.</span></div>
+    <div><b>Get paid</b><span>Customers pay by UPI, you are notified, and you withdraw your balance.</span></div>
+  </div>
+</div></section>
+
+<section class="ls" id="pricing"><div class="w">
+  <div class="sec-h"><span class="tag">Pricing</span><h2>Simple, transparent fees</h2><p>No setup fee. Start free and upgrade when you grow.</p></div>
+  <div class="pr">
+    <div class="pc">
+      <h3>Free</h3><div class="sb">For websites just starting out</div>
+      <div class="big"><span data-k="free.percent">5</span>% <small>per transaction</small></div>
+      <table>
+        <tr><td>Monthly fee</td><td>₹0</td></tr>
+        <tr><td>Payout by NEFT</td><td><span data-k="free.NEFT">1</span>%</td></tr>
+        <tr><td>Payout by IMPS</td><td><span data-k="free.IMPS">1.5</span>%</td></tr>
+        <tr><td>Payout by UPI</td><td><span data-k="free.UPI">2</span>%</td></tr>
+      </table>
+    </div>
+    <div class="pc hot">
+      <h3>Pro</h3><div class="sb">For growing businesses</div>
+      <div class="big">₹<span data-k="pro.monthly">499</span> <small>per 30 days</small></div>
+      <table>
+        <tr><td>Per transaction</td><td>₹<span data-k="pro.perTxn">1</span></td></tr>
+        <tr><td>Payout by NEFT</td><td><span data-k="pro.NEFT">0</span>%</td></tr>
+        <tr><td>Payout by IMPS</td><td><span data-k="pro.IMPS">0.5</span>%</td></tr>
+        <tr><td>Payout by UPI</td><td><span data-k="pro.UPI">0</span>%</td></tr>
+      </table>
+    </div>
+  </div>
+  <p class="mu" style="text-align:center;margin-top:16px">Refunds carry a <span data-k="refund">1</span>% charge. Minimum payout ₹<span data-k="minPayout">100</span>. Balance becomes withdrawable <span data-k="settle">3</span> working days after payment.</p>
+</div></section>
+
+<section class="ls alt" id="developers"><div class="w"><div class="dev">
+  <div>
+    <span class="tag" style="color:var(--green-d);font-weight:800;font-size:13px;letter-spacing:1.4px;text-transform:uppercase">For developers</span>
+    <h2>One API call to start a payment</h2>
+    <p class="mu" style="font-size:15px">Create an order, send the customer to the checkout URL we return, and wait for the webhook.</p>
+    <ul><li>Simple REST API with an <code>x-api-key</code> header</li><li>Signed webhooks with timestamp and HMAC signature</li><li>Return-to-site redirect locked to your domain</li></ul>
+    <a class="btn pri" href="/docs.html">Read the API docs</a>
+  </div>
+<pre>curl -X POST https://taknapay.in/api/create-payment \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"amount": 99, "orderId": "ORDER_1001"}'
+
+# → { "success": true,
+#     "checkoutUrl": "https://taknapay.in/?orderId=ORDER_1001" }</pre>
+</div></div></section>
+
+<section class="ls" id="faq"><div class="w">
+  <div class="sec-h"><span class="tag">FAQ</span><h2>Questions? Answered.</h2></div>
+  <div class="faq">
+    <details><summary>How fast is verification?</summary><p>Your request is verified instantly once you submit your PAN details, so you can start integrating right away. You can see the status in your dashboard.</p></details>
+    <details><summary>What do I need to register?</summary><p>Your name as on PAN, PAN number and a clear photo of the card, your business name, email and website address.</p></details>
+    <details><summary>When do I get my money?</summary><p>Each payment is added to your balance after the settlement period. Then request a payout by NEFT, IMPS or UPI from your dashboard.</p></details>
+    <details><summary>I lost my login token. What now?</summary><p>Contact the admin. They can issue a new login token for your account.</p></details>
+    <details><summary>Do you also offer simple payment links?</summary><p>Yes. If you do not have a website, use <a href="/links.html">Payment Links</a> instead.</p></details>
+  </div>
+</div></section>
+
+<section style="padding:0 0 10px"><div class="w"><div class="ctab">
+  <h2>Ready to start accepting UPI payments?</h2><p>Free to join. Verified instantly. Paid fast.</p>
+  <div class="acts"><a class="btn grn" href="#start" onclick="show('reg')">Register as merchant</a><a class="btn out" href="/docs.html" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.5)">API docs</a></div>
+</div></div></section>
+
+<footer><div class="w">
+  <a class="lgf" href="/"><img src="/assets/logo.png" alt="TaknaPay.in"></a>
+  <a href="/">Home</a><a href="/links.html">Payment Links</a><a href="/docs.html">API docs</a><a href="/ping.html">Status</a>
+  <span class="cp">© <span id="yr"></span> TaknaPay.in</span>
+</div></footer>
+</div>
+
+<!-- ============ DASHBOARD (shown after login) ============ -->
+<div id="vDash" class="app hide"></div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var session = sessionStorage.getItem('gwm') || null;
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function inr(n) { return '₹' + Number(n || 0).toLocaleString('en-IN'); }
+  function say(el, cls, text) { el.className = 'msg ' + cls; el.textContent = text; }
+  function copy(text, btn) { if (navigator.clipboard) navigator.clipboard.writeText(text).then(function () { var t = btn.textContent; btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = t; }, 1500); }); }
+
+  // Resizes a photo in the browser (max 1400px, JPEG) so the upload stays small
+  function readImage(file) {
+    return new Promise(function (resolve, reject) {
+      if (!file) return reject(new Error('Choose the PAN card photo.'));
+      if (!/^image\//.test(file.type)) return reject(new Error('Choose an image file (JPG or PNG).'));
+      var fr = new FileReader();
+      fr.onerror = function () { reject(new Error('Could not read the photo.')); };
+      fr.onload = function () {
+        var img = new Image();
+        img.onerror = function () { reject(new Error('This file is not a valid image.')); };
+        img.onload = function () {
+          var sc = Math.min(1, 1400 / Math.max(img.width, img.height)), c = document.createElement('canvas');
+          c.width = Math.round(img.width * sc); c.height = Math.round(img.height * sc);
+          var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); x.drawImage(img, 0, 0, c.width, c.height);
+          var q = 0.82, out = c.toDataURL('image/jpeg', q);
+          while (out.length > 1100000 && q > 0.4) { q -= 0.1; out = c.toDataURL('image/jpeg', q); }
+          resolve(out);
+        };
+        img.src = fr.result;
+      };
+      fr.readAsDataURL(file);
+    });
+  }
+  var regImg = '';
+  window.show = function (w) {
+    var dash = w === 'dash';
+    $('vReg').classList.toggle('hide', w !== 'reg'); $('vLog').classList.toggle('hide', w !== 'log');
+    $('tReg').classList.toggle('on', w === 'reg'); $('tLog').classList.toggle('on', w === 'log');
+    $('landing').classList.toggle('hide', dash); $('vDash').classList.toggle('hide', !dash);
+    document.body.classList.toggle('in-dash', dash);
+    if (dash) window.scrollTo(0, 0);
+  };
+
+  function post(url, body, auth) {
+    var h = { 'Content-Type': 'application/json' }; if (auth) h.Authorization = 'Bearer ' + session;
+    return fetch(url, { method: 'POST', headers: h, body: JSON.stringify(body || {}) }).then(function (r) { return r.json(); });
+  }
+
+  // ----- register
+  var regToken = '';
+  $('rPanImg').onchange = function () {
+    regImg = ''; $('rThumb').style.display = 'none';
+    readImage(this.files[0]).then(function (d) { regImg = d; $('rThumb').src = d; $('rThumb').style.display = 'block'; $('rMsg').className = 'msg'; })
+      .catch(function (e) { say($('rMsg'), 'er', e.message); });
+  };
+  $('regForm').onsubmit = function (e) {
+    e.preventDefault();
+    if (!regImg) { say($('rMsg'), 'er', 'Upload a clear photo of your PAN card first.'); return; }
+    var b = $('rBtn'); b.disabled = true; b.textContent = 'Submitting...'; $('rMsg').className = 'msg';
+    post('/api/merchant/register', { panName: $('rPanName').value, panNumber: $('rPan').value, panImage: regImg, agree: $('rAgree').checked, name: $('rName').value, email: $('rEmail').value, siteUrl: $('rSite').value, webhookUrl: $('rHook').value, contact: $('rContact').value })
+      .then(function (d) {
+        if (!d.success) { say($('rMsg'), 'er', d.message || 'Could not register'); return; }
+        regToken = d.token; $('tokVal').textContent = d.token;
+        $('regForm').classList.add('hide'); $('tokBox').classList.remove('hide');
+        $('lEmail').value = $('rEmail').value;
+      })
+      .catch(function () { say($('rMsg'), 'er', 'Network error. Please try again.'); })
+      .then(function () { b.disabled = false; b.textContent = 'Submit registration'; });
+  };
+  $('tokCopy').onclick = function () { copy(regToken, $('tokCopy')); };
+
+  // ----- login
+  $('logForm').onsubmit = function (e) {
+    e.preventDefault(); $('lMsg').className = 'msg';
+    post('/api/merchant/login', { email: $('lEmail').value, token: $('lTok').value })
+      .then(function (d) {
+        if (!d.success) { say($('lMsg'), 'er', d.message || 'Login failed'); return; }
+        session = d.token; sessionStorage.setItem('gwm', session); $('lTok').value = ''; loadDash();
+      })
+      .catch(function () { say($('lMsg'), 'er', 'Network error. Please try again.'); });
+  };
+
+  function logout() { sessionStorage.removeItem('gwm'); session = null; show('log'); window.scrollTo(0, 0); }
+
+  // ----- dashboard
+  var keyShown = false, apiKey = '', keyEverCopied = sessionStorage.getItem('gwk') === '1';
+  function loadDash() {
+    fetch('/api/merchant/me', { headers: { Authorization: 'Bearer ' + session }, cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (d) { if (!d.success) { logout(); return; } render(d); })
+      .catch(function () { logout(); });
+  }
+  var curPg = 'home';
+  function go(pg) {
+    curPg = pg;
+    var sec = document.querySelectorAll('#vDash .pg'), nav = document.querySelectorAll('#drw button[data-pg]'), t = pg;
+    for (var i = 0; i < sec.length; i++) sec[i].classList.toggle('hide', sec[i].id !== 'pg-' + pg);
+    for (var j = 0; j < nav.length; j++) { nav[j].classList.toggle('on', nav[j].getAttribute('data-pg') === pg); if (nav[j].getAttribute('data-pg') === pg) t = nav[j].textContent; }
+    $('pgT').textContent = t; $('drw').classList.remove('open'); $('ovl').classList.add('hide'); window.scrollTo(0, 0);
+  }
+  var IC = {
+    home: '<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>',
+    orders: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+    payouts: '<path d="M3 10l9-6 9 6M5 10v8M9 10v8M15 10v8M19 10v8M3 21h18"/>',
+    refunds: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/>',
+    api: '<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/>',
+    plans: '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+    docs: '<path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M9 13h6M9 17h6"/>',
+    profile: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+    out: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>',
+    menu: '<path d="M4 6h16M4 12h16M4 18h16"/>',
+    check: '<path d="M5 12l5 5L20 7"/>',
+    rupee: '<path d="M6 4h12M6 9h12M9 4c6 0 6 9 0 9H6l8 7"/>',
+    paid: '<circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/>',
+    clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    cart: '<circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.5 12h11L21 7H6"/>',
+    bell: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10 21a2 2 0 0 0 4 0"/>',
+    lock: '<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+    shield: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>'
+  };
+  function ico(n) { return '<svg class="i" viewBox="0 0 24 24" aria-hidden="true">' + (IC[n] || '') + '</svg>'; }
+
+  function render(d) {
+    var m = d.merchant, s = d.stats, v = $('vDash'), ok = m.status === 'APPROVED', host = location.origin;
+    apiKey = m.apiKey || '';
+    var rfm = {}; (d.refunds || []).forEach(function (r) { if (r.status !== 'REJECTED') rfm[r.orderId] = r.status; });
+    var banner = '';
+    if (m.status === 'PENDING') banner = '<div class="banner PENDING"><b>Waiting for approval.</b> The admin is checking your KYC and request. Your API key and payouts unlock once you are approved. Use Refresh to check.</div>';
+    if (m.status === 'REJECTED') banner = '<div class="banner REJECTED"><b>Registration not approved.</b> ' + (m.kycNote ? esc(m.kycNote) + ' ' : '') + 'Correct your KYC in Profile and submit again, or contact the admin.</div>';
+    if (m.status === 'SUSPENDED') banner = '<div class="banner SUSPENDED"><b>Account suspended.</b> New payments are blocked. Contact the admin.</div>';
+    var items = [['home', 'Overview', 'home']].concat(ok ? [['orders', 'Orders', 'orders'], ['payouts', 'Payouts', 'payouts'], ['refunds', 'Refunds', 'refunds']] : []).concat([['api', 'API key and webhook', 'api']]).concat(ok ? [['plans', 'Plans and fees', 'plans']] : []).concat([['docs', 'Documentation', 'docs'], ['profile', 'Profile and KYC', 'profile']]);
+    var initial = (m.name || 'M').trim().charAt(0).toUpperCase();
+
+    var html = '<div class="ovl hide" id="ovl"></div>' +
+      '<aside class="drw" id="drw"><a class="dlogo" href="/" aria-label="TaknaPay.in home"><img src="/assets/logo.png" alt="TaknaPay.in"></a>' +
+      '<div class="dh"><span class="av">' + esc(initial) + '</span><div><b>' + esc(m.name) + '</b><small>' + esc(m.email) + '</small></div></div>' +
+      items.map(function (i) { return '<button type="button" data-pg="' + i[0] + '">' + ico(i[2]) + '<span>' + i[1] + '</span></button>'; }).join('') +
+      '<div class="sp"></div><button type="button" id="bOut">' + ico('out') + '<span>Log out</span></button></aside>' +
+      '<div class="amain"><div class="mbar"><button class="btn out sm ham" type="button" id="mnuB" aria-label="Open menu">' + ico('menu') + '</button><b id="pgT"></b><span class="badge ' + esc(m.status) + '">' + esc(m.status) + '</span><button class="btn out sm" type="button" id="bRef">Refresh</button></div><div class="cont">' + banner;
+
+    // ---------- OVERVIEW ----------
+    var planTxt = d.plan === 'PAID' ? 'Pro plan' : 'Free plan';
+    html += '<section class="pg" id="pg-home">' +
+      '<div class="card welcome"><div><h2>Welcome, ' + esc(m.name) + '</h2><p>' + (ok ? 'You are on the <b>' + planTxt + '</b>' + (d.plan === 'PAID' ? ' (till ' + new Date(m.planExpiresAt).toLocaleDateString('en-IN') + ')' : '') + '. Everything for your payments is below.' : 'Your account is set up. Most features unlock once the admin approves your KYC.') + '</p></div>' +
+      '<div class="row">' + (ok ? '<button class="btn grn sm" type="button" data-go="payouts">Request payout</button><button class="btn out sm" type="button" data-go="docs">Integration guide</button>' : '<button class="btn grn sm" type="button" data-go="profile">Check KYC status</button>') + '</div></div>';
+
+    // setup checklist
+    var steps = [
+      ['Submit KYC (PAN details)', (m.kycStatus || 'NONE') !== 'NONE', 'profile', 'Open'],
+      ['Account approved', ok, 'profile', 'Status'],
+      ['Copy your API key', ok && keyEverCopied, 'api', 'Get key'],
+      ['Add your webhook URL', !!m.webhookUrl, 'api', 'Add'],
+      ['Receive your first order', s.total > 0, 'docs', 'How to']
+    ];
+    var doneN = steps.filter(function (x) { return x[1]; }).length;
+    if (doneN < steps.length) {
+      html += '<div class="card"><h3>Get started</h3><p class="sub">Finish these steps to go live.</p><div class="prog"><div class="bar"><i style="width:' + Math.round(doneN / steps.length * 100) + '%"></i></div><span>' + doneN + '/' + steps.length + '</span></div><ul class="chk-list">' +
+        steps.map(function (x) { return '<li class="' + (x[1] ? 'done' : '') + '"><span class="dot">' + (x[1] ? ico('check') : '') + '</span>' + x[0] + (x[1] ? '' : '<button class="btn out sm" type="button" data-go="' + x[2] + '">' + x[3] + '</button>') + '</li>'; }).join('') + '</ul></div>';
+    }
+
+    if (ok) {
+      var b = d.balance, rate0 = s.total ? Math.round(s.paid / s.total * 100) : 0;
+      html += '<div class="kpis">' +
+        '<div class="kpi"><span class="ic">' + ico('cart') + '</span><div><small>Total orders</small><b>' + s.total + '</b></div></div>' +
+        '<div class="kpi g"><span class="ic">' + ico('paid') + '</span><div><small>Paid orders</small><b>' + s.paid + '</b></div></div>' +
+        '<div class="kpi o"><span class="ic">' + ico('clock') + '</span><div><small>Pending orders</small><b>' + s.pending + '</b></div></div>' +
+        '<div class="kpi b"><span class="ic">' + ico('rupee') + '</span><div><small>Revenue</small><b>' + inr(s.revenue) + '</b></div></div></div>' +
+        '<div class="card"><h3>Balance</h3><p class="sub">Money from paid orders becomes withdrawable ' + d.config.settlementDays + ' working days after payment.</p><div class="bal"><div class="big"><small>Available to withdraw</small><b>' + inr(b.available) + '</b><button class="btn sm" type="button" data-go="payouts">Request payout</button></div>' +
+        '<div class="sm4"><div><small>Settling (' + d.config.settlementDays + ' working days)</small><b>' + inr(b.pending) + '</b></div><div><small>Payout requested</small><b>' + inr(b.requested) + '</b></div><div><small>Paid out</small><b>' + inr(b.paidOut) + '</b></div><div><small>Success rate</small><b>' + rate0 + '%</b></div></div></div>' +
+        '<div class="rate"><small><span>Paid vs all orders</span><span>' + s.paid + ' of ' + s.total + '</span></small><div class="bar"><i style="width:' + rate0 + '%"></i></div></div></div>';
+
+      var five = d.recent.slice(0, 5);
+      html += '<div class="card pad0"><div style="padding:18px 20px 12px;display:flex;align-items:center;gap:10px"><div style="flex:1"><h3 style="margin:0">Latest orders</h3></div><button class="btn out sm" type="button" data-go="orders">View all</button></div><div class="tw"><table><thead><tr><th>Order</th><th>Amount</th><th>Status</th><th>Created</th></tr></thead><tbody>' +
+        (five.length ? five.map(function (p) { return '<tr><td>' + esc(p.orderId) + '</td><td>' + inr(p.amount) + '</td><td><span class="st ' + esc(p.status) + '">' + esc(p.status) + '</span></td><td>' + new Date(p.createdAt).toLocaleString('en-IN') + '</td></tr>'; }).join('') : '<tr><td colspan="4" class="empty">No orders yet. Create your first one with the API (see Documentation).</td></tr>') + '</tbody></table></div></div>';
+    }
+
+    // feature tiles
+    function tile(pg, ic, t, desc, needOk) {
+      var locked = needOk && !ok;
+      return locked ? '<div class="ft lock" title="Unlocks after approval"><span class="ic">' + ico('lock') + '</span><b>' + t + '</b><span>' + desc + ' (after approval)</span></div>'
+        : '<button class="ft" type="button" data-go="' + pg + '"><span class="ic">' + ico(ic) + '</span><b>' + t + '</b><span>' + desc + '</span></button>';
+    }
+    html += '<div class="card"><h3>Everything you can do</h3><p class="sub">Jump straight to any feature.</p><div class="ftg">' +
+      tile('orders', 'orders', 'Orders', 'See every order, fee and what you receive.', true) +
+      tile('payouts', 'payouts', 'Payouts', 'Withdraw by NEFT, IMPS or UPI.', true) +
+      tile('refunds', 'refunds', 'Refunds', 'Full or partial refunds with a reason.', true) +
+      tile('api', 'api', 'API key', 'View, copy or rotate your key.', true) +
+      tile('api', 'bell', 'Webhook', 'Get notified on every payment.', false) +
+      tile('plans', 'plans', 'Plans and fees', 'Compare Free and Pro, upgrade in one click.', true) +
+      tile('docs', 'docs', 'Documentation', 'Payout, refund and API guides.', false) +
+      tile('profile', 'shield', 'Profile and KYC', 'Business details and verification status.', false) +
+      '</div></div></section>';
+
+    if (ok) {
+      html += '<section class="pg hide" id="pg-orders"><div class="card pad0"><div style="padding:18px 20px 12px"><h3 style="margin:0">Recent orders</h3><p class="sub" style="margin:2px 0 0">Your latest orders with the fee taken and the amount you receive.</p></div><div class="tw"><table><thead><tr><th>Order</th><th>Amount</th><th>Status</th><th>Created</th><th>Fee</th><th>You get</th><th>Webhook</th><th></th></tr></thead><tbody>' +
+        (d.recent.length ? d.recent.map(function (p) { return '<tr><td>' + esc(p.orderId) + '</td><td>' + inr(p.amount) + '</td><td><span class="st ' + esc(p.status) + '">' + esc(p.status) + '</span></td><td>' + new Date(p.createdAt).toLocaleString('en-IN') + '</td><td>' + (p.fee != null ? inr(p.fee) : '-') + '</td><td>' + (p.fee != null ? inr(p.amount - p.fee) : '-') + '</td><td>' + (p.status === 'SUCCESS' ? (p.webhookSent ? 'Delivered' : 'Retrying') : '-') + '</td><td>' + (p.status === 'SUCCESS' ? (rfm[p.orderId] ? '<span class="st PENDING">Refund ' + esc(rfm[p.orderId].toLowerCase()) + '</span>' : '<button class="btn out sm" type="button" data-refund="' + esc(p.orderId) + '">Refund</button>') : '') + '</td></tr>'; }).join('') : '<tr><td colspan="8" class="empty">No orders yet. Create one with the API (see Documentation).</td></tr>') + '</tbody></table></div></div></section>';
+      html += '<section class="pg hide" id="pg-payouts"><div class="card">' + payoutHtml(d) + '</div></section>';
+      html += '<section class="pg hide" id="pg-refunds"><div class="card">' + refundsHtml(d) + '</div></section>';
+      html += '<section class="pg hide" id="pg-plans"><div class="card">' + plansHtml(d) + '</div></section>';
+    }
+
+    // ---------- API key + webhook ----------
+    html += '<section class="pg hide" id="pg-api">';
+    if (ok) html += '<div class="card"><h3>API key</h3><p class="sub">Use it only on your server to create orders.</p><div class="keybox"><code id="kv"></code><div class="row"><button class="btn out sm" type="button" id="kShow">Show</button><button class="btn out sm" type="button" id="kCopy">Copy</button><button class="btn out sm" type="button" id="kNew">Generate new key</button></div><p class="mu" style="margin:8px 0 0">Keep it secret. A new key stops the old one working immediately.</p></div></div>';
+    else html += '<div class="card"><h3>API key</h3><p class="sub">Your API key appears here once your account is approved.</p></div>';
+    html += '<div class="card"><h3>Webhook</h3><p class="sub">We send a signed POST here when a payment succeeds. See <a href="/docs.html#webhook">webhook docs</a>.</p><form id="hookForm"><div class="row"><input type="url" id="hUrl" placeholder="https://yoursite.com/api/payment-webhook" style="flex:1;min-width:220px"><button class="btn pri sm" type="submit" style="width:auto">Save</button>' + (ok ? '<button class="btn out sm" type="button" id="hTest" style="width:auto">Send test</button>' : '') + '</div><div class="msg" id="hMsg"></div></form></div></section>';
+
+    html += '<section class="pg hide" id="pg-docs"><div class="card"><h3>Payout documentation</h3>' + payDocHtml(d) + '<h3>Refund documentation</h3>' + refundDocHtml(d) + '<h3>API quick start</h3>' + (ok ? '<pre id="snip"></pre>' : '<p class="mu">The API snippet appears after approval.</p>') + '<p class="mu">Full developer docs: <a href="/docs.html">API docs</a> · <a href="/docs.html#plans">Plans and fees</a> · <a href="/docs.html#payouts">Payouts</a> · <a href="/docs.html#webhook">Webhooks</a></p></div></section>';
+
+    html += '<section class="pg hide" id="pg-profile"><div class="card"><h3>Profile</h3><div class="kv"><span>Business</span><b>' + esc(m.name) + '</b></div><div class="kv"><span>Email</span><b>' + esc(m.email) + '</b></div><div class="kv"><span>Website</span><b>' + esc(m.siteUrl) + '</b></div><div class="kv"><span>Status</span><b>' + esc(m.status) + '</b></div><div class="kv"><span>Plan</span><b>' + (d.plan === 'PAID' ? 'Pro (till ' + new Date(m.planExpiresAt).toLocaleDateString('en-IN') + ')' : 'Free') + '</b></div><div class="kv"><span>Registered</span><b>' + new Date(m.createdAt).toLocaleDateString('en-IN') + '</b></div></div>' +
+      '<div class="card">' + kycHtml(m) + '</div></section>';
+
+    html += '</div></div>';
+    v.innerHTML = html; show('dash');
+    $('mnuB').onclick = function () { $('drw').classList.add('open'); $('ovl').classList.remove('hide'); };
+    $('ovl').onclick = function () { $('drw').classList.remove('open'); $('ovl').classList.add('hide'); };
+    Array.prototype.forEach.call(document.querySelectorAll('#drw button[data-pg]'), function (b) { b.onclick = function () { go(b.getAttribute('data-pg')); }; });
+    Array.prototype.forEach.call(document.querySelectorAll('#vDash [data-go]'), function (b) { b.onclick = function () { go(b.getAttribute('data-go')); }; });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-refund]'), function (b) { b.onclick = function () { $('rfO').value = b.getAttribute('data-refund'); go('refunds'); }; });
+    $('bOut').onclick = logout; $('bRef').onclick = loadDash;
+    if ($('kycForm')) {
+      var kData = '';
+      $('kImg').onchange = function () { kData = ''; readImage(this.files[0]).then(function (x) { kData = x; $('kMsg').className = 'msg'; }).catch(function (e) { say($('kMsg'), 'er', e.message); }); };
+      $('kycForm').onsubmit = function (e) {
+        e.preventDefault();
+        if (!kData) { say($('kMsg'), 'er', 'Upload a clear photo of your PAN card first.'); return; }
+        post('/api/merchant/kyc', { panName: $('kName').value, panNumber: $('kPan').value, panImage: kData }, true)
+          .then(function (r) { if (r.success) { alert('KYC submitted. The admin will verify it.'); loadDash(); } else say($('kMsg'), 'er', r.message || 'Could not submit KYC'); })
+          .catch(function () { say($('kMsg'), 'er', 'Network error. Please try again.'); });
+      };
+    }
+    $('hUrl').value = m.webhookUrl || '';
+    $('hookForm').onsubmit = function (e) {
+      e.preventDefault();
+      post('/api/merchant/webhook', { webhookUrl: $('hUrl').value }, true).then(function (r) { say($('hMsg'), r.success ? 'ok' : 'er', r.success ? 'Webhook URL saved.' : r.message); });
+    };
+    if (ok) {
+      keyShown = false; paintKey(); bindPayout(d);
+      $('kShow').onclick = function () { keyShown = !keyShown; paintKey(); };
+      $('kCopy').onclick = function () { keyEverCopied = true; try { sessionStorage.setItem('gwk', '1'); } catch (e) {} copy(apiKey, $('kCopy')); };
+      $('kNew').onclick = function () { if (confirm('Generate a new key? Your current key will stop working immediately.')) post('/api/merchant/regenerate-key', {}, true).then(function (r) { if (r.success) loadDash(); else alert(r.message); }); };
+      $('hTest').onclick = function () {
+        say($('hMsg'), 'ok', 'Sending test...');
+        post('/api/merchant/test-webhook', {}, true).then(function (r) {
+          if (!r.success) say($('hMsg'), 'er', r.message);
+          else if (r.delivered) say($('hMsg'), 'ok', 'Test delivered. Your server replied ' + r.httpStatus + '.');
+          else say($('hMsg'), 'er', 'Test not delivered. ' + (r.error ? r.error : 'Your server replied ' + r.httpStatus + ' (it must reply 2xx).'));
+        });
+      };
+      $('snip').textContent = ['curl -X POST ' + host + '/api/create-payment \\', '  -H "x-api-key: YOUR_API_KEY" \\', '  -H "Content-Type: application/json" \\', '  -d \'{"amount": 99, "orderId": "ORDER_1001"}\'', '', '# open the returned checkoutUrl for the customer, adding:', '#   &redirectUrl=' + encodeURIComponent(m.siteUrl || 'https://yoursite.com/thanks')].join('\n');
+    }
+    go(items.some(function (i) { return i[0] === curPg; }) ? curPg : 'home');
+  }
+  function rate(r) { return r ? r + '%' : 'Free'; }
+  function kycHtml(m) {
+    var k = m.kycStatus || 'NONE', cls = k === 'VERIFIED' ? 'APPROVED' : k === 'REJECTED' ? 'REJECTED' : 'PENDING';
+    var h = '<h3>KYC verification</h3><div class="kv"><span>Status</span><b><span class="badge ' + cls + '">' + (k === 'NONE' ? 'NOT SUBMITTED' : esc(k)) + '</span></b></div>';
+    if (m.panMasked) h += '<div class="kv"><span>PAN</span><b>' + esc(m.panMasked) + ' · ' + esc(m.panName) + '</b></div>';
+    if (k !== 'VERIFIED') h += '<p class="mu">' + (k === 'SUBMITTED' ? 'Submitted. You can upload again if something was wrong.' : 'Submit your PAN details so the admin can verify your account.') + '</p><form id="kycForm" style="max-width:520px"><label>Name as printed on PAN card<input type="text" id="kName" maxlength="80" required></label><label>PAN number<input type="text" id="kPan" maxlength="10" placeholder="ABCDE1234F" style="text-transform:uppercase" required></label><label>Photo of PAN card<input type="file" id="kImg" accept="image/*" required></label><button class="btn pri" type="submit">Submit KYC</button><div class="msg" id="kMsg" role="alert"></div></form>';
+    return h;
+  }
+  function refundDocHtml(d) {
+    var pc = d.config.refundPercent;
+    return '<ol class="mu"><li>You can refund any paid order, fully or partly. Use the Refund button in Orders, or open Refunds and type the order ID.</li><li>Enter the amount (empty means the full remaining amount) and a reason. The customer UPI ID is optional but helps the admin find the payer.</li><li>The admin sends the money back to the customer from the same payment account and enters the refund UTR. Status becomes REFUNDED.</li><li>The payment fee of the order (5% on Free, ₹1 on Pro) is never refunded. It stays cut.</li><li>Every refund has a ' + pc + '% refund charge on the refunded amount, on all plans. It is cut from your available balance.</li><li>From your balance we take refund amount plus refund charge. A pending refund already lowers your balance; if the admin rejects it, everything comes back.</li></ol>';
+  }
+  function refundsHtml(d) {
+    var h = '<h3>Refund a payment</h3><form id="rfForm" style="max-width:520px"><label>Order ID<input type="text" id="rfO" maxlength="100" placeholder="ORDER_1001" required></label>' +
+      '<label>Amount in ₹<input type="text" id="rfA" inputmode="decimal" placeholder="Empty = full amount"></label><div class="mu" id="rfPrev"></div>' +
+      '<label>Reason<input type="text" id="rfR" maxlength="200" placeholder="Customer cancelled the order" required></label>' +
+      '<label>Customer UPI ID (optional)<input type="text" id="rfU" maxlength="70" placeholder="name@bank"></label>' +
+      '<button class="btn pri" type="submit">Request refund</button><div class="msg" id="rfMsg" role="alert"></div></form>';
+    h += '<h3>Refund history</h3><div class="tw"><table><thead><tr><th>Date</th><th>Order</th><th>Refund</th><th>Charge</th><th>Taken from balance</th><th>Status</th><th>UTR / note</th></tr></thead><tbody>' +
+      ((d.refunds || []).length ? d.refunds.map(function (r) { var cls = r.status === 'REFUNDED' ? 'SUCCESS' : r.status === 'REJECTED' ? 'FAILED' : 'PENDING'; return '<tr><td>' + new Date(r.createdAt).toLocaleString('en-IN') + '</td><td>' + esc(r.orderId) + '</td><td>' + inr(r.amount) + '</td><td>' + inr(r.charge || 0) + '</td><td>' + inr(r.deduct) + '</td><td><span class="st ' + cls + '">' + esc(r.status) + '</span></td><td>' + esc(r.utr || r.note || '-') + '</td></tr>'; }).join('') : '<tr><td colspan="7" class="mu">No refunds yet.</td></tr>') + '</tbody></table></div>';
+    return h;
+  }
+  function plansHtml(d) {
+    var c = d.config, P = c.plans, pl = d.plan, F = P.FREE, R = P.PAID;
+    return '<h3>Plans and fees</h3><div class="pl"><div class="' + (pl === 'FREE' ? 'cur' : '') + '"><b>Free ' + (pl === 'FREE' ? '(current)' : '') + '</b><br>₹0 per month<br>' + F.percent + '% on every transaction<br>Payout: NEFT ' + rate(F.payoutRates.NEFT) + ', IMPS ' + rate(F.payoutRates.IMPS) + ', UPI ' + rate(F.payoutRates.UPI) + '</div>' +
+      '<div class="' + (pl === 'PAID' ? 'cur' : '') + '"><b>Pro ' + (pl === 'PAID' ? '(active till ' + new Date(d.merchant.planExpiresAt).toLocaleDateString('en-IN') + ')' : '') + '</b><br>₹' + R.monthly + ' per month<br>₹' + R.perTxn + ' per transaction<br>Payout: NEFT ' + rate(R.payoutRates.NEFT) + ', IMPS ' + rate(R.payoutRates.IMPS) + ', UPI ' + rate(R.payoutRates.UPI) + '</div></div>' +
+      '<div class="row"><button class="btn pri sm" type="button" id="upg">' + (pl === 'PAID' ? 'Renew Pro for ' + c.planDays + ' days' : 'Upgrade to Pro') + ' (₹' + R.monthly + ' from balance)</button></div><p class="mu">Money reaches your balance ' + c.settlementDays + ' working days after each payment. A plan change applies to new orders only. The payment fee is never refunded, and every refund has a ' + c.refundPercent + '% refund charge on all plans.</p>';
+  }
+  function payDocHtml(d) {
+    var c = d.config;
+    return '<ol class="mu"><li>Every successful order adds the amount minus the plan fee to your balance after ' + c.settlementDays + ' working days (Mon-Fri).</li><li>Open Payouts, choose NEFT or IMPS (holder name, account number, IFSC) or UPI (UPI ID), then the amount (minimum ₹' + c.minPayout + ').</li><li>The charge depends on your plan and method (see Plans and fees). It is cut from the amount: you receive amount minus charge.</li><li>The admin sends the money and enters the UTR number. Status becomes PAID and the UTR shows in your payout history.</li><li>If the admin rejects a request, the full amount returns to your available balance.</li><li>Check account details carefully. A transfer to wrong details cannot be reversed.</li></ol>';
+  }
+  function payoutHtml(d) {
+    var b = d.balance, c = d.config;
+    var h = '<h3>Request a payout</h3><div class="stats"><div><small>Available to withdraw</small><b>' + inr(b.available) + '</b></div><div><small>Payout requested</small><b>' + inr(b.requested) + '</b></div></div>' +
+      '<form id="poForm" style="max-width:520px"><label>Payout method<select id="poM"><option value="NEFT">Bank account (NEFT)</option><option value="IMPS">Bank account (IMPS)</option><option value="UPI">UPI</option></select></label>' +
+      '<label>Amount in ₹<input type="text" id="poA" inputmode="decimal" placeholder="Minimum ' + c.minPayout + '"></label>' +
+      '<div id="poBank" style="display:grid;gap:12px"><label>Account holder name<input type="text" id="poN" maxlength="80"></label><label>Account number<input type="text" id="poAc" inputmode="numeric" maxlength="22"></label><label>IFSC code<input type="text" id="poI" maxlength="11" placeholder="SBIN0001234" style="text-transform:uppercase"></label></div>' +
+      '<div id="poUpi" class="hide"><label>UPI ID<input type="text" id="poU" maxlength="70" placeholder="name@bank"></label></div>' +
+      '<div class="mu" id="poPrev"></div><button class="btn pri" type="submit">Request payout</button><div class="msg" id="poMsg" role="alert"></div></form>';
+    h += '<h3>Payout history</h3><div class="tw"><table><thead><tr><th>Date</th><th>Method</th><th>Amount</th><th>Charge</th><th>You receive</th><th>Status</th><th>UTR / note</th></tr></thead><tbody>' +
+      (d.payouts.length ? d.payouts.map(function (p) { var cls = p.status === 'PAID' ? 'SUCCESS' : p.status === 'REJECTED' ? 'FAILED' : 'PENDING'; return '<tr><td>' + new Date(p.createdAt).toLocaleString('en-IN') + '</td><td>' + esc(p.method) + '</td><td>' + inr(p.amount) + '</td><td>' + inr(p.fee) + '</td><td>' + inr(p.payable) + '</td><td><span class="st ' + cls + '">' + esc(p.status) + '</span></td><td>' + esc(p.utr || p.note || '-') + '</td></tr>'; }).join('') : '<tr><td colspan="7" class="mu">No payouts yet.</td></tr>') + '</tbody></table></div>';
+    return h;
+  }
+  function bindPayout(d) {
+    var M = $('poM'); if (!M) return; var rates = d.config.plans[d.plan].payoutRates;
+    function prev() {
+      var a = parseFloat($('poA').value) || 0, r = rates[M.value], f = Math.round(a * r) / 100;
+      $('poBank').classList.toggle('hide', M.value === 'UPI'); $('poUpi').classList.toggle('hide', M.value !== 'UPI');
+      $('poPrev').textContent = a ? 'Charge (' + rate(r) + '): ' + inr(f) + '  ·  You receive: ' + inr(a - f) : 'Charge on your plan for this method: ' + rate(r);
+    }
+    M.onchange = prev; $('poA').oninput = prev; prev();
+    $('poForm').onsubmit = function (e) {
+      e.preventDefault(); $('poMsg').className = 'msg';
+      post('/api/merchant/payout', { method: M.value, amount: $('poA').value, accountName: $('poN').value, accountNumber: $('poAc').value, ifsc: $('poI').value, upiId: $('poU').value }, true)
+        .then(function (r) { if (r.success) { alert('Payout requested. The admin will pay it and add the UTR.'); loadDash(); } else say($('poMsg'), 'er', r.message || 'Could not request payout'); })
+        .catch(function () { say($('poMsg'), 'er', 'Network error. Please try again.'); });
+    };
+    function rfPrev() {
+      var a = parseFloat($('rfA').value) || 0, pc = d.config.refundPercent, c = Math.round(a * pc) / 100;
+      $('rfPrev').textContent = a ? 'Refund charge (' + pc + '%): ' + inr(c) + '  ·  Taken from your balance: ' + inr(a + c) : 'Refund charge: ' + pc + '% of the refund amount, cut from your available balance. The payment fee is not refunded.';
+    }
+    $('rfA').oninput = rfPrev; rfPrev();
+    $('rfForm').onsubmit = function (e) {
+      e.preventDefault(); $('rfMsg').className = 'msg';
+      post('/api/merchant/refund', { orderId: $('rfO').value, amount: $('rfA').value, reason: $('rfR').value, customerUpi: $('rfU').value }, true)
+        .then(function (r) { if (r.success) { alert('Refund requested. The admin will refund the customer and add the UTR.'); loadDash(); } else say($('rfMsg'), 'er', r.message || 'Could not request refund'); })
+        .catch(function () { say($('rfMsg'), 'er', 'Network error. Please try again.'); });
+    };
+    $('upg').onclick = function () { if (confirm('Buy the Pro plan for ₹' + d.config.plans.PAID.monthly + ' from your available balance?')) post('/api/merchant/upgrade', {}, true).then(function (r) { if (r.success) loadDash(); else alert(r.message); }); };
+  }
+  function paintKey() { $('kv').textContent = keyShown ? apiKey : apiKey.slice(0, 8) + '••••••••••••••••••••••••••••••••'; $('kShow').textContent = keyShown ? 'Hide' : 'Show'; }
+
+  $('yr').textContent = new Date().getFullYear();
+  fetch('/api/public-config').then(function (r) { return r.json(); }).then(function (c) {
+    if (!c || !c.success) return;
+    var vals = { 'free.percent': c.plans.FREE.percent, 'pro.monthly': c.plans.PAID.monthly, 'pro.perTxn': c.plans.PAID.perTxn, 'refund': c.refundPercent, 'minPayout': c.minPayout, 'settle': c.settlementDays };
+    ['NEFT', 'IMPS', 'UPI'].forEach(function (k) { vals['free.' + k] = c.plans.FREE.payoutRates[k]; vals['pro.' + k] = c.plans.PAID.payoutRates[k]; });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-k]'), function (e) { var k = e.getAttribute('data-k'); if (vals[k] !== undefined) e.textContent = vals[k]; });
+  }).catch(function () {});
+  if (session) loadDash();
+  else if (location.hash === '#login') show('log');
+  else show('reg');
+})();
+</script>
+</body>
+</html>

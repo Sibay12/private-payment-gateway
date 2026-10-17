@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/assets/favicon.png"><link rel="apple-touch-icon" href="/assets/favicon.png"><meta name="theme-color" content="#26338a"><script src="/loader.js"></script>
+<meta name="robots" content="noindex">
+<title>Payment Links - Get paid by UPI | TaknaPay.in</title>
+<meta name="description" content="Create free payment links and get paid by UPI. Automatic confirmation and fast withdrawals.">
+<style>
+:root{--navy:#26338a;--navy-d:#141c55;--navy-l:#eef0fb;--green:#4fae55;--green-d:#3b9442;--green-l:#e9f6ea;--ink:#101a3a;--mu:#5d6b8c;--line:#e4e8f3;--bg:#f4f6fb;--wh:#fff;--ok:#0f9d58;--okbg:#e8f6ee;--er:#d93025;--erbg:#fdeceb;--wa:#b26a00;--wabg:#fff4e0;--blue:#3b5bdb}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;line-height:1.55}
+a{color:var(--navy)}img{max-width:100%}
+.hide{display:none!important}
+.w{max-width:1120px;margin:0 auto;padding:0 20px}
+svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:10px;padding:12px 20px;font:inherit;font-weight:700;font-size:15px;cursor:pointer;text-decoration:none;transition:transform .15s,box-shadow .15s,background .15s,border-color .15s;width:auto}
+.btn:hover{transform:translateY(-1px)}
+.btn:focus-visible,.tab:focus-visible,.drw button:focus-visible{outline:3px solid #3b5bdb55;outline-offset:2px}
+.btn.pri{background:var(--navy);color:#fff;box-shadow:0 8px 20px -8px rgba(38,51,138,.6)}.btn.pri:hover{background:var(--navy-d)}
+.btn.grn{background:var(--green);color:#fff;box-shadow:0 8px 20px -8px rgba(79,174,85,.7)}.btn.grn:hover{background:var(--green-d)}
+.btn.out{background:#fff;color:var(--navy);border:1.5px solid var(--line)}.btn.out:hover{border-color:var(--navy)}
+.btn.sm{padding:9px 15px;font-size:14px}
+.btn[disabled]{opacity:.6;cursor:wait;transform:none}
+form .btn{width:100%}
+
+/* public nav */
+.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav .w{display:flex;align-items:center;gap:22px;height:66px}
+.nav .lg img{height:44px;width:auto;display:block}
+.nav .links{display:flex;gap:22px;margin-left:14px;font-size:14.5px;font-weight:600}
+.nav .links a{color:var(--mu);text-decoration:none}.nav .links a:hover{color:var(--navy)}
+.nav .cta{margin-left:auto;display:flex;gap:10px}
+@media(max-width:860px){.nav .links{display:none}.nav .cta .out{display:none}}
+
+/* hero */
+.hero{background:radial-gradient(900px 480px at 90% -10%,#dfe4ff 0,transparent 60%),radial-gradient(700px 400px at -5% 30%,#e3f5e4 0,transparent 55%),var(--wh);padding:54px 0 70px}
+.hero .w{display:grid;grid-template-columns:1.05fr .95fr;gap:44px;align-items:start}
+.pill{display:inline-flex;align-items:center;gap:8px;background:var(--green-l);color:var(--green-d);font-weight:700;font-size:13px;padding:7px 14px;border-radius:99px}
+.pill i{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px rgba(79,174,85,.25)}
+.hero h1{font-size:clamp(32px,4.4vw,50px);line-height:1.08;letter-spacing:-1.4px;margin:18px 0 14px;font-weight:800}
+.hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--navy),var(--green));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .lead{font-size:17.5px;color:var(--mu);max-width:540px;margin:0 0 22px}
+.hero .acts{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:26px}
+.mini{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:560px}
+.mini div{display:flex;gap:11px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:13.5px;color:var(--mu);line-height:1.4}
+.mini b{display:block;color:var(--ink);font-size:14.5px}
+.mini .ic{width:34px;height:34px;border-radius:10px;background:var(--navy-l);color:var(--navy);display:grid;place-items:center;flex:none}
+.mini .ic.g{background:var(--green-l);color:var(--green-d)}
+
+/* auth card */
+.authcard{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 30px 60px -26px rgba(38,51,138,.4);padding:22px;scroll-margin-top:84px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--bg);padding:5px;border-radius:12px;margin-bottom:18px}
+.tab{background:none;border:0;border-radius:9px;padding:10px 12px;font:inherit;font-weight:700;color:var(--mu);cursor:pointer}
+.tab.on{background:#fff;color:var(--navy);box-shadow:0 2px 8px -2px rgba(16,26,58,.2)}
+.ah{margin:0 0 4px;font-size:19px;letter-spacing:-.3px}.ap{margin:0 0 14px;color:var(--mu);font-size:13.5px}
+form{display:grid;gap:12px}
+label{font-size:13px;font-weight:600;display:grid;gap:5px}
+label small{font-weight:400;color:var(--mu);font-size:12.5px}
+input[type=text],input[type=email],input[type=url],input[type=password],select{border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;font:inherit;width:100%;color:var(--ink);background:#fff}
+input:focus,select:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px #26338a22}
+input[type=file]{border:1.5px dashed #c9d1ea;border-radius:10px;padding:10px;width:100%;font:inherit;background:#f9fbff}
+label.chk{display:flex;gap:9px;align-items:flex-start;font-weight:400;font-size:13px;color:var(--mu)}label.chk input{width:auto;margin-top:3px}
+.fs{border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:12px;margin:0;min-width:0}.fs legend{font-weight:800;font-size:13.5px;padding:0 8px;color:var(--navy)}
+.thumb{max-width:100%;max-height:150px;border-radius:10px;border:1px solid var(--line);display:none}
+.msg{font-size:13.5px;padding:10px 12px;border-radius:10px;display:none}
+.msg.er{display:block;background:var(--erbg);color:var(--er)}.msg.ok{display:block;background:var(--okbg);color:var(--ok)}
+.tokbox{background:#fffaf0;border:1.5px solid #f2d28a;border-radius:14px;padding:16px}
+.tokbox code{display:block;background:#fff;border:1px solid var(--line);border-radius:10px;padding:11px;font-size:15px;word-break:break-all;margin:10px 0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mu{color:var(--mu);font-size:13px}
+
+/* landing sections */
+section.ls{padding:70px 0}
+.sec-h{text-align:center;max-width:640px;margin:0 auto 38px}
+.sec-h .tag{color:var(--green-d);font-weight:800;font-size:13px;letter-spacing:1.4px;text-transform:uppercase}
+.sec-h h2{font-size:clamp(25px,3.4vw,36px);letter-spacing:-.8px;line-height:1.15;margin:8px 0 10px}
+.sec-h p{color:var(--mu);margin:0;font-size:16px}
+.fg{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.fc{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;transition:box-shadow .2s,transform .2s}
+.fc:hover{box-shadow:0 22px 44px -22px rgba(38,51,138,.4);transform:translateY(-3px)}
+.fc .ic{width:44px;height:44px;border-radius:12px;background:var(--navy-l);color:var(--navy);display:grid;place-items:center;margin-bottom:12px}
+.fc:nth-child(even) .ic{background:var(--green-l);color:var(--green-d)}
+.fc h4{margin:0 0 4px;font-size:16px}.fc p{margin:0;color:var(--mu);font-size:14px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;counter-reset:s}
+.steps div{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;position:relative}
+.steps div:before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--navy);color:#fff;font-weight:800;margin-bottom:12px}
+.steps b{display:block;margin-bottom:4px;font-size:16px}.steps span{color:var(--mu);font-size:14px}
+.alt{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.pr{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;max-width:820px;margin:0 auto}
+.pc{background:#fff;border:1px solid var(--line);border-radius:20px;padding:26px;display:flex;flex-direction:column}
+.pc.hot{border:2px solid var(--green);box-shadow:0 24px 50px -24px rgba(79,174,85,.5)}
+.pc h3{margin:0;font-size:19px}.pc .sb{color:var(--mu);font-size:13.5px;margin:2px 0 12px}
+.pc .big{font-size:36px;font-weight:800;letter-spacing:-1px;line-height:1.1}.pc .big small{font-size:14px;color:var(--mu);font-weight:600;letter-spacing:0}
+.pc table{width:100%;border-collapse:collapse;margin:16px 0 0;font-size:14.5px}
+.pc td{padding:9px 0;border-top:1px solid var(--line)}.pc td:last-child{text-align:right;font-weight:800}
+.dev{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center}
+.dev h2{font-size:clamp(25px,3.2vw,34px);letter-spacing:-.7px;margin:8px 0 10px;line-height:1.15}
+.dev ul{list-style:none;padding:0;margin:16px 0 20px;display:grid;gap:9px;font-size:14.5px;color:var(--mu)}
+.dev li:before{content:"✓";color:var(--green);font-weight:800;margin-right:9px}
+pre{background:#0d1b33;color:#e6eefc;border-radius:14px;padding:16px;overflow-x:auto;font-size:12.5px;line-height:1.65;margin:8px 0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.faq{max-width:760px;margin:0 auto;display:grid;gap:12px}
+details{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px 20px}
+summary{cursor:pointer;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}summary:after{content:"+";font-size:22px;line-height:1;color:var(--navy)}
+details[open] summary:after{content:"–"}details p{margin:10px 0 0;color:var(--mu);font-size:15px}
+.ctab{background:linear-gradient(135deg,var(--navy-d),var(--navy));color:#fff;text-align:center;border-radius:26px;padding:48px 22px}
+.ctab h2{margin:0 0 8px;font-size:clamp(24px,3.4vw,34px);letter-spacing:-.7px}.ctab p{margin:0 0 22px;opacity:.85}
+.ctab .acts{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+footer{background:var(--ink);color:#c5cce2;padding:36px 0 22px;margin-top:70px;font-size:14px}
+footer .w{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+footer .lgf{background:#fff;border-radius:10px;padding:4px 10px;line-height:0}footer .lgf img{height:34px}
+footer a{color:#c5cce2;text-decoration:none}footer a:hover{color:#fff}
+footer .cp{margin-left:auto;opacity:.7;font-size:13px}
+
+@media(max-width:980px){.hero .w,.dev{grid-template-columns:1fr}.fg,.steps{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.fg,.steps,.pr,.mini{grid-template-columns:1fr}.hero{padding:34px 0 50px}section.ls{padding:50px 0}footer .cp{margin-left:0}.authcard{padding:16px;border-radius:18px}}
+
+/* ============ DASHBOARD ============ */
+body.in-dash{background:var(--bg)}
+.app{display:grid;grid-template-columns:268px 1fr;min-height:100vh}
+.drw{background:linear-gradient(180deg,var(--navy-d),var(--navy));color:#fff;padding:18px 14px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh;overflow-y:auto}
+.drw .dlogo{background:#fff;border-radius:12px;padding:8px 12px;display:flex;justify-content:center;margin-bottom:14px}.drw .dlogo img{height:42px;width:auto}
+.drw .dh{display:flex;gap:11px;align-items:center;padding:10px;border-radius:12px;background:rgba(255,255,255,.1);margin-bottom:12px}
+.drw .dh .av{width:38px;height:38px;border-radius:50%;background:var(--green);display:grid;place-items:center;font-weight:800;flex:none}
+.drw .dh b{display:block;font-size:14.5px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.drw .dh small{display:block;opacity:.7;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.drw .dh div{min-width:0}
+.drw button{background:none;border:0;color:#cfd6f5;text-align:left;padding:11px 12px;border-radius:10px;font:inherit;font-weight:600;font-size:14.5px;cursor:pointer;display:flex;align-items:center;gap:11px}
+.drw button:hover{background:rgba(255,255,255,.1);color:#fff}.drw button.on{background:#fff;color:var(--navy)}
+.drw .sp{flex:1}
+.ovl{position:fixed;inset:0;background:rgba(10,15,40,.55);z-index:40}
+.amain{min-width:0}
+.mbar{display:flex;align-items:center;gap:10px;padding:14px 26px;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30}
+.mbar b{flex:1;font-size:19px;letter-spacing:-.3px}
+.mbar .ham{display:none}
+.cont{padding:24px 26px 50px;max-width:1100px}
+.badge{display:inline-block;padding:4px 11px;border-radius:99px;font-size:12px;font-weight:800;letter-spacing:.2px}
+.badge.APPROVED{background:var(--okbg);color:var(--ok)}.badge.PENDING{background:var(--wabg);color:var(--wa)}.badge.REJECTED,.badge.SUSPENDED{background:var(--erbg);color:var(--er)}
+.banner{border-radius:14px;padding:14px 16px;margin-bottom:18px;font-size:14px;line-height:1.6}
+.banner.PENDING{background:var(--wabg);color:var(--wa);border:1px solid #f2d28a}.banner.REJECTED,.banner.SUSPENDED{background:var(--erbg);color:var(--er);border:1px solid #f4b8b3}
+.pg{display:grid;gap:18px;align-content:start}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;min-width:0}
+.card.pad0{padding:0;overflow:hidden}
+.card h3{margin:0 0 4px;font-size:17px;letter-spacing:-.2px}.card .sub{color:var(--mu);font-size:13.5px;margin:0 0 14px}
+.pg>.card>h3:not(:first-child){margin-top:22px}
+.card h3+form,.card h3+.tw{margin-top:12px}
+.welcome{background:linear-gradient(135deg,var(--navy),#3b4fc4);color:#fff;border:0;display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap;position:relative;overflow:hidden}
+.welcome:after{content:"";position:absolute;right:-50px;top:-70px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.08)}
+.welcome h2{margin:0 0 4px;font-size:22px;letter-spacing:-.4px}.welcome p{margin:0;opacity:.85;font-size:14px}
+.welcome .row{position:relative;z-index:1}
+.welcome .btn.out{background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.35)}.welcome .btn.out:hover{background:rgba(255,255,255,.24);border-color:#fff}
+.welcome .btn.grn{box-shadow:none}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;gap:13px;align-items:center}
+.kpi .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex:none;background:var(--navy-l);color:var(--navy)}
+.kpi.g .ic{background:var(--green-l);color:var(--green-d)}.kpi.o .ic{background:var(--wabg);color:var(--wa)}.kpi.b .ic{background:#e7efff;color:var(--blue)}
+.kpi small{display:block;color:var(--mu);font-size:12.5px}.kpi b{font-size:22px;letter-spacing:-.4px;line-height:1.2;display:block}
+.bal{display:grid;grid-template-columns:1.2fr 1fr;gap:14px}
+.bal .big{background:linear-gradient(135deg,#1c8a3d,var(--green));color:#fff;border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:6px}
+.bal .big small{opacity:.9;font-size:13px}.bal .big b{font-size:34px;letter-spacing:-1px;line-height:1.1}.bal .big .btn{margin-top:10px;align-self:flex-start;background:#fff;color:#1c6b33;box-shadow:none}
+.bal .sm4{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bal .sm4 div{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:#fff}
+.bal .sm4 small{display:block;color:var(--mu);font-size:12px}.bal .sm4 b{font-size:17px}
+.rate{margin-top:14px}.rate .bar{height:9px;border-radius:99px;background:var(--bg);overflow:hidden}.rate .bar i{display:block;height:100%;background:var(--green);border-radius:99px}.rate small{color:var(--mu);font-size:12.5px;display:flex;justify-content:space-between;margin-bottom:6px}
+.chk-list{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:8px}
+.chk-list li{display:flex;gap:11px;align-items:center;font-size:14px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;color:var(--mu)}
+.chk-list li .dot{width:24px;height:24px;border-radius:50%;border:2px solid #cdd4ea;display:grid;place-items:center;flex:none;color:#fff}
+.chk-list li.done{color:var(--ink);background:var(--green-l);border-color:#cfe9d1}.chk-list li.done .dot{background:var(--green);border-color:var(--green)}
+.chk-list li .dot svg{width:14px;height:14px;stroke-width:3}
+.chk-list li button{margin-left:auto}
+.prog{display:flex;align-items:center;gap:12px;margin-top:6px}.prog .bar{flex:1;height:8px;border-radius:99px;background:var(--bg);overflow:hidden}.prog .bar i{display:block;height:100%;background:var(--navy);border-radius:99px}.prog span{font-size:13px;font-weight:700;color:var(--navy)}
+.ftg{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px}
+.ft{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px;text-align:left;font:inherit;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;gap:6px;transition:box-shadow .2s,transform .2s,border-color .2s}
+.ft:hover{box-shadow:0 16px 34px -18px rgba(38,51,138,.5);transform:translateY(-2px);border-color:#c7cff0}
+.ft .ic{width:38px;height:38px;border-radius:10px;background:var(--navy-l);color:var(--navy);display:grid;place-items:center}
+.ft:nth-child(3n+2) .ic{background:var(--green-l);color:var(--green-d)}
+.ft b{font-size:14.5px}.ft span{color:var(--mu);font-size:12.5px;line-height:1.45}
+.ft.lock{opacity:.6;cursor:not-allowed}.ft.lock:hover{transform:none;box-shadow:none;border-color:var(--line)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.stats div{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:#f9fbff}
+.stats small{color:var(--mu);display:block;font-size:12.5px}.stats b{font-size:20px}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:14px}
+table{width:100%;border-collapse:collapse;min-width:520px}
+th,td{padding:11px 12px;text-align:left;border-bottom:1px solid var(--line);font-size:13.5px;white-space:nowrap}
+th{color:var(--mu);font-weight:700;background:#f9fbff;font-size:12.5px;text-transform:uppercase;letter-spacing:.4px}
+tbody tr:hover td{background:#fafbff}tbody tr:last-child td{border-bottom:0}
+.card.pad0 .tw{border:0;border-radius:0}
+.st{padding:3px 10px;border-radius:99px;font-size:12px;font-weight:800;display:inline-block}.st.SUCCESS{background:var(--okbg);color:var(--ok)}.st.PENDING{background:var(--wabg);color:var(--wa)}.st.FAILED{background:var(--erbg);color:var(--er)}
+.stats+form,.stats+h3{margin-top:16px}
+.empty{text-align:center;color:var(--mu);padding:26px 10px!important;white-space:normal!important}
+.keybox{border:1px solid var(--line);border-radius:14px;padding:14px;background:#f9fbff}
+.keybox code{display:block;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px;word-break:break-all;margin:8px 0;font-size:14px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.kv{display:grid;grid-template-columns:140px 1fr;gap:8px;font-size:14px;padding:10px 0;border-bottom:1px solid var(--line)}.kv span{color:var(--mu)}.kv b{word-break:break-word}
+.pl{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:12px 0}
+.pl>div{border:1.5px solid var(--line);border-radius:16px;padding:18px;font-size:14px;line-height:1.8;background:#fff}
+.pl .cur{border-color:var(--green);background:var(--green-l)}
+.pl b{font-size:17px}
+ol.mu{padding-left:20px;display:grid;gap:8px;line-height:1.6}
+@media(max-width:1000px){.kpis,.ftg{grid-template-columns:1fr 1fr}.bal{grid-template-columns:1fr}}
+@media(max-width:860px){
+ .app{grid-template-columns:1fr}
+ .drw{position:fixed;left:0;top:0;bottom:0;width:276px;max-width:84vw;transform:translateX(-104%);transition:transform .22s;z-index:50;height:auto}
+ .drw.open{transform:none}
+ .mbar{padding:12px 14px}.mbar .ham{display:inline-flex}.mbar b{font-size:17px}
+ .cont{padding:16px 14px 40px}
+}
+@media(max-width:520px){.kpis,.ftg{grid-template-columns:1fr}.kpi b{font-size:20px}.kv{grid-template-columns:1fr;gap:2px}.welcome h2{font-size:19px}.bal .big b{font-size:30px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+
+/* extras for the Payment Links dashboard */
+input[type=tel],input[type=number],textarea{border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;font:inherit;width:100%;color:var(--ink);background:#fff}
+input[type=tel]:focus,input[type=number]:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px #26338a22}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn.s{padding:9px 15px;font-size:14px}.btn.er{background:#fff;color:var(--er);border:1.5px solid #f3c7c3;box-shadow:none}
+span.sm,div.sm{font-size:12.5px}
+.cont h2{font-size:19px;margin:0 0 6px;letter-spacing:-.3px}.cont h3{font-size:16px;margin:6px 0 0}
+.card.tw{padding:0}
+.stats .hl{background:linear-gradient(135deg,var(--navy),#3b4fc4);border:0;color:#fff}.stats .hl small{color:#cfd6ff}
+.lk{border:1px solid var(--line);border-radius:16px;padding:16px;display:grid;gap:9px;background:#fff}
+.lk+.lk{margin-top:12px}.lk .h{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.lk .h b{flex:1;min-width:140px;font-size:15.5px}
+.lk code{display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:13px;word-break:break-all}
+.fee{background:var(--navy-l);border-radius:12px;padding:11px 13px;font-size:13.5px}
+.st.ACTIVE,.st.PAID{background:var(--okbg);color:var(--ok)}.st.PAUSED{background:var(--wabg);color:var(--wa)}.st.REJECTED{background:var(--erbg);color:var(--er)}
+.pc table td:first-child{color:var(--mu)}
+@media(max-width:600px){.g2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- ============ PUBLIC LANDING (hidden after login) ============ -->
+<div id="landing" class="hide">
+<header class="nav"><div class="w">
+  <a class="lg" href="/"><img src="/assets/logo.png" alt="TaknaPay.in"></a>
+  <nav class="links"><a href="#features">Features</a><a href="#how">How it works</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a></nav>
+  <div class="cta"><a class="btn out sm" href="/">Home</a><a class="btn pri sm" href="#start" onclick="authTab('log')">Login</a></div>
+</div></header>
+
+<div class="hero"><div class="w">
+  <div>
+    <span class="pill"><i></i>Payment Links · Instant verification</span>
+    <h1>Get paid by UPI with a <em>simple link.</em></h1>
+    <p class="lead">Create free payment links, share them on WhatsApp or anywhere, and receive money by UPI. Every payment is confirmed automatically and you withdraw to your bank or UPI.</p>
+    <div class="acts">
+      <a class="btn grn" href="#start" onclick="authTab('reg')">Register free →</a>
+      <a class="btn out" href="#start" onclick="authTab('log')">Login</a>
+    </div>
+    <div class="mini">
+      <div><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></span><span><b>Free links</b>Create as many as you need</span></div>
+      <div><span class="ic g"><svg class="i" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span><span><b>Auto confirmation</b>Paid links update by themselves</span></div>
+      <div><span class="ic g"><svg class="i" viewBox="0 0 24 24"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13"/></svg></span><span><b>Share anywhere</b>WhatsApp, SMS, social media</span></div>
+      <div><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M3 10l9-6 9 6M5 10v8M9 10v8M15 10v8M19 10v8M3 21h18"/></svg></span><span><b>Fast withdrawals</b>Bank (NEFT, IMPS) or UPI</span></div>
+    </div>
+  </div>
+
+  <div class="authcard" id="start">
+    <div class="tabs" role="tablist">
+      <button class="tab on" id="tReg" type="button" role="tab">Register</button>
+      <button class="tab" id="tLog" type="button" role="tab">Login</button>
+    </div>
+    <h2 class="ah">Your Payment Links account</h2>
+    <p class="ap">Takes about two minutes. You need your mobile number and PAN card.</p>
+<form id="regForm" autocomplete="on">
+      <label>Full name<input id="rName" type="text" autocomplete="name" required maxlength="80" placeholder="Your name"></label>
+      <div class="g2">
+        <label>Mobile number<input id="rMob" type="tel" inputmode="numeric" autocomplete="tel" required maxlength="14" placeholder="10-digit mobile"></label>
+        <label>Email ID<input id="rEmail" type="email" autocomplete="email" required maxlength="120" placeholder="you@example.com"></label>
+      </div>
+      <label>Password<input id="rPw" type="password" autocomplete="new-password" required minlength="8" maxlength="64" placeholder="Min 8 characters, letters + numbers"></label>
+      <fieldset class="fs"><legend>PAN card details</legend>
+        <label>Name as on PAN card<input id="rPanName" type="text" required maxlength="80" placeholder="e.g. RAHUL KUMAR"></label>
+        <label>PAN number<input id="rPan" type="text" required maxlength="10" style="text-transform:uppercase" placeholder="ABCDE1234F"></label>
+        <label>PAN card photo<input id="rPanImg" type="file" accept="image/*"><small>Clear photo, all four corners visible.</small></label>
+        <img id="rThumb" class="thumb" alt="PAN preview">
+      </fieldset>
+      <label class="chk"><input id="rAgree" type="checkbox"><span>I confirm all details are true and I accept the terms. Fee: 2% on payment received and 1% on withdrawal. Creating links is free.</span></label>
+      <button class="btn grn" id="rBtn" type="submit">Register &amp; verify instantly</button>
+      <div class="msg" id="rMsg" role="alert"></div>
+    </form>
+
+    <form id="logForm" class="hide">
+      <label>Email ID<input id="lEmail" type="email" autocomplete="username" required></label>
+      <label>Password<input id="lPw" type="password" autocomplete="current-password" required></label>
+      <button class="btn pri" id="lBtn" type="submit">Login</button>
+      <div class="msg" id="lMsg" role="alert"></div>
+      <p class="mu sm" style="margin:0">Forgot your password? Contact support and we will set a new one for you.</p>
+    </form>
+  </div>
+</div></div>
+
+<section class="ls" id="features"><div class="w">
+  <div class="sec-h"><span class="tag">Features</span><h2>Everything you need to collect money</h2><p>No website, no coding. Just a link.</p></div>
+  <div class="fg">
+    <div class="fc"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></span><h4>Links in seconds</h4><p>Fixed amount or let the payer type any amount.</p></div>
+    <div class="fc"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></span><h4>Instant verification</h4><p>Register with your PAN and start right after approval.</p></div>
+    <div class="fc"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10 21a2 2 0 0 0 4 0"/></svg></span><h4>Auto confirmation</h4><p>We detect the payment and mark it paid for you.</p></div>
+    <div class="fc"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M3 10l9-6 9 6M5 10v8M9 10v8M15 10v8M19 10v8M3 21h18"/></svg></span><h4>Easy withdrawals</h4><p>Request a payout to your bank account or UPI ID.</p></div>
+  </div>
+</div></section>
+
+<section class="ls alt" id="how"><div class="w">
+  <div class="sec-h"><span class="tag">How it works</span><h2>Four simple steps</h2></div>
+  <div class="steps">
+    <div><b>Register</b><span>Name, mobile, email and PAN details.</span></div>
+    <div><b>Get verified</b><span>Your PAN is checked and the account is approved.</span></div>
+    <div><b>Create and share</b><span>Make a link and send it to your payer.</span></div>
+    <div><b>Get paid</b><span>Money is confirmed automatically. Withdraw any time after settlement.</span></div>
+  </div>
+</div></section>
+
+<section class="ls" id="pricing"><div class="w">
+  <div class="sec-h"><span class="tag">Pricing</span><h2>Simple, honest fees</h2><p>You pay only when you get paid.</p></div>
+  <div class="pr">
+    <div class="pc"><h3>Creating links</h3><p class="sb">No setup or monthly cost</p><div class="big">Free</div>
+      <table><tr><td>Number of links</td><td>Up to 100</td></tr><tr><td>Monthly fee</td><td>₹0</td></tr></table></div>
+    <div class="pc hot"><h3>Receiving money</h3><p class="sb">Charged per payment and per withdrawal</p><div class="big"><span id="fPct">2%</span> <small>per payment</small></div>
+      <table><tr><td>Withdrawal fee</td><td id="fOut">1%</td></tr><tr><td>Settlement time</td><td id="fDays">3 working days</td></tr><tr><td>Minimum withdrawal</td><td id="fMin">₹100</td></tr></table></div>
+  </div>
+</div></section>
+
+<section class="ls alt" id="faq"><div class="w">
+  <div class="sec-h"><span class="tag">FAQ</span><h2>Questions</h2></div>
+  <div class="faq">
+    <details><summary>How do payers pay?</summary><p>They open your link, enter their name (and amount if it is not fixed) and pay with any UPI app by scanning the QR or tapping pay.</p></details>
+    <details><summary>When can I withdraw?</summary><p>After the settlement period shown above. Then request a payout to your bank account or UPI ID from the Withdraw page.</p></details>
+    <details><summary>Why do you need my PAN?</summary><p>Your PAN is used once to verify your identity before the account is approved. Only the admin can see the photo.</p></details>
+    <details><summary>I forgot my password.</summary><p>Contact support and we will set a new one for you.</p></details>
+  </div>
+</div></section>
+
+<section style="padding:0 0 10px"><div class="w"><div class="ctab">
+  <h2>Ready to get paid with a link?</h2><p>Free to start. Verified fast. Paid by UPI.</p>
+  <div class="acts"><a class="btn grn" href="#start" onclick="authTab('reg')">Register free</a></div>
+</div></div></section>
+
+<footer><div class="w">
+  <a class="lgf" href="/"><img src="/assets/logo.png" alt="TaknaPay.in"></a>
+  <a href="/">Home</a><a href="/merchant.html">Merchant gateway</a><a href="/docs.html">API docs</a><a href="/ping.html">Status</a>
+  <span class="cp">© <span id="yr"></span> TaknaPay.in</span>
+</div></footer>
+</div>
+
+<!-- ============ DASHBOARD (shown after login) ============ -->
+<div id="vDash" class="app hide"></div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var KEY = 'tk_link_session', session = null, D = null, links = [], pays = [], pg = 'home';
+  try { session = sessionStorage.getItem(KEY); } catch (e) {}
+
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function inr(n) { return '₹' + Number(n || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 }); }
+  function say(el, cls, t) { el.className = 'msg ' + cls; el.textContent = t; }
+  function call(method, url, body) {
+    var h = { 'Content-Type': 'application/json' }; if (session) h.Authorization = 'Bearer ' + session;
+    return fetch(url, { method: method, headers: h, body: body ? JSON.stringify(body) : undefined, cache: 'no-store' }).then(function (r) { return r.json().then(function (d) { d._status = r.status; return d; }); });
+  }
+  function copy(text, btn) { if (navigator.clipboard) navigator.clipboard.writeText(text).then(function () { var t = btn.textContent; btn.textContent = 'Copied ✓'; setTimeout(function () { btn.textContent = t; }, 1500); }); }
+  function done() { if (window.GWLoader) GWLoader.hide(); }
+
+  // resize PAN photo in the browser (max 1400px JPEG) so the upload stays small
+  function readImage(file) {
+    return new Promise(function (resolve, reject) {
+      if (!file) return reject(new Error('Choose the PAN card photo.'));
+      if (!/^image\//.test(file.type)) return reject(new Error('Choose an image file (JPG or PNG).'));
+      var fr = new FileReader();
+      fr.onerror = function () { reject(new Error('Could not read the photo.')); };
+      fr.onload = function () {
+        var img = new Image();
+        img.onerror = function () { reject(new Error('This file is not a valid image.')); };
+        img.onload = function () {
+          var sc = Math.min(1, 1400 / Math.max(img.width, img.height)), c = document.createElement('canvas');
+          c.width = Math.round(img.width * sc); c.height = Math.round(img.height * sc);
+          var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); x.drawImage(img, 0, 0, c.width, c.height);
+          var q = 0.82, out = c.toDataURL('image/jpeg', q);
+          while (out.length > 1100000 && q > 0.4) { q -= 0.1; out = c.toDataURL('image/jpeg', q); }
+          resolve(out);
+        };
+        img.src = fr.result;
+      };
+      fr.readAsDataURL(file);
+    });
+  }
+
+  // ---------- auth ----------
+  function authTab(w) {
+    $('regForm').classList.toggle('hide', w !== 'reg'); $('logForm').classList.toggle('hide', w !== 'log');
+    $('tReg').classList.toggle('on', w === 'reg'); $('tLog').classList.toggle('on', w === 'log');
+  }
+  window.authTab = authTab;
+  $('tReg').onclick = function () { authTab('reg'); }; $('tLog').onclick = function () { authTab('log'); };
+  var panImg = '';
+  $('rPanImg').onchange = function () {
+    panImg = ''; $('rThumb').style.display = 'none';
+    readImage(this.files[0]).then(function (d) { panImg = d; $('rThumb').src = d; $('rThumb').style.display = 'block'; $('rMsg').className = 'msg'; })
+      .catch(function (e) { say($('rMsg'), 'er', e.message); });
+  };
+  function startSession(tok) { session = tok; try { sessionStorage.setItem(KEY, tok); } catch (e) {} loadDash(); }
+  $('regForm').onsubmit = function (e) {
+    e.preventDefault();
+    if (!panImg) { say($('rMsg'), 'er', 'Upload a clear photo of your PAN card first.'); return; }
+    var b = $('rBtn'); b.disabled = true; b.textContent = 'Submitting...'; $('rMsg').className = 'msg';
+    call('POST', '/api/link/register', { name: $('rName').value, mobile: $('rMob').value, email: $('rEmail').value, password: $('rPw').value, panName: $('rPanName').value, panNumber: $('rPan').value, panImage: panImg, agree: $('rAgree').checked })
+      .then(function (d) { if (!d.success) { say($('rMsg'), 'er', d.message || 'Could not register'); return; } startSession(d.token); })
+      .catch(function () { say($('rMsg'), 'er', 'Network error. Please try again.'); })
+      .then(function () { b.disabled = false; b.textContent = 'Register & verify instantly'; });
+  };
+  $('logForm').onsubmit = function (e) {
+    e.preventDefault();
+    var b = $('lBtn'); b.disabled = true; b.textContent = 'Logging in...'; $('lMsg').className = 'msg';
+    call('POST', '/api/link/login', { email: $('lEmail').value, password: $('lPw').value })
+      .then(function (d) { if (!d.success) { say($('lMsg'), 'er', d.message || 'Login failed'); return; } startSession(d.token); })
+      .catch(function () { say($('lMsg'), 'er', 'Network error. Please try again.'); })
+      .then(function () { b.disabled = false; b.textContent = 'Login'; });
+  };
+  function logout() { session = null; try { sessionStorage.removeItem(KEY); } catch (e) {} D = null; $('vDash').classList.add('hide'); $('landing').classList.remove('hide'); authTab('log'); }
+
+  // ---------- dashboard ----------
+  function loadDash(keepPg) {
+    return call('GET', '/api/merchant/me').then(function (d) {
+      if (d._status === 401 || !d.success) { logout(); return; }
+      if (d.merchant.type !== 'LINK') { logout(); $('lMsg').className = 'msg er'; $('lMsg').textContent = 'This account is not a Payment Links account. Use Merchant login.'; return; }
+      D = d;
+      var ok = d.merchant.status === 'APPROVED';
+      return Promise.all([ok ? call('GET', '/api/link/list') : { links: [] }, ok ? call('GET', '/api/link/payments') : { payments: [] }]).then(function (r) {
+        links = r[0].links || []; pays = r[1].payments || [];
+        if (!keepPg) pg = 'home';
+        render();
+      });
+    }).catch(function () { $('vDash').innerHTML = '<div class="card">Could not load. <button class="btn out s" id="rt" type="button">Retry</button></div>'; $('landing').classList.add('hide'); $('vDash').classList.remove('hide'); $('rt').onclick = function () { loadDash(); }; })
+      .then(done);
+  }
+
+  function render() {
+    var m = D.merchant, b = D.balance, ok = m.status === 'APPROVED', cfg = D.config;
+    $('landing').classList.add('hide'); $('vDash').classList.remove('hide');
+    var banner = '';
+    if (m.status === 'PENDING') banner = '<div class="banner PENDING"><b>Verification in progress.</b> Your PAN details are being verified. You can create payment links as soon as your account is approved. Tap Refresh to check.</div>';
+    if (m.status === 'REJECTED') banner = '<div class="banner REJECTED"><b>Not approved.</b> ' + (m.kycNote ? esc(m.kycNote) + ' ' : '') + 'Fix your PAN details in Profile and submit again.</div>';
+    if (m.status === 'SUSPENDED') banner = '<div class="banner SUSPENDED"><b>Account suspended.</b> Links are paused. Please contact support.</div>';
+    var tabs = [['home', 'Overview']].concat(ok ? [['links', 'My links'], ['pays', 'Payments'], ['out', 'Withdraw']] : []).concat([['prof', 'Profile']]);
+    var IC = { home: '<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>', orders: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>', rupee: '<path d="M6 4h12M6 9h12M9 4c6 0 6 9 0 9H6l8 7"/>', payouts: '<path d="M3 10l9-6 9 6M5 10v8M9 10v8M15 10v8M19 10v8M3 21h18"/>', profile: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>', out: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>', menu: '<path d="M4 6h16M4 12h16M4 18h16"/>' };
+    var ICN = { home: 'home', links: 'orders', pays: 'rupee', out: 'payouts', prof: 'profile' };
+    function ico(n) { return '<svg class="i" viewBox="0 0 24 24" aria-hidden="true">' + (IC[n] || '') + '</svg>'; }
+    var h = '<div class="ovl hide" id="ovl"></div><aside class="drw" id="drw"><a class="dlogo" href="/" aria-label="TaknaPay.in home"><img src="/assets/logo.png" alt="TaknaPay.in"></a>' +
+      '<div class="dh"><span class="av">' + esc((m.name || 'U').trim().charAt(0).toUpperCase()) + '</span><div><b>' + esc(m.name) + '</b><small>' + esc(m.email) + '</small></div></div>' +
+      tabs.map(function (t) { return '<button type="button" data-pg="' + t[0] + '">' + ico(ICN[t[0]]) + '<span>' + t[1] + '</span></button>'; }).join('') +
+      '<div class="sp"></div><button type="button" id="bOut">' + ico('out') + '<span>Log out</span></button></aside>' +
+      '<div class="amain"><div class="mbar"><button class="btn out sm ham" type="button" id="mnuB" aria-label="Open menu">' + ico('menu') + '</button><b id="pgT"></b><span class="badge ' + esc(m.status) + '">' + esc(m.status === 'APPROVED' ? 'VERIFIED' : m.status) + '</span><button class="btn out sm" type="button" id="bRef">Refresh</button></div><div class="cont">' + banner;
+    var welcome = '<div class="card welcome"><div><h2>Hi, ' + esc(m.name.split(' ')[0]) + '</h2><p>' + (ok ? 'Create a link, share it anywhere and get paid by UPI.' : 'Your PAN is being verified. Links unlock right after approval.') + '</p></div>' + (ok ? '<div class="row"><button class="btn grn sm" type="button" data-go="links">+ Create payment link</button><button class="btn out sm" type="button" data-go="out">Withdraw</button></div>' : '') + '</div>';
+
+    // overview
+    h += '<section class="pg ' + (pg === 'home' ? '' : 'hide') + '" id="pg-home">' + welcome;
+    if (ok) {
+      var collected = pays.filter(function (p) { return p.status === 'SUCCESS'; }).length;
+      h += '<div class="stats"><div class="hl"><small>Available to withdraw</small><b>' + inr(b.available) + '</b></div><div><small>Settling (' + cfg.settlementDays + ' working days)</small><b>' + inr(b.pending) + '</b></div><div><small>Payout requested</small><b>' + inr(b.requested) + '</b></div><div><small>Paid out</small><b>' + inr(b.paidOut) + '</b></div></div>' +
+        '<div class="stats"><div><small>Active links</small><b>' + links.filter(function (l) { return l.status === 'ACTIVE'; }).length + '</b></div><div><small>Total received</small><b>' + inr(b.gross) + '</b></div><div><small>Fees (' + cfg.plans.LINK.percent + '%)</small><b>' + inr(b.fees) + '</b></div><div><small>Recent paid</small><b>' + collected + '</b></div></div>' +
+        '<div class="row"><button class="btn grn" type="button" data-go="links">+ Create payment link</button><button class="btn out" type="button" data-go="out">Withdraw money</button></div>';
+    } else h += '<div class="card"><h2>Welcome to Payment Links</h2><p class="mu">Once your account is verified you can create free links, receive payments and withdraw to your bank or UPI.</p></div>';
+    h += '</section>';
+
+    if (ok) {
+      // links
+      h += '<section class="pg ' + (pg === 'links' ? '' : 'hide') + '" id="pg-links"><div class="card"><h2>Create a payment link</h2><p class="mu" style="margin-top:-6px">Free. A ' + cfg.plans.LINK.percent + '% fee applies only when a payment is received.</p>' +
+        '<form id="lkForm"><label>Title<input id="lkT" type="text" maxlength="80" required placeholder="e.g. Class fees, Order #12, Donation"></label>' +
+        '<label>Description (optional)<input id="lkD" type="text" maxlength="200" placeholder="Shown to the payer"></label>' +
+        '<label>Amount in ₹ <small>(leave empty to let the payer type any amount)</small><input id="lkA" type="number" min="1" max="500000" step="0.01" inputmode="decimal" placeholder="Fixed amount, e.g. 499"></label>' +
+        '<button class="btn grn" id="lkB" type="submit">Create link</button><div class="msg" id="lkM"></div></form></div><h3>Your links</h3>' +
+        (links.length ? links.map(function (l) {
+          return '<div class="lk"><div class="h"><b>' + esc(l.title) + '</b><span class="st ' + esc(l.status) + '">' + esc(l.status) + '</span><span class="mu sm">' + (l.amount != null ? inr(l.amount) : 'Any amount') + '</span></div>' +
+            (l.description ? '<div class="mu sm">' + esc(l.description) + '</div>' : '') + '<code>' + esc(l.url) + '</code>' +
+            '<div class="mu sm">' + l.paid + ' payment' + (l.paid === 1 ? '' : 's') + ' · ' + inr(l.collected) + ' collected</div>' +
+            '<div class="row"><button class="btn pri s" type="button" data-copy="' + esc(l.url) + '">Copy link</button><a class="btn out s" target="_blank" rel="noopener" href="https://wa.me/?text=' + encodeURIComponent(l.title + ' - pay here: ' + l.url) + '">Share on WhatsApp</a><a class="btn out s" target="_blank" rel="noopener" href="' + esc(l.url) + '">Open</a>' +
+            '<button class="btn out s" type="button" data-st="' + esc(l.id) + '" data-to="' + (l.status === 'ACTIVE' ? 'PAUSED' : 'ACTIVE') + '">' + (l.status === 'ACTIVE' ? 'Pause' : 'Resume') + '</button><button class="btn er s" type="button" data-st="' + esc(l.id) + '" data-to="DELETED">Delete</button></div></div>';
+        }).join('') : '<p class="mu">No links yet. Create your first one above.</p>') + '</section>';
+
+      // payments
+      h += '<section class="pg ' + (pg === 'pays' ? '' : 'hide') + '" id="pg-pays"><h2>Payments received</h2><div class="card tw"><table><thead><tr><th>Date</th><th>Link</th><th>Payer</th><th>Amount</th><th>Fee</th><th>You get</th><th>Status</th></tr></thead><tbody>' +
+        (pays.length ? pays.map(function (p) { return '<tr><td>' + new Date(p.createdAt).toLocaleString('en-IN') + '</td><td>' + esc(p.linkTitle) + '</td><td>' + esc(p.payerName || '-') + (p.payerContact ? '<br><span class="mu sm">' + esc(p.payerContact) + '</span>' : '') + '</td><td>' + inr(p.amount) + '</td><td>' + (p.fee != null ? inr(p.fee) : '-') + '</td><td>' + (p.fee != null ? inr(p.amount - p.fee) : '-') + '</td><td><span class="st ' + esc(p.status) + '">' + esc(p.status) + '</span></td></tr>'; }).join('') : '<tr><td colspan="7" class="mu" style="text-align:center">No payments yet</td></tr>') + '</tbody></table></div></section>';
+
+      // withdraw
+      var hist = (D.payouts || []).map(function (p) { return '<tr><td>' + new Date(p.createdAt).toLocaleString('en-IN') + '</td><td>' + esc(p.method) + '</td><td>' + inr(p.amount) + '</td><td>' + inr(p.fee) + '</td><td>' + inr(p.payable) + '</td><td><span class="st ' + esc(p.status) + '">' + esc(p.status) + '</span>' + (p.utr ? '<br><span class="mu sm">UTR ' + esc(p.utr) + '</span>' : '') + (p.note ? '<br><span class="mu sm">' + esc(p.note) + '</span>' : '') + '</td></tr>'; }).join('');
+      h += '<section class="pg ' + (pg === 'out' ? '' : 'hide') + '" id="pg-out"><div class="card"><h2>Withdraw money</h2><p class="mu" style="margin-top:-6px">Available: <b>' + inr(b.available) + '</b> · Minimum ' + inr(cfg.minPayout) + ' · Withdrawal fee ' + cfg.plans.LINK.payoutRates.UPI + '%</p>' +
+        '<form id="poForm"><div class="g2"><label>Amount (₹)<input id="pA" type="number" min="' + cfg.minPayout + '" step="0.01" inputmode="decimal" required></label><label>Method<select id="pM"><option value="UPI">UPI ID</option><option value="IMPS">IMPS (bank)</option><option value="NEFT">NEFT (bank)</option></select></label></div>' +
+        '<div id="pUpi"><label>UPI ID<input id="pU" type="text" placeholder="name@bank"></label></div>' +
+        '<div id="pBank" class="hide" style="display:grid;gap:13px"><label>Account holder name<input id="pN" type="text"></label><div class="g2"><label>Account number<input id="pAc" type="text" inputmode="numeric"></label><label>IFSC<input id="pI" type="text" style="text-transform:uppercase" placeholder="SBIN0001234"></label></div></div>' +
+        '<div class="fee" id="pFee">Enter an amount to see the fee.</div><button class="btn pri" id="pB" type="submit">Request withdrawal</button><div class="msg" id="pMsg"></div></form></div>' +
+        '<h3>Withdrawal history</h3><div class="card tw"><table><thead><tr><th>Date</th><th>Method</th><th>Amount</th><th>Fee</th><th>You receive</th><th>Status</th></tr></thead><tbody>' + (hist || '<tr><td colspan="6" class="mu" style="text-align:center">No withdrawals yet</td></tr>') + '</tbody></table></div></section>';
+    }
+
+    // profile
+    h += '<section class="pg ' + (pg === 'prof' ? '' : 'hide') + '" id="pg-prof"><div class="card"><h2>Profile</h2>' +
+      '<div class="kv"><span>Name</span><b>' + esc(m.name) + '</b></div><div class="kv"><span>Mobile</span><b>' + esc(m.contact) + '</b></div><div class="kv"><span>Email</span><b>' + esc(m.email) + '</b></div><div class="kv"><span>PAN name</span><b>' + esc(m.panName || '-') + '</b></div><div class="kv"><span>PAN</span><b>' + esc(m.panMasked || '-') + '</b></div><div class="kv"><span>KYC</span><b>' + esc(m.kycStatus) + '</b></div></div>';
+    if (m.kycStatus !== 'VERIFIED') {
+      h += '<h3>Update PAN details</h3><div class="card"><form id="kForm"><label>Name as on PAN<input id="kN" type="text" required maxlength="80"></label><label>PAN number<input id="kP" type="text" required maxlength="10" style="text-transform:uppercase"></label><label>PAN card photo<input id="kF" type="file" accept="image/*"></label><button class="btn pri" id="kB" type="submit">Submit for verification</button><div class="msg" id="kM"></div></form></div>';
+    }
+    h += '</section>';
+    h += '</div></div>'; $('vDash').innerHTML = h;
+    wire();
+  }
+
+  function wire() {
+    var root = $('vDash'), ok = D.merchant.status === 'APPROVED';
+    function go(p) { pg = p; var t = p; root.querySelectorAll('.pg').forEach(function (s) { s.classList.toggle('hide', s.id !== 'pg-' + p); }); root.querySelectorAll('#drw button[data-pg]').forEach(function (x) { var on = x.getAttribute('data-pg') === p; x.classList.toggle('on', on); if (on) t = x.textContent; }); $('pgT').textContent = t; $('drw').classList.remove('open'); $('ovl').classList.add('hide'); window.scrollTo(0, 0); }
+    root.querySelectorAll('[data-pg]').forEach(function (x) { x.onclick = function () { go(x.getAttribute('data-pg')); }; });
+    root.querySelectorAll('[data-go]').forEach(function (x) { x.onclick = function () { go(x.getAttribute('data-go')); }; });
+    root.querySelectorAll('[data-copy]').forEach(function (x) { x.onclick = function () { copy(x.getAttribute('data-copy'), x); }; });
+    $('mnuB').onclick = function () { $('drw').classList.add('open'); $('ovl').classList.remove('hide'); };
+    $('ovl').onclick = function () { $('drw').classList.remove('open'); $('ovl').classList.add('hide'); };
+    go(pg);
+    $('bRef').onclick = function () { $('bRef').textContent = '...'; loadDash(true); };
+    $('bOut').onclick = logout;
+    root.querySelectorAll('[data-st]').forEach(function (x) {
+      x.onclick = function () {
+        var to = x.getAttribute('data-to');
+        if (to === 'DELETED' && !confirm('Delete this payment link? Payers will no longer be able to use it.')) return;
+        call('POST', '/api/link/' + x.getAttribute('data-st') + '/status', { status: to }).then(function (d) { if (!d.success) alert(d.message || 'Failed'); loadDash(true); });
+      };
+    });
+    if (ok) {
+      $('lkForm').onsubmit = function (e) {
+        e.preventDefault(); var b = $('lkB'); b.disabled = true; b.textContent = 'Creating...'; $('lkM').className = 'msg';
+        call('POST', '/api/link/create', { title: $('lkT').value, description: $('lkD').value, amount: $('lkA').value })
+          .then(function (d) { if (!d.success) { say($('lkM'), 'er', d.message || 'Could not create'); b.disabled = false; b.textContent = 'Create link'; return; } pg = 'links'; loadDash(true); })
+          .catch(function () { say($('lkM'), 'er', 'Network error.'); b.disabled = false; b.textContent = 'Create link'; });
+      };
+      var rates = D.config.plans.LINK.payoutRates;
+      function upd() {
+        var m = $('pM').value, a = Number($('pA').value);
+        $('pUpi').classList.toggle('hide', m !== 'UPI'); $('pBank').classList.toggle('hide', m === 'UPI'); $('pBank').style.display = m === 'UPI' ? 'none' : 'grid';
+        var r = rates[m]; $('pFee').textContent = a > 0 ? 'Fee ' + r + '% = ' + inr(Math.round(a * r) / 100) + ' · You receive ' + inr(Math.round((a - a * r / 100) * 100) / 100) : 'Withdrawal fee is ' + r + '%. Enter an amount to see the total.';
+      }
+      $('pM').onchange = upd; $('pA').oninput = upd; upd();
+      $('poForm').onsubmit = function (e) {
+        e.preventDefault(); var b = $('pB'); b.disabled = true; b.textContent = 'Sending...'; $('pMsg').className = 'msg';
+        call('POST', '/api/merchant/payout', { amount: $('pA').value, method: $('pM').value, upiId: $('pU').value, accountName: $('pN').value, accountNumber: $('pAc').value, ifsc: $('pI').value })
+          .then(function (d) { if (!d.success) { say($('pMsg'), 'er', d.message || 'Failed'); b.disabled = false; b.textContent = 'Request withdrawal'; return; } pg = 'out'; loadDash(true); })
+          .catch(function () { say($('pMsg'), 'er', 'Network error.'); b.disabled = false; b.textContent = 'Request withdrawal'; });
+      };
+    }
+    if ($('kForm')) {
+      var img = '';
+      $('kF').onchange = function () { img = ''; readImage(this.files[0]).then(function (d) { img = d; }).catch(function (e) { say($('kM'), 'er', e.message); }); };
+      $('kForm').onsubmit = function (e) {
+        e.preventDefault(); if (!img) { say($('kM'), 'er', 'Upload the PAN card photo.'); return; }
+        var b = $('kB'); b.disabled = true; call('POST', '/api/merchant/kyc', { panName: $('kN').value, panNumber: $('kP').value, panImage: img })
+          .then(function (d) { if (!d.success) { say($('kM'), 'er', d.message || 'Failed'); b.disabled = false; return; } pg = 'home'; loadDash(); });
+      };
+    }
+  }
+
+  // live rates on the landing page
+  fetch('/api/public-config').then(function (r) { return r.json(); }).then(function (c) {
+    if (!c.success) return; var L = c.plans.LINK, set = function (id, v) { var e = $(id); if (e) e.textContent = v; };
+    set('fPct', L.percent + '%'); set('fOut', L.payoutRates.UPI + '%'); set('fDays', c.linkSettlementDays + ' working days'); set('fMin', '₹' + c.minPayout);
+  }).catch(function () {});
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  // ---------- start ----------
+  if (session) loadDash(); else { $('landing').classList.remove('hide'); authTab(location.hash === '#login' ? 'log' : 'reg'); done(); }
+})();
+</script>
+</body>
+</html>
