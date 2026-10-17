@@ -1,0 +1,30 @@
+# Pings the Render service every 5 minutes from GitHub's servers,
+# so it runs whether or not any page is open and even if Render has put the app to sleep.
+#
+# Setup (once): GitHub repo -> Settings -> Secrets and variables -> Actions -> Variables tab
+#   -> New repository variable:  Name = PING_URL   Value = https://taknapay.in/healthz
+name: Keep Alive
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'   # every 5 minutes (GitHub's minimum). Change to '*/10 * * * *' for 10 minutes.
+  workflow_dispatch:         # lets you run it manually from the Actions tab
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Ping service
+        env:
+          PING_URL: ${{ vars.PING_URL }}
+        run: |
+          if [ -z "$PING_URL" ]; then echo "PING_URL variable is not set"; exit 1; fi
+          # up to 3 tries; a cold start on Render can take ~50 seconds
+          for i in 1 2 3; do
+            code=$(curl -s -o /dev/null -m 60 -w '%{http_code}' "$PING_URL" || echo 000)
+            echo "try $i -> HTTP $code"
+            [ "$code" = "200" ] && exit 0
+            sleep 10
+          done
+          exit 1
